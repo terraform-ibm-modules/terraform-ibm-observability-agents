@@ -1,0 +1,20 @@
+metadata:
+  name: "logdna-agent"
+image:
+  repository: "ext/logdna-agent"
+  # renovate: datasource=docker depName=icr.io/ext/logdna-agent versioning=regex:^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)-(?<build>\d{8}).\w+?$
+  tag: "3.8.0-20230206.cbc937fa5513f636"
+  registry: icr.io
+env:
+  region: "ca-tor"
+  sts_exists: false
+secret:
+  name: "logdna-agent"
+  key: ""
+tolerations:
+  - key: "dedicated"
+    value: "edge"
+    effect: "NoExecute"
+  - key: "dedicated"
+    value: "transit"
+    effect: "NoExecute"

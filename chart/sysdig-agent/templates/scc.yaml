@@ -1,0 +1,40 @@
+kind: SecurityContextConstraints
+apiVersion: security.openshift.io/v1
+metadata:
+  name: ibm-privileged-scc-sysdig
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: sysdig-agent
+    app.kubernetes.io/instance: sysdig-agent
+    app.kubernetes.io/version: {{ .Values.image.version }}
+allowHostDirVolumePlugin: true
+allowHostIPC: true
+allowHostNetwork: true
+allowHostPID: true
+allowHostPorts: true
+allowPrivilegeEscalation: true
+allowPrivilegedContainer: true
+allowedCapabilities:
+- '*'
+allowedUnsafeSysctls:
+- '*'
+defaultAddCapabilities: []
+defaultAllowPrivilegeEscalation: true
+fsGroup:
+  type: RunAsAny
+groups: []
+priority: null
+readOnlyRootFilesystem: false
+requiredDropCapabilities: []
+runAsUser:
+  type: RunAsAny
+seLinuxContext:
+  type: RunAsAny
+seccompProfiles:
+- '*'
+supplementalGroups:
+  type: RunAsAny
+users:
+- system:serviceaccount:{{ .Release.Namespace }}:sysdig-agent
+volumes:
+- '*'

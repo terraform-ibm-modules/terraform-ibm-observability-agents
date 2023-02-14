@@ -14,12 +14,9 @@ repository:
 
   # By changing this field, you rename the repository.
 
-  # Uncomment this name property and set the name to the current repo name.
-  # name: ""
+  name: "terraform-ibm-observability-agents"
 
   # The description is displayed under the repository name on the
   # organization page and in the 'About' section of the repository.
 
-  # Uncomment this description property
-  # and update the description to the current repo description.
-  # description: ""
+  description: "Deploys the LogDNA agent and SysDig agents to a cluster"
