@@ -22,8 +22,8 @@ module "observability_instances" {
   activity_tracker_provision = false
   enable_platform_logs       = false
   enable_platform_metrics    = false
-  logdna_instance_name       = var.prefix
-  sysdig_instance_name       = var.prefix
+  logdna_instance_name       = "${var.prefix}-logdna"
+  sysdig_instance_name       = "${var.prefix}-sysdig"
 }
 
 ##############################################################################
