@@ -56,9 +56,9 @@ provider "helm" {
 # Install observability agents
 # ############################################################################
 
-# Replace "master" with a GIT release version to lock into a specific release
+# Replace "main" with a GIT release version to lock into a specific release
 module "observability_agents" {
-  source                    = "git::https://github.com/terraform-ibm-modules/terraform-ibm-observability-agents?ref=master"
+  source                    = "git::https://github.com/terraform-ibm-modules/terraform-ibm-observability-agents?ref=main"
   # update this with your cluster id where the agents will be installed
   cluster_id                = "cluster id"
   # update this with the Id of your IBM Cloud resource group
