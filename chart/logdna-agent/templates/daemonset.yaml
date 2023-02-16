@@ -1,0 +1,140 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: "{{ .Values.metadata.name }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: "{{ .Values.metadata.name }}"
+    app.kubernetes.io/instance: "{{ .Values.metadata.name }}"
+    app.kubernetes.io/version: {{ .Values.image.version }}
+spec:
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 100%
+  selector:
+    matchLabels:
+      app: "{{ .Values.metadata.name }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ .Values.metadata.name }}"
+        app.kubernetes.io/name: "{{ .Values.metadata.name }}"
+        app.kubernetes.io/instance: "{{ .Values.metadata.name }}"
+        app.kubernetes.io/version: {{ .Values.image.version }}
+    spec:
+      serviceAccountName: "{{ .Values.metadata.name }}"
+      priorityClassName: "{{ .Values.metadata.name }}-ds-priority"
+      containers:
+        - name: "{{ .Values.metadata.name }}"
+          image: '{{ .Values.image.registry }}:{{ required "Agent version must be provided" .Values.image.version }}'
+          imagePullPolicy: Always
+          securityContext:
+            # run the agent as non-root
+            runAsUser: 5000
+            runAsGroup: 5000
+            capabilities:
+              add:
+                - DAC_READ_SEARCH
+              drop:
+                - all
+          env:
+            - name: LOGDNA_INGESTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: logdna-agent-key
+                  name: {{ .Values.secret.name }}
+            {{- if ne .Values.metadata.name "logdna-agent-activity-tracker" }}
+            - name: LOGDNA_HOST
+              value: logs.private.{{ .Values.env.region }}.logging.cloud.ibm.com
+            {{- else }}
+            - name: LOGDNA_HOST
+              value: ingest.private.{{ .Values.env.region }}.atracker.cloud.ibm.com
+            {{- end }}
+            - name: LOGDNA_LOOKBACK
+              value: smallfiles
+            {{- if eq .Values.env.sts_exists true }}
+            - name: LOGDNA_ENDPOINT
+              value: /supertenant/logs/ingest
+            {{- end }}
+            - name: LOGDNA_DB_PATH
+              value: /var/lib/logdna
+            - name: POD_APP_LABEL
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['app.kubernetes.io/name']
+            {{- if and (eq .Values.env.sts_exists true) (eq .Values.metadata.name "logdna-agent-sts") }}
+            - name: LOGDNA_EXCLUDE
+              value: /var/log/at/**
+            {{- end }}
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: NAMESPACE
+              value: {{ .Release.Namespace }}
+          resources:
+            requests:
+              cpu: 20m
+            limits:
+              memory: 500Mi
+          volumeMounts:
+            {{- if eq .Values.metadata.name "logdna-agent-activity-tracker" }}
+            - name: varlogat
+              mountPath: /var/log/at
+            {{- end }}
+            - name: varlog
+              mountPath: /var/log
+            - name: vardata
+              mountPath: /var/data
+            - name: varliblogdna
+              mountPath: /var/lib/logdna
+            - name: varlibdockercontainers
+              mountPath: /var/lib/docker/containers
+              readOnly: true
+            - name: mnt
+              mountPath: /mnt
+              readOnly: true
+            - name: osrelease
+              mountPath: /etc/os-release
+            - name: logdnahostname
+              mountPath: /etc/logdna-hostname
+      volumes:
+        {{- if eq .Values.metadata.name "logdna-agent-activity-tracker" }}
+        - name: varlogat
+          hostPath:
+            path: /var/log/at
+        {{- end }}
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: vardata
+          hostPath:
+            path: /var/data
+        - name: varliblogdna
+          hostPath:
+            path: /var/lib/logdna
+        - name: varlibdockercontainers
+          hostPath:
+            path: /var/lib/docker/containers
+        - name: mnt
+          hostPath:
+            path: /mnt
+        - name: osrelease
+          hostPath:
+            path: /etc/os-release
+        - name: logdnahostname
+          hostPath:
+            path: /etc/hostname
+      tolerations:
+      {{- range $val := .Values.tolerations }}
+        - effect: {{ $val.effect | quote }}
+          key: {{ $val.key | quote }}
+          value: {{ $val.value | quote }}
+          operator: Equal
+      {{- end}}

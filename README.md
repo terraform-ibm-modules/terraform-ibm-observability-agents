@@ -1,8 +1,7 @@
 <!-- BEGIN MODULE HOOK -->
 
-<!-- Update the title to match the module name and add a description -->
-# Terraform Modules Template Project
-<!-- UPDATE BADGE: Update the link for the following badge-->
+# Terraform IBM Observability agents module
+
 [![Incubating (Not yet consumable)](https://img.shields.io/badge/status-Incubating%20(Not%20yet%20consumable)-red)](https://terraform-ibm-modules.github.io/documentation/#/badge-status)
 [![Build status](https://github.com/terraform-ibm-modules/terraform-ibm-module-template/actions/workflows/ci.yml/badge.svg)](https://github.com/terraform-ibm-modules/terraform-ibm-module-template/actions/workflows/ci.yml)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
@@ -10,141 +9,99 @@
 [![Renovate enabled](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com/)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
-<!-- Remove the content in this H2 heading after completing the steps -->
+This module supports deploying the following observability agents to the provided OCP cluster:
 
-## Submit a new module
-
-:+1::tada: Thank you for taking the time to contribute! :tada::+1:
-
-This template repository exists to help you create Terraform modules for IBM Cloud.
-
-The default structure includes the following files:
-
-- `README.md`: A description of the module
-- `main.tf`: The logic for the module
-- `version.tf`: The required terraform and provider versions
-- `variables.tf`: The input variables for the module
-- `outputs.tf`: The values that are output from the module
-For more information, see [Module structure](https://terraform-ibm-modules.github.io/documentation/#/module-structure) in the project documentation.
-
-You can add other content to support what your module does and how it works. For example, you might add a `scripts/` directory that contains shell scripts that are run by a `local-exec` `null_resource` in the Terraform module.
-
-Follow this process to create and submit a Terraform module.
-
-### Create a repo from this repo template
-
-1.  Create a repository from this repository template by clicking `Use this template` in the upper right of the GitHub UI.
-&emsp;&emsp;&emsp;&emsp;<br>For more information about creating a repository from a template, see the [GitHub docs](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
-1.  Select `terraform-ibm-modules` as the owner.
-1.  Enter a name for the module in format `terraform-ibm-<NAME>`, where `<NAME>` reflects the type of infrastructure that the module manages.
-&emsp;&emsp;&emsp;&emsp;<br>Use hyphens as delimiters for names with multiple words (for example, terraform-ibm-`activity-tracker`).
-1.  Provide a short description of the module.
-&emsp;&emsp;&emsp;&emsp;<br>The description is displayed under the repository name on the [organization page](https://github.com/terraform-ibm-modules) and in the **About** section of the repository. Use the description to help users understand the purpose of your module. For more information, see [module names and descriptions](https://terraform-ibm-modules.github.io/documentation/#/implementation-guidelines?id=module-names-and-descriptions) in the docs.
-
-### Clone the repo and set up your development environment
-
-Locally clone the new repository and set up your development environment by completing the tasks in [Local development setup](https://terraform-ibm-modules.github.io/documentation/#/local-dev-setup) in the project documentation.
-
-### Update the repo name and description in source control
-
-To help make sure that the repo name and description are not changed except through pull requests, they are defined in the `settings.yml` file.
-
-Check to make sure that values are uncommented and correct:
-
-1.  Open the [settings.yml](.github/settings.yml) file.
-1.  If not already updated, uncomment the `name` and `description` properties and set the values to what you specified when you requested the repo.
-
-### Update the Terraform files
-
-Implement the logic for your module by updating the `main.tf`, `version.tf`, `variables.tf`, and `outputs.tf` Terraform files. For more information, see [Creating Terraform on IBM Cloud templates](https://cloud.ibm.com/docs/ibm-cloud-provider-for-terraform?topic=ibm-cloud-provider-for-terraform-create-tf-config).
-
-### Create examples and tests
-
-Add one or more examples in the `examples` directory that consume your new module, and configure tests for them in the `tests` directory. For more information about tests, see [Tests](https://terraform-ibm-modules.github.io/documentation/#/tests).
-
-### Update the content in the readme file
-
-After you implement the logic for your module and create examples and tests, update this readme file in your repository by following these steps:
-
-1.  Update the title heading and add a description about your module.
-1.  Update the badge links.
-1.  Remove all the content in this H2 heading section.
-1.  Complete the [Usage](#usage) and [Required IAM access policies](#required-iam-access-policies) sections. The [Examples](#examples) and [Requirements](#requirements) section are populated by a pre-commit hook.
-
-### Commit your code and submit your module for review
-
-1.  Before you commit any code, review [Contributing to the IBM Cloud Terraform modules project](https://terraform-ibm-modules.github.io/documentation/#/contribute-module) in the project documentation.
-1.  Create a pull request for review.
-
-### Post-merge steps
-
-After the first PR for your module is merged, follow these post-merge steps:
-
-1.  Create a PR to enable the upgrade test by removing the `t.Skip` line in `tests/pr_test.go`.
-
-<!-- Remove the content in this previous H2 heading -->
-## Reference architectures
-
-<!--
-Add links to any reference architectures for this module.
-(Usually in the `/reference-architectures` directory.)
--->
+* Logging (LogDNA) agent
+* Monitoring (SysDig) agent
 
 ## Usage
 
-<!--
-Add an example of the use of the module in the following code block.
-
-Use real values instead of "var.<var_name>" or other placeholder values
-unless real values don't help users know what to change.
--->
-
 ```hcl
+# ############################################################################
+terraform {
+  required_providers {
+    ibm = {
+      source  = "IBM-Cloud/ibm"
+      version = "~> 1.38.0"
+    }
+  }
+}
+# ############################################################################
+# Init cluster config for helm
+# ############################################################################
 
+data "ibm_container_cluster_config" "cluster_config" {
+  # update this value with the Id of the cluster where these agents will be provisioned
+  cluster_name_id = "cluster_id"
+}
+
+# ############################################################################
+# Config providers
+# ############################################################################
+
+provider "ibm" {
+  # update this value with your IBM Cloud API key value
+  ibmcloud_api_key = "api key value"  # pragma: allowlist secret
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = data.ibm_container_cluster_config.cluster_config.host
+    token                  = data.ibm_container_cluster_config.cluster_config.token
+    cluster_ca_certificate = data.ibm_container_cluster_config.cluster_config.ca_certificate
+  }
+}
+
+# ############################################################################
+# Install observability agents
+# ############################################################################
+
+# Replace "main" with a GIT release version to lock into a specific release
+module "observability_agents" {
+  source                    = "git::https://github.com/terraform-ibm-modules/terraform-ibm-observability-agents?ref=main"
+  # update this with your cluster id where the agents will be installed
+  cluster_id                = "cluster id"
+  # update this with the Id of your IBM Cloud resource group
+  cluster_resource_group_id = "resource group id"
+  # update these values with names and keys from the observability instances provisioning
+  logdna_instance_name      = "logdna instance name"
+  logdna_ingestion_key      = "logdna ingestion key"
+  sysdig_instance_name      = "sysdig name"
+  sysdig_access_key         = "sysdig access key"
+}
 ```
 
 ## Required IAM access policies
-
-<!-- PERMISSIONS REQUIRED TO RUN MODULE
-If this module requires permissions, uncomment the following block and update
-the sample permissions, following the format.
-Replace the sample Account and IBM Cloud service names and roles with the
-information in the console at
-Manage > Access (IAM) > Access groups > Access policies.
--->
-
-<!--
 You need the following permissions to run this module.
 
-- Account Management
-    - **Sample Account Service** service
-        - `Editor` platform access
-        - `Manager` service access
-    - IAM Services
-        - **Sample Cloud Service** service
-            - `Administrator` platform access
--->
+- IAM Services
+  - **IBM Cloud Activity Tracker** service
+      - `Viewer` platform access
+      - `Reader` service access
+  - **IBM Cloud Monitoring** service
+      - `Viewer` platform access
+      - `Reader` service access
+  - **IBM Log Analysis** service
+      - `Viewer` platform access
+      - `Reader` service access
+  - **Kubernetes** service
+      - `Viewer` platform access
+      - `Manager` service access
 
-<!-- NO PERMISSIONS FOR MODULE
-If no permissions are required for the module, uncomment the following
-statement instead the previous block.
--->
-
-<!-- No permissions are needed to run this module.-->
 <!-- END MODULE HOOK -->
 <!-- BEGIN EXAMPLES HOOK -->
 ## Examples
 
-- [ Default example](examples/default)
-- [ Example that uses existing resources](examples/existing-resources)
-- [ Non default example](examples/non-default)
+- [ Deploy basic observability agents](examples/basic)
 <!-- END EXAMPLES HOOK -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.1.0 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.8.0 |
+| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | >= 1.49.0 |
 
 ## Modules
 
@@ -152,11 +109,31 @@ No modules.
 
 ## Resources
 
-No resources.
+| Name | Type |
+|------|------|
+| [helm_release.logdna_agent](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [helm_release.sysdig_agent](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [ibm_container_cluster_config.cluster_config](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/container_cluster_config) | data source |
+| [ibm_container_vpc_cluster.cluster](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/container_vpc_cluster) | data source |
+| [ibm_resource_instance.logdna_instance](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/resource_instance) | data source |
+| [ibm_resource_instance.sysdig_instance](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/resource_instance) | data source |
 
 ## Inputs
 
-No inputs.
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | Cluster id to add to agents to | `string` | n/a | yes |
+| <a name="input_cluster_resource_group_id"></a> [cluster\_resource\_group\_id](#input\_cluster\_resource\_group\_id) | Resource group of the cluster | `string` | n/a | yes |
+| <a name="input_logdna_agent_version"></a> [logdna\_agent\_version](#input\_logdna\_agent\_version) | Version of the agent to deploy. To lookup version run: `ibmcloud cr images --restrict ext/logdna-agent`. If null, the default value is used. | `string` | `"3.8.0-20230206.cbc937fa5513f636"` | no |
+| <a name="input_logdna_enabled"></a> [logdna\_enabled](#input\_logdna\_enabled) | Deploy IBM Cloud Logging agent | `bool` | `true` | no |
+| <a name="input_logdna_ingestion_key"></a> [logdna\_ingestion\_key](#input\_logdna\_ingestion\_key) | Ingestion key for the IBM Cloud Logging agent to communicate with the instance | `string` | `null` | no |
+| <a name="input_logdna_instance_name"></a> [logdna\_instance\_name](#input\_logdna\_instance\_name) | IBM Cloud Logging instance to use. Required if LogDNA is enabled | `string` | `null` | no |
+| <a name="input_logdna_resource_group_id"></a> [logdna\_resource\_group\_id](#input\_logdna\_resource\_group\_id) | Resource group the IBM Cloud Logging instance is in. Defaults to Clusters group | `string` | `null` | no |
+| <a name="input_sysdig_access_key"></a> [sysdig\_access\_key](#input\_sysdig\_access\_key) | Access key used by the IBM Cloud Monitoring agent to communicate with the instance | `string` | `null` | no |
+| <a name="input_sysdig_agent_version"></a> [sysdig\_agent\_version](#input\_sysdig\_agent\_version) | IBM Cloud Monitoring Agent Version. To lookup version run: `ibmcloud cr images --restrict ext/sysdig/agent`. If null, the default value is used. | `string` | `"12.10.1"` | no |
+| <a name="input_sysdig_enabled"></a> [sysdig\_enabled](#input\_sysdig\_enabled) | Deploy IBM Cloud Monitoring agent | `bool` | `true` | no |
+| <a name="input_sysdig_instance_name"></a> [sysdig\_instance\_name](#input\_sysdig\_instance\_name) | The name of the IBM Cloud Monitoring instance to use. Required if Sysdig is enabled | `string` | `null` | no |
+| <a name="input_sysdig_resource_group_id"></a> [sysdig\_resource\_group\_id](#input\_sysdig\_resource\_group\_id) | Resource group that the IBM Cloud Monitoring is in. Defaults to Clusters group | `string` | `null` | no |
 
 ## Outputs
 

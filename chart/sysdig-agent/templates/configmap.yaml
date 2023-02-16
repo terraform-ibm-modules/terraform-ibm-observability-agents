@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sysdig-agent
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: sysdig-agent
+    app.kubernetes.io/instance: sysdig-agent
+    app.kubernetes.io/version: {{ .Values.image.version }}
+  annotations:
+    {{- range .Values.checkov_skips }}
+    {{- . | toYaml | nindent 4 -}}
+    {{- end }}
+data:
+  dragent.yaml: |
+    configmap: true
+    ### Agent tags
+    tags: ibm.containers-kubernetes.cluster.name:{{ .Values.config.clustername }}
+
+    #### Sysdig Software related config ####
+
+    # Sysdig collector address
+    collector: ingest.private.{{ .Values.config.region }}.monitoring.cloud.ibm.com
+
+    # Collector TCP port
+    collector_port: 6443
+
+    # Whether collector accepts ssl
+    ssl: true
+
+    # collector certificate validation
+    ssl_verify_certificate: true
+
+    #######################################
+    new_k8s: true
+    k8s_cluster_name: {{ .Values.config.clustername }}

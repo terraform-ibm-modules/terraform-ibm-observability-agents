@@ -1,12 +1,276 @@
 {
   "path": ".",
-  "variables": {},
+  "variables": {
+    "cluster_id": {
+      "name": "cluster_id",
+      "type": "string",
+      "description": "Cluster id to add to agents to",
+      "required": true,
+      "source": [
+        "data.ibm_container_cluster_config.cluster_config.cluster_name_id",
+        "data.ibm_container_vpc_cluster.cluster.name"
+      ],
+      "pos": {
+        "filename": "variables.tf",
+        "line": 5
+      },
+      "cloud_data_type": "cluster",
+      "cloud_data_range": [
+        "resolved_to:id"
+      ]
+    },
+    "cluster_resource_group_id": {
+      "name": "cluster_resource_group_id",
+      "type": "string",
+      "description": "Resource group of the cluster",
+      "required": true,
+      "source": [
+        "data.ibm_container_cluster_config.cluster_config.resource_group_id",
+        "data.ibm_container_vpc_cluster.cluster.resource_group_id"
+      ],
+      "pos": {
+        "filename": "variables.tf",
+        "line": 10
+      },
+      "cloud_data_type": "resource_group",
+      "computed": true
+    },
+    "logdna_agent_version": {
+      "name": "logdna_agent_version",
+      "type": "string",
+      "description": "Version of the agent to deploy. To lookup version run: `ibmcloud cr images --restrict ext/logdna-agent`. If null, the default value is used.",
+      "default": "3.8.0-20230206.cbc937fa5513f636",
+      "pos": {
+        "filename": "variables.tf",
+        "line": 34
+      }
+    },
+    "logdna_enabled": {
+      "name": "logdna_enabled",
+      "type": "bool",
+      "description": "Deploy IBM Cloud Logging agent",
+      "default": true,
+      "source": [
+        "data.ibm_resource_instance.logdna_instance.count",
+        "helm_release.logdna_agent.count"
+      ],
+      "pos": {
+        "filename": "variables.tf",
+        "line": 15
+      }
+    },
+    "logdna_ingestion_key": {
+      "name": "logdna_ingestion_key",
+      "type": "string",
+      "description": "Ingestion key for the IBM Cloud Logging agent to communicate with the instance",
+      "sensitive": true,
+      "source": [
+        "data.ibm_resource_instance.logdna_instance.depends_on"
+      ],
+      "pos": {
+        "filename": "variables.tf",
+        "line": 43
+      }
+    },
+    "logdna_instance_name": {
+      "name": "logdna_instance_name",
+      "type": "string",
+      "description": "IBM Cloud Logging instance to use. Required if LogDNA is enabled",
+      "required": true,
+      "source": [
+        "data.ibm_resource_instance.logdna_instance.name"
+      ],
+      "pos": {
+        "filename": "variables.tf",
+        "line": 21
+      }
+    },
+    "logdna_resource_group_id": {
+      "name": "logdna_resource_group_id",
+      "type": "string",
+      "description": "Resource group the IBM Cloud Logging instance is in. Defaults to Clusters group",
+      "pos": {
+        "filename": "variables.tf",
+        "line": 28
+      }
+    },
+    "sysdig_access_key": {
+      "name": "sysdig_access_key",
+      "type": "string",
+      "description": "Access key used by the IBM Cloud Monitoring agent to communicate with the instance",
+      "sensitive": true,
+      "source": [
+        "data.ibm_resource_instance.sysdig_instance.depends_on"
+      ],
+      "pos": {
+        "filename": "variables.tf",
+        "line": 76
+      }
+    },
+    "sysdig_agent_version": {
+      "name": "sysdig_agent_version",
+      "type": "string",
+      "description": "IBM Cloud Monitoring Agent Version. To lookup version run: `ibmcloud cr images --restrict ext/sysdig/agent`. If null, the default value is used.",
+      "default": "12.10.1",
+      "pos": {
+        "filename": "variables.tf",
+        "line": 68
+      }
+    },
+    "sysdig_enabled": {
+      "name": "sysdig_enabled",
+      "type": "bool",
+      "description": "Deploy IBM Cloud Monitoring agent",
+      "default": true,
+      "source": [
+        "data.ibm_resource_instance.sysdig_instance.count",
+        "helm_release.sysdig_agent.count"
+      ],
+      "pos": {
+        "filename": "variables.tf",
+        "line": 50
+      }
+    },
+    "sysdig_instance_name": {
+      "name": "sysdig_instance_name",
+      "type": "string",
+      "description": "The name of the IBM Cloud Monitoring instance to use. Required if Sysdig is enabled",
+      "required": true,
+      "source": [
+        "data.ibm_resource_instance.sysdig_instance.name"
+      ],
+      "pos": {
+        "filename": "variables.tf",
+        "line": 56
+      }
+    },
+    "sysdig_resource_group_id": {
+      "name": "sysdig_resource_group_id",
+      "type": "string",
+      "description": "Resource group that the IBM Cloud Monitoring is in. Defaults to Clusters group",
+      "pos": {
+        "filename": "variables.tf",
+        "line": 62
+      }
+    }
+  },
   "outputs": {},
   "required_core": [
-    "\u003e= 1.0.0"
+    "\u003e= 1.1.0"
   ],
-  "required_providers": {},
-  "managed_resources": {},
-  "data_resources": {},
+  "required_providers": {
+    "helm": {
+      "source": "hashicorp/helm",
+      "version_constraints": [
+        "\u003e= 2.8.0"
+      ]
+    },
+    "ibm": {
+      "source": "ibm-cloud/ibm",
+      "version_constraints": [
+        "\u003e= 1.49.0"
+      ]
+    }
+  },
+  "managed_resources": {
+    "helm_release.logdna_agent": {
+      "mode": "managed",
+      "type": "helm_release",
+      "name": "logdna_agent",
+      "attributes": {
+        "count": "logdna_enabled"
+      },
+      "provider": {
+        "name": "helm"
+      },
+      "pos": {
+        "filename": "main.tf",
+        "line": 67
+      }
+    },
+    "helm_release.sysdig_agent": {
+      "mode": "managed",
+      "type": "helm_release",
+      "name": "sysdig_agent",
+      "attributes": {
+        "count": "sysdig_enabled"
+      },
+      "provider": {
+        "name": "helm"
+      },
+      "pos": {
+        "filename": "main.tf",
+        "line": 121
+      }
+    }
+  },
+  "data_resources": {
+    "data.ibm_container_cluster_config.cluster_config": {
+      "mode": "data",
+      "type": "ibm_container_cluster_config",
+      "name": "cluster_config",
+      "attributes": {
+        "cluster_name_id": "cluster_id",
+        "resource_group_id": "cluster_resource_group_id"
+      },
+      "provider": {
+        "name": "ibm"
+      },
+      "pos": {
+        "filename": "main.tf",
+        "line": 12
+      }
+    },
+    "data.ibm_container_vpc_cluster.cluster": {
+      "mode": "data",
+      "type": "ibm_container_vpc_cluster",
+      "name": "cluster",
+      "attributes": {
+        "name": "cluster_id",
+        "resource_group_id": "cluster_resource_group_id"
+      },
+      "provider": {
+        "name": "ibm"
+      },
+      "pos": {
+        "filename": "main.tf",
+        "line": 7
+      }
+    },
+    "data.ibm_resource_instance.logdna_instance": {
+      "mode": "data",
+      "type": "ibm_resource_instance",
+      "name": "logdna_instance",
+      "attributes": {
+        "count": "logdna_enabled",
+        "depends_on": "logdna_ingestion_key",
+        "name": "logdna_instance_name"
+      },
+      "provider": {
+        "name": "ibm"
+      },
+      "pos": {
+        "filename": "main.tf",
+        "line": 28
+      }
+    },
+    "data.ibm_resource_instance.sysdig_instance": {
+      "mode": "data",
+      "type": "ibm_resource_instance",
+      "name": "sysdig_instance",
+      "attributes": {
+        "count": "sysdig_enabled",
+        "depends_on": "sysdig_access_key",
+        "name": "sysdig_instance_name"
+      },
+      "provider": {
+        "name": "ibm"
+      },
+      "pos": {
+        "filename": "main.tf",
+        "line": 36
+      }
+    }
+  },
   "module_calls": {}
 }
