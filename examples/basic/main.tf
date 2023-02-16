@@ -14,7 +14,7 @@ module "resource_group" {
 ##############################################################################
 
 module "observability_instances" {
-  source                     = "git::https://github.com/terraform-ibm-modules/terraform-ibm-observability-instances?ref=v1.1.1"
+  source                     = "git::https://github.com/terraform-ibm-modules/terraform-ibm-observability-instances?ref=v2.1.1"
   resource_group_id          = module.resource_group.resource_group_id
   region                     = var.region
   logdna_plan                = "7-day"
