@@ -59,6 +59,9 @@ spec:
             {{- end }}
             - name: LOGDNA_DB_PATH
               value: /var/lib/logdna
+            - name: LOGDNA_REDACT_REGEX
+              # regex to redact secret values from logs. The regex is set to match base64-encoded values for each of {"kid":, {"typ":, and {"alg":, respectively.
+              value: 'eyJ(?:raWQ|0eXA|hbGc)iOi[^"]+'
             - name: POD_APP_LABEL
               valueFrom:
                 fieldRef:
