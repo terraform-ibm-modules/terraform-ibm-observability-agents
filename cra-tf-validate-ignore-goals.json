@@ -23,6 +23,12 @@
             "description:": "Check whether Kubernetes Service clusters are enabled with IBM Cloud Monitoring",
             "ignore_reason": "False alarm. In order to have more control over the way observability agents are configured and deployed, a helm chart installation is used rather than the native provider support.",
             "is_valid": false
+        },
+        {
+            "scc_goal_id": "3000907",
+            "description:": "Check whether OpenShift version is up-to-date",
+            "ignore_reason": "Tracking in https://github.ibm.com/GoldenEye/issues/issues/4000",
+            "is_valid": true
         }
     ]
 }
