@@ -53,20 +53,12 @@ spec:
             {{- end }}
             - name: LOGDNA_LOOKBACK
               value: smallfiles
-            {{- if eq .Values.env.sts_exists true }}
-            - name: LOGDNA_ENDPOINT
-              value: /supertenant/logs/ingest
-            {{- end }}
             - name: LOGDNA_DB_PATH
               value: /var/lib/logdna
             - name: POD_APP_LABEL
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.labels['app.kubernetes.io/name']
-            {{- if and (eq .Values.env.sts_exists true) (eq .Values.metadata.name "logdna-agent-sts") }}
-            - name: LOGDNA_EXCLUDE
-              value: /var/log/at/**
-            {{- end }}
             - name: POD_NAME
               valueFrom:
                 fieldRef:
