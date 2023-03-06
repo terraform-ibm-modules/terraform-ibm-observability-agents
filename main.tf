@@ -91,11 +91,6 @@ resource "helm_release" "logdna_agent" {
     value = data.ibm_resource_instance.logdna_instance[0].location
   }
   set {
-    name  = "env.sts_exists"
-    type  = "auto"
-    value = false
-  }
-  set {
     name  = "secret.name"
     type  = "string"
     value = local.logdna_secret_name

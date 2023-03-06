@@ -7,7 +7,6 @@ image:
   registry: icr.io
 env:
   region: "ca-tor"
-  sts_exists: false
 secret:
   name: "logdna-agent"
   key: ""

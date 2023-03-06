@@ -17,7 +17,6 @@ var ignoreUpdates = []string{
 	"module.observability_agents.helm_release.logdna_agent[0]",
 	"module.observability_agents.helm_release.sysdig_agent[0]",
 	"module.observability_agents.helm_release.logdna_agent_activity_tracker[0]",
-	"module.observability_agents.helm_release.logdna_sts_agent[0]",
 }
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
