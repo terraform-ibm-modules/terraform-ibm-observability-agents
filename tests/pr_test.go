@@ -48,7 +48,13 @@ func setupOptions(t *testing.T, prefix string, terraformDir string) *testhelper.
 func TestRunBasicAgents(t *testing.T) {
 	t.Parallel()
 
+	logDNATagsList := []string{"tag1", "tag2"}
+
 	options := setupOptions(t, "basic-obs-agents", terraformDirOther)
+
+	options.TerraformVars = map[string]interface{}{
+		"logdna_agent_tags": logDNATagsList,
+	}
 
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")

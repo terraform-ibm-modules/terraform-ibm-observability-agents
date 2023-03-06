@@ -17,3 +17,5 @@ tolerations:
   - key: "dedicated"
     value: "transit"
     effect: "NoExecute"
+agent:
+  tags: ""

@@ -39,6 +39,11 @@ variable "logdna_agent_version" {
   nullable = false
 }
 
+variable "logdna_agent_tags" {
+  type        = list(string)
+  description = "array of tags to group the host logs pushed by the logdna agent"
+  default     = []
+}
 
 variable "logdna_ingestion_key" {
   type        = string
