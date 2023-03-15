@@ -27,3 +27,9 @@ variable "region" {
   description = "Region where resources are created"
   default     = "ca-tor"
 }
+
+variable "logdna_agent_tags" {
+  type        = list(string)
+  description = "Array of string of tags for logdna agent"
+  default     = []
+}

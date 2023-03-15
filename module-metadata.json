@@ -35,6 +35,16 @@
       "cloud_data_type": "resource_group",
       "computed": true
     },
+    "logdna_agent_tags": {
+      "name": "logdna_agent_tags",
+      "type": "list(string)",
+      "description": "array of tags to group the host logs pushed by the logdna agent",
+      "default": [],
+      "pos": {
+        "filename": "variables.tf",
+        "line": 42
+      }
+    },
     "logdna_agent_version": {
       "name": "logdna_agent_version",
       "type": "string",
@@ -69,7 +79,7 @@
       ],
       "pos": {
         "filename": "variables.tf",
-        "line": 43
+        "line": 48
       }
     },
     "logdna_instance_name": {
@@ -104,7 +114,7 @@
       ],
       "pos": {
         "filename": "variables.tf",
-        "line": 76
+        "line": 81
       }
     },
     "sysdig_agent_version": {
@@ -114,7 +124,7 @@
       "default": "12.10.1",
       "pos": {
         "filename": "variables.tf",
-        "line": 68
+        "line": 73
       }
     },
     "sysdig_enabled": {
@@ -128,7 +138,7 @@
       ],
       "pos": {
         "filename": "variables.tf",
-        "line": 50
+        "line": 55
       }
     },
     "sysdig_instance_name": {
@@ -141,7 +151,7 @@
       ],
       "pos": {
         "filename": "variables.tf",
-        "line": 56
+        "line": 61
       }
     },
     "sysdig_resource_group_id": {
@@ -150,7 +160,7 @@
       "description": "Resource group that the IBM Cloud Monitoring is in. Defaults to Clusters group",
       "pos": {
         "filename": "variables.tf",
-        "line": 62
+        "line": 67
       }
     }
   },
@@ -200,7 +210,7 @@
       },
       "pos": {
         "filename": "main.tf",
-        "line": 116
+        "line": 121
       }
     }
   },

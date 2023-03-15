@@ -100,6 +100,11 @@ resource "helm_release" "logdna_agent" {
     type  = "string"
     value = var.logdna_ingestion_key
   }
+  set {
+    name  = "agent.tags"
+    type  = "string"
+    value = join("\\,", var.logdna_agent_tags)
+  }
 
   provisioner "local-exec" {
     command     = "${path.module}/scripts/confirm-rollout-status.sh logdna-agent ${local.logdna_agent_namespace}"
