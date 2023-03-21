@@ -53,6 +53,10 @@ spec:
             {{- end }}
             - name: LOGDNA_LOOKBACK
               value: smallfiles
+            {{- if .Values.agent.tags }}
+            - name: LOGDNA_TAGS
+              value: {{.Values.agent.tags}}
+            {{- end }}
             - name: LOGDNA_DB_PATH
               value: /var/lib/logdna
             - name: LOGDNA_REDACT_REGEX

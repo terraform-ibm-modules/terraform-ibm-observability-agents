@@ -104,5 +104,5 @@ module "observability_agents" {
   logdna_ingestion_key      = module.observability_instances.logdna_ingestion_key
   sysdig_instance_name      = module.observability_instances.sysdig_name
   sysdig_access_key         = module.observability_instances.sysdig_access_key
-
+  logdna_agent_tags         = var.logdna_agent_tags
 }
