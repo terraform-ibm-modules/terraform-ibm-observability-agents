@@ -1,7 +1,6 @@
 ##############################################################################
 # observability-agents-module
 #
-# Module Description
 ##############################################################################
 
 data "ibm_container_vpc_cluster" "cluster" {
@@ -43,7 +42,11 @@ data "ibm_resource_instance" "sysdig_instance" {
 
 locals {
   logdna_secret_name            = "logdna-agent" #checkov:skip=CKV_SECRET_6
-  cluster_name                  = data.ibm_container_vpc_cluster.cluster.name
+  # Ideally data.ibm_container_vpc_cluster.cluster.name would return the cluster name, but it returns the cluster id (!!)
+  # So, the following line extracts the cluster name from the ingress hostname. 
+  # Ingress hostname seems to follow the pattern <cluster-name>-<random>-<4 digits>.<region>.containers.appdomain.cloud  
+  # Issue tracked in provider at https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4485
+  cluster_name                  = regex("(.*)-.*-\\d{4}", data.ibm_container_vpc_cluster.cluster.ingress_hostname)[0]
   logdna_chart_location         = "${path.module}/chart/logdna-agent"
   logdna_resource_group_id      = var.logdna_resource_group_id != null ? var.logdna_resource_group_id : var.cluster_resource_group_id
   logdna_agent_namespace        = "ibm-observe"
@@ -52,6 +55,7 @@ locals {
   logdna_key_validate_msg       = "Values for 'logdna_ingestion_key' variables must be passed when 'logdna_enabled = true'"
   # tflint-ignore: terraform_unused_declarations
   logdna_key_validate_check     = regex("^${local.logdna_key_validate_msg}$", (!local.logdna_key_validate_condition ? local.logdna_key_validate_msg : ""))
+  logdna_agent_tags = var.logdna_add_cluster_name_as_tag ? concat([local.cluster_name], var.logdna_agent_tags) : var.logdna_agent_tags
   sysdig_chart_location         = "${path.module}/chart/sysdig-agent"
   sysdig_resource_group_id      = var.sysdig_resource_group_id != null ? var.sysdig_resource_group_id : var.cluster_resource_group_id
   sysdig_agent_registry         = "icr.io/ext/sysdig/agent"
@@ -59,7 +63,7 @@ locals {
   sysdig_key_validate_condition = var.sysdig_enabled == true && var.sysdig_access_key == null
   sysdig_key_validate_msg       = "Values for 'sysdig_access_key' variables must be passed when 'sysdig_enabled = true'"
   # tflint-ignore: terraform_unused_declarations
-  sysdig_key_validate_check = regex("^${local.sysdig_key_validate_msg}$", (!local.sysdig_key_validate_condition ? local.sysdig_key_validate_msg : ""))
+  sysdig_key_validate_check = regex("^${local.sysdig_key_validate_msg}$", (!local.sysdig_key_validate_condition ? local.sysdig_key_validate_msg : ""))  
 }
 
 /** LogDNA Configuration Start **/
@@ -103,7 +107,7 @@ resource "helm_release" "logdna_agent" {
   set {
     name  = "agent.tags"
     type  = "string"
-    value = join("\\,", var.logdna_agent_tags)
+    value = join("\\,", local.logdna_agent_tags)
   }
 
   provisioner "local-exec" {
