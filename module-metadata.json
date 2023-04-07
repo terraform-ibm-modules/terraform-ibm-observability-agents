@@ -38,11 +38,11 @@
     "logdna_add_cluster_name": {
       "name": "logdna_add_cluster_name",
       "type": "bool",
-      "description": "Add cluster name to the list of tags",
+      "description": "If true, configure the logdna agent to attach a tag containing the cluster name to all log messages.",
       "default": true,
       "pos": {
         "filename": "variables.tf",
-        "line": 55
+        "line": 56
       }
     },
     "logdna_agent_tags": {
@@ -89,7 +89,7 @@
       ],
       "pos": {
         "filename": "variables.tf",
-        "line": 48
+        "line": 49
       }
     },
     "logdna_instance_name": {
@@ -124,7 +124,7 @@
       ],
       "pos": {
         "filename": "variables.tf",
-        "line": 87
+        "line": 88
       }
     },
     "sysdig_agent_version": {
@@ -134,7 +134,7 @@
       "default": "12.10.1",
       "pos": {
         "filename": "variables.tf",
-        "line": 79
+        "line": 80
       }
     },
     "sysdig_enabled": {
@@ -148,7 +148,7 @@
       ],
       "pos": {
         "filename": "variables.tf",
-        "line": 61
+        "line": 62
       }
     },
     "sysdig_instance_name": {
@@ -161,7 +161,7 @@
       ],
       "pos": {
         "filename": "variables.tf",
-        "line": 67
+        "line": 68
       }
     },
     "sysdig_resource_group_id": {
@@ -170,7 +170,7 @@
       "description": "Resource group that the IBM Cloud Monitoring is in. Defaults to Clusters group",
       "pos": {
         "filename": "variables.tf",
-        "line": 73
+        "line": 74
       }
     }
   },
@@ -238,7 +238,7 @@
       },
       "pos": {
         "filename": "main.tf",
-        "line": 12
+        "line": 11
       }
     },
     "data.ibm_container_vpc_cluster.cluster": {
@@ -254,7 +254,7 @@
       },
       "pos": {
         "filename": "main.tf",
-        "line": 7
+        "line": 6
       }
     },
     "data.ibm_resource_instance.logdna_instance": {
@@ -271,7 +271,7 @@
       },
       "pos": {
         "filename": "main.tf",
-        "line": 28
+        "line": 27
       }
     },
     "data.ibm_resource_instance.sysdig_instance": {
@@ -288,7 +288,7 @@
       },
       "pos": {
         "filename": "main.tf",
-        "line": 36
+        "line": 35
       }
     }
   },

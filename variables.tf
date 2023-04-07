@@ -43,6 +43,7 @@ variable "logdna_agent_tags" {
   type        = list(string)
   description = "array of tags to group the host logs pushed by the logdna agent"
   default     = []
+  nullable    = false
 }
 
 variable "logdna_ingestion_key" {
@@ -54,7 +55,7 @@ variable "logdna_ingestion_key" {
 
 variable "logdna_add_cluster_name" {
   type        = bool
-  description = "Add cluster name to the list of tags"
+  description = "If true, configure the logdna agent to attach a tag containing the cluster name to all log messages."
   default     = true
 }
 
