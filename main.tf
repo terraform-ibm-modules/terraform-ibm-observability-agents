@@ -43,13 +43,14 @@ data "ibm_resource_instance" "sysdig_instance" {
 
 locals {
   logdna_secret_name            = "logdna-agent" #checkov:skip=CKV_SECRET_6
-  cluster_name                  = data.ibm_container_vpc_cluster.cluster.name
+  cluster_name                  = data.ibm_container_vpc_cluster.cluster.resource_name
   logdna_chart_location         = "${path.module}/chart/logdna-agent"
   logdna_resource_group_id      = var.logdna_resource_group_id != null ? var.logdna_resource_group_id : var.cluster_resource_group_id
   logdna_agent_namespace        = "ibm-observe"
   logdna_agent_registry         = "icr.io/ext/logdna-agent"
   logdna_key_validate_condition = var.logdna_enabled == true && var.logdna_ingestion_key == null
   logdna_key_validate_msg       = "Values for 'logdna_ingestion_key' variables must be passed when 'logdna_enabled = true'"
+  logdna_agent_tags             = var.logdna_add_cluster_name ? join("\\,", concat(var.logdna_agent_tags, formatlist(local.cluster_name))) : join("\\,", var.logdna_agent_tags)
   # tflint-ignore: terraform_unused_declarations
   logdna_key_validate_check     = regex("^${local.logdna_key_validate_msg}$", (!local.logdna_key_validate_condition ? local.logdna_key_validate_msg : ""))
   sysdig_chart_location         = "${path.module}/chart/sysdig-agent"
@@ -103,7 +104,7 @@ resource "helm_release" "logdna_agent" {
   set {
     name  = "agent.tags"
     type  = "string"
-    value = join("\\,", var.logdna_agent_tags)
+    value = local.logdna_agent_tags
   }
 
   provisioner "local-exec" {
