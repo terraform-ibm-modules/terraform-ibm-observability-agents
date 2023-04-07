@@ -35,14 +35,14 @@
       "cloud_data_type": "resource_group",
       "computed": true
     },
-    "logdna_add_cluster_name_as_tag": {
-      "name": "logdna_add_cluster_name_as_tag",
+    "logdna_add_cluster_name": {
+      "name": "logdna_add_cluster_name",
       "type": "bool",
       "description": "If true, configure the logdna agent to attach a tag containing the cluster name to all log messages.",
       "default": true,
       "pos": {
         "filename": "variables.tf",
-        "line": 42
+        "line": 56
       }
     },
     "logdna_agent_tags": {
@@ -52,7 +52,7 @@
       "default": [],
       "pos": {
         "filename": "variables.tf",
-        "line": 48
+        "line": 42
       }
     },
     "logdna_agent_version": {
@@ -89,7 +89,7 @@
       ],
       "pos": {
         "filename": "variables.tf",
-        "line": 55
+        "line": 49
       }
     },
     "logdna_instance_name": {
@@ -205,7 +205,7 @@
       },
       "pos": {
         "filename": "main.tf",
-        "line": 71
+        "line": 68
       }
     },
     "helm_release.sysdig_agent": {
@@ -220,7 +220,7 @@
       },
       "pos": {
         "filename": "main.tf",
-        "line": 125
+        "line": 122
       }
     }
   },

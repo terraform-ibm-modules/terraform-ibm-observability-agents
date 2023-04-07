@@ -39,12 +39,6 @@ variable "logdna_agent_version" {
   nullable = false
 }
 
-variable "logdna_add_cluster_name_as_tag" {
-  type        = bool
-  description = "If true, configure the logdna agent to attach a tag containing the cluster name to all log messages."
-  default     = true
-}
-
 variable "logdna_agent_tags" {
   type        = list(string)
   description = "array of tags to group the host logs pushed by the logdna agent"
@@ -57,6 +51,12 @@ variable "logdna_ingestion_key" {
   description = "Ingestion key for the IBM Cloud Logging agent to communicate with the instance"
   sensitive   = true
   default     = null
+}
+
+variable "logdna_add_cluster_name" {
+  type        = bool
+  description = "If true, configure the logdna agent to attach a tag containing the cluster name to all log messages."
+  default     = true
 }
 
 variable "sysdig_enabled" {
