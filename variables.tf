@@ -52,6 +52,12 @@ variable "logdna_ingestion_key" {
   default     = null
 }
 
+variable "logdna_add_cluster_name" {
+  type        = bool
+  description = "Add cluster name to the list of tags"
+  default     = true
+}
+
 variable "sysdig_enabled" {
   type        = bool
   description = "Deploy IBM Cloud Monitoring agent"
