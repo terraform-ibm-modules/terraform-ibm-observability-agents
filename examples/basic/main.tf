@@ -95,6 +95,7 @@ resource "time_sleep" "wait_operators" {
 # Observability Agents
 ##############################################################################
 
+
 module "observability_agents" {
   source                    = "../.."
   depends_on                = [time_sleep.wait_operators]
