@@ -59,7 +59,7 @@
       "name": "logdna_agent_version",
       "type": "string",
       "description": "Version of the agent to deploy. To lookup version run: `ibmcloud cr images --restrict ext/logdna-agent`. If null, the default value is used.",
-      "default": "3.8.0-20230206.cbc937fa5513f636",
+      "default": "3.8.2-20230403.9e7a73bbaa433690",
       "pos": {
         "filename": "variables.tf",
         "line": 34
