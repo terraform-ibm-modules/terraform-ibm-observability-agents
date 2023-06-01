@@ -76,6 +76,12 @@ resource "helm_release" "logdna_agent" {
   recreate_pods    = true
   force_update     = true
 
+  values = [
+    yamlencode({
+      tolerations = var.logdna_agent_tolerations
+    })
+  ]
+
   set {
     name  = "image.version"
     type  = "string"
@@ -130,6 +136,12 @@ resource "helm_release" "sysdig_agent" {
   wait             = true
   recreate_pods    = true
   force_update     = true
+
+  values = [
+    yamlencode({
+      tolerations = var.sysdig_agent_tolerations
+    })
+  ]
 
   set {
     name  = "image.version"
