@@ -107,4 +107,5 @@ module "observability_agents" {
   sysdig_access_key         = module.observability_instances.sysdig_access_key
   logdna_agent_tags         = var.logdna_agent_tags
   logdna_add_cluster_name   = true
+  logdna_agent_tolerations  = var.logdna_agent_tolerations
 }
