@@ -83,12 +83,7 @@ spec:
         - operator: Exists
           effect: NoSchedule
           key: node-role.kubernetes.io/master
-      {{- range $val := .Values.tolerations }}
-        - effect: {{ $val.effect | quote }}
-          key: {{ $val.key | quote }}
-          value: {{ $val.value | quote }}
-          operator: Equal
-      {{- end}}
+        - operator: Exists
       # The following line is necessary for RBAC
       serviceAccountName: sysdig-agent
       terminationGracePeriodSeconds: 5
