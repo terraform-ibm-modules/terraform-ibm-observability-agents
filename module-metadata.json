@@ -55,30 +55,6 @@
         "line": 42
       }
     },
-    "logdna_agent_tolerations": {
-      "name": "logdna_agent_tolerations",
-      "type": "list(object({\n    key    = string\n    value  = string\n    effect = string\n  }))",
-      "description": "List of tolerations to apply to logdna agents",
-      "default": [
-        {
-          "effect": "NoExecute",
-          "key": "dedicated",
-          "value": "edge"
-        },
-        {
-          "effect": "NoExecute",
-          "key": "dedicated",
-          "value": "transit"
-        }
-      ],
-      "source": [
-        "helm_release.logdna_agent.values"
-      ],
-      "pos": {
-        "filename": "variables.tf",
-        "line": 62
-      }
-    },
     "logdna_agent_version": {
       "name": "logdna_agent_version",
       "type": "string",
@@ -148,31 +124,7 @@
       ],
       "pos": {
         "filename": "variables.tf",
-        "line": 107
-      }
-    },
-    "sysdig_agent_tolerations": {
-      "name": "sysdig_agent_tolerations",
-      "type": "list(object({\n    key    = string\n    value  = string\n    effect = string\n  }))",
-      "description": "List of tolerations to apply to sysdig agents",
-      "default": [
-        {
-          "effect": "NoExecute",
-          "key": "dedicated",
-          "value": "edge"
-        },
-        {
-          "effect": "NoExecute",
-          "key": "dedicated",
-          "value": "transit"
-        }
-      ],
-      "source": [
-        "helm_release.sysdig_agent.values"
-      ],
-      "pos": {
-        "filename": "variables.tf",
-        "line": 114
+        "line": 88
       }
     },
     "sysdig_agent_version": {
@@ -182,7 +134,7 @@
       "default": "12.13.0",
       "pos": {
         "filename": "variables.tf",
-        "line": 99
+        "line": 80
       }
     },
     "sysdig_enabled": {
@@ -196,7 +148,7 @@
       ],
       "pos": {
         "filename": "variables.tf",
-        "line": 81
+        "line": 62
       }
     },
     "sysdig_instance_name": {
@@ -209,7 +161,7 @@
       ],
       "pos": {
         "filename": "variables.tf",
-        "line": 87
+        "line": 68
       }
     },
     "sysdig_resource_group_id": {
@@ -218,7 +170,7 @@
       "description": "Resource group that the IBM Cloud Monitoring is in. Defaults to Clusters group",
       "pos": {
         "filename": "variables.tf",
-        "line": 93
+        "line": 74
       }
     }
   },
@@ -246,8 +198,7 @@
       "type": "helm_release",
       "name": "logdna_agent",
       "attributes": {
-        "count": "logdna_enabled",
-        "values": "logdna_agent_tolerations"
+        "count": "logdna_enabled"
       },
       "provider": {
         "name": "helm"
@@ -262,15 +213,14 @@
       "type": "helm_release",
       "name": "sysdig_agent",
       "attributes": {
-        "count": "sysdig_enabled",
-        "values": "sysdig_agent_tolerations"
+        "count": "sysdig_enabled"
       },
       "provider": {
         "name": "helm"
       },
       "pos": {
         "filename": "main.tf",
-        "line": 128
+        "line": 122
       }
     }
   },

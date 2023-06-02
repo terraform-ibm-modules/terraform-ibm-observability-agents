@@ -33,22 +33,3 @@ variable "logdna_agent_tags" {
   description = "Array of string of tags for logdna agent"
   default     = []
 }
-
-variable "logdna_agent_tolerations" {
-  type = list(object({
-    key    = string
-    value  = string
-    effect = string
-  }))
-  description = "List of tolerations to apply to logdna agents"
-  default = [{
-    key    = "dedicated"
-    value  = "edge"
-    effect = "NoExecute"
-    },
-    {
-      key    = "dedicated"
-      value  = "transit"
-      effect = "NoExecute"
-  }]
-}

@@ -59,25 +59,6 @@ variable "logdna_add_cluster_name" {
   default     = true
 }
 
-variable "logdna_agent_tolerations" {
-  type = list(object({
-    key    = string
-    value  = string
-    effect = string
-  }))
-  description = "List of tolerations to apply to logdna agents"
-  default = [{
-    key    = "dedicated"
-    value  = "edge"
-    effect = "NoExecute"
-    },
-    {
-      key    = "dedicated"
-      value  = "transit"
-      effect = "NoExecute"
-  }]
-}
-
 variable "sysdig_enabled" {
   type        = bool
   description = "Deploy IBM Cloud Monitoring agent"
@@ -111,23 +92,5 @@ variable "sysdig_access_key" {
   default     = null
 }
 
-variable "sysdig_agent_tolerations" {
-  type = list(object({
-    key    = string
-    value  = string
-    effect = string
-  }))
-  description = "List of tolerations to apply to sysdig agents"
-  default = [{
-    key    = "dedicated"
-    value  = "edge"
-    effect = "NoExecute"
-    },
-    {
-      key    = "dedicated"
-      value  = "transit"
-      effect = "NoExecute"
-  }]
-}
 
 ##############################################################################
