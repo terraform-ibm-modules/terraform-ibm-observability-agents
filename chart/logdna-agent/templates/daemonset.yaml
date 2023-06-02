@@ -131,9 +131,4 @@ spec:
           hostPath:
             path: /etc/hostname
       tolerations:
-      {{- range $val := .Values.tolerations }}
-        - effect: {{ $val.effect | quote }}
-          key: {{ $val.key | quote }}
-          value: {{ $val.value | quote }}
-          operator: Equal
-      {{- end}}
+        - operator: Exists
