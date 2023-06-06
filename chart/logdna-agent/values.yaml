@@ -10,12 +10,5 @@ env:
 secret:
   name: "logdna-agent"
   key: ""
-tolerations:
-  - key: "dedicated"
-    value: "edge"
-    effect: "NoExecute"
-  - key: "dedicated"
-    value: "transit"
-    effect: "NoExecute"
 agent:
   tags: ""
