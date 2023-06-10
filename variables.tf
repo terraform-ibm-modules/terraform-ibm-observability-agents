@@ -35,7 +35,7 @@ variable "logdna_agent_version" {
   type        = string
   description = "Version of the agent to deploy. To lookup version run: `ibmcloud cr images --restrict ext/logdna-agent`. If null, the default value is used."
   # renovate: datasource=docker depName=icr.io/ext/logdna-agent versioning=regex:^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)-(?<build>\d{8}).\w+?$
-  default  = "3.8.2-20230417.55660d6109acca68"
+  default  = "3.8.4-20230607.eca8b5c44555067a"
   nullable = false
 }
 
@@ -81,7 +81,7 @@ variable "sysdig_agent_version" {
   type        = string
   description = "IBM Cloud Monitoring Agent Version. To lookup version run: `ibmcloud cr images --restrict ext/sysdig/agent`. If null, the default value is used."
   # renovate: datasource=docker depName=icr.io/ext/sysdig/agent
-  default  = "12.13.0"
+  default  = "12.14.1"
   nullable = false
 }
 
