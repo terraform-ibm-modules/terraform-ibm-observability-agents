@@ -126,7 +126,7 @@ No modules.
 | <a name="input_cluster_resource_group_id"></a> [cluster\_resource\_group\_id](#input\_cluster\_resource\_group\_id) | Resource group of the cluster | `string` | n/a | yes |
 | <a name="input_logdna_add_cluster_name"></a> [logdna\_add\_cluster\_name](#input\_logdna\_add\_cluster\_name) | If true, configure the logdna agent to attach a tag containing the cluster name to all log messages. | `bool` | `true` | no |
 | <a name="input_logdna_agent_tags"></a> [logdna\_agent\_tags](#input\_logdna\_agent\_tags) | array of tags to group the host logs pushed by the logdna agent | `list(string)` | `[]` | no |
-| <a name="input_logdna_agent_version"></a> [logdna\_agent\_version](#input\_logdna\_agent\_version) | Version of the agent to deploy. To lookup version run: `ibmcloud cr images --restrict ext/logdna-agent`. If null, the default value is used. | `string` | `"3.8.4-20230607.eca8b5c44555067a"` | no |
+| <a name="input_logdna_agent_version"></a> [logdna\_agent\_version](#input\_logdna\_agent\_version) | Version of the agent to deploy. To lookup version run: `ibmcloud cr images --restrict ext/logdna-agent`. If null, the default value is used. | `string` | `"3.8.4-20230612.f9febe6158294b53"` | no |
 | <a name="input_logdna_enabled"></a> [logdna\_enabled](#input\_logdna\_enabled) | Deploy IBM Cloud Logging agent | `bool` | `true` | no |
 | <a name="input_logdna_ingestion_key"></a> [logdna\_ingestion\_key](#input\_logdna\_ingestion\_key) | Ingestion key for the IBM Cloud Logging agent to communicate with the instance | `string` | `null` | no |
 | <a name="input_logdna_instance_name"></a> [logdna\_instance\_name](#input\_logdna\_instance\_name) | IBM Cloud Logging instance to use. Required if LogDNA is enabled | `string` | `null` | no |
