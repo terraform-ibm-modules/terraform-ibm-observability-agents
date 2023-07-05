@@ -3,7 +3,7 @@ metadata:
 image:
   repository: "ext/logdna-agent"
   # renovate: datasource=docker depName=icr.io/ext/logdna-agent versioning=regex:^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)-(?<build>\d{8}).\w+?$
-  tag: "3.8.5-20230622.97492a8c2f1d8fe7"
+  tag: "3.8.6-20230629.efde56d42ff673ed"
   registry: icr.io
 env:
   region: "ca-tor"
