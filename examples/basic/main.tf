@@ -78,6 +78,11 @@ resource "ibm_container_vpc_cluster" "cluster" {
   }
   resource_group_id = module.resource_group.resource_group_id
   tags              = var.resource_tags
+
+  timeouts {
+    delete = "2h"
+    create = "3h"
+  }
 }
 
 data "ibm_container_cluster_config" "cluster_config" {
