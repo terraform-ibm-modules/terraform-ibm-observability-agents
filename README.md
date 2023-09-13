@@ -94,7 +94,7 @@ You need the following permissions to run this module.
 - [ Deploy basic observability agents](examples/basic)
 <!-- END EXAMPLES HOOK -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-## Requirements
+### Requirements
 
 | Name | Version |
 |------|---------|
@@ -102,11 +102,11 @@ You need the following permissions to run this module.
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.8.0 |
 | <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | >= 1.49.0 |
 
-## Modules
+### Modules
 
 No modules.
 
-## Resources
+### Resources
 
 | Name | Type |
 |------|------|
@@ -117,7 +117,7 @@ No modules.
 | [ibm_resource_instance.logdna_instance](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/resource_instance) | data source |
 | [ibm_resource_instance.sysdig_instance](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/resource_instance) | data source |
 
-## Inputs
+### Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
@@ -136,7 +136,7 @@ No modules.
 | <a name="input_sysdig_instance_name"></a> [sysdig\_instance\_name](#input\_sysdig\_instance\_name) | The name of the IBM Cloud Monitoring instance to use. Required if Sysdig is enabled | `string` | `null` | no |
 | <a name="input_sysdig_resource_group_id"></a> [sysdig\_resource\_group\_id](#input\_sysdig\_resource\_group\_id) | Resource group that the IBM Cloud Monitoring is in. Defaults to Clusters group | `string` | `null` | no |
 
-## Outputs
+### Outputs
 
 No outputs.
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

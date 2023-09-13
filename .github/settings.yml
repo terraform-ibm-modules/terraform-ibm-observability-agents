@@ -20,4 +20,4 @@ repository:
   # organization page and in the 'About' section of the repository.
 
   description: "Deploys the LogDNA agent and SysDig agents to a cluster"
-  topics: core-team, terraform, ibm-cloud, terraform-module, logdna, sysdig, monitoring-agent, logging-agent, observability-agent
+  topics: core-team, terraform, ibm-cloud, terraform-module, logdna, sysdig, monitoring-agent, logging-agent, observability-agent, supported, graduated
