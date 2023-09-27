@@ -14,20 +14,20 @@ module "resource_group" {
 ##############################################################################
 
 module "observability_instances" {
-  source = "git::https://github.com/terraform-ibm-modules/terraform-ibm-observability-instances?ref=v2.7.0"
+  source = "git::https://github.com/terraform-ibm-modules/terraform-ibm-observability-instances?ref=v2.9.1"
   providers = {
     logdna.at = logdna.at
     logdna.ld = logdna.ld
   }
-  resource_group_id          = module.resource_group.resource_group_id
-  region                     = var.region
-  logdna_plan                = "7-day"
-  sysdig_plan                = "graduated-tier"
-  activity_tracker_provision = false
-  enable_platform_logs       = false
-  enable_platform_metrics    = false
-  logdna_instance_name       = "${var.prefix}-logdna"
-  sysdig_instance_name       = "${var.prefix}-sysdig"
+  resource_group_id              = module.resource_group.resource_group_id
+  region                         = var.region
+  log_analysis_plan              = "7-day"
+  cloud_monitoring_plan          = "graduated-tier"
+  activity_tracker_provision     = false
+  enable_platform_logs           = false
+  enable_platform_metrics        = false
+  log_analysis_instance_name     = "${var.prefix}-log-analysis"
+  cloud_monitoring_instance_name = "${var.prefix}-cloud-monitoring"
 }
 
 ##############################################################################
@@ -106,10 +106,10 @@ module "observability_agents" {
   depends_on                = [time_sleep.wait_operators]
   cluster_id                = ibm_container_vpc_cluster.cluster.id
   cluster_resource_group_id = module.resource_group.resource_group_id
-  logdna_instance_name      = module.observability_instances.logdna_name
-  logdna_ingestion_key      = module.observability_instances.logdna_ingestion_key
-  sysdig_instance_name      = module.observability_instances.sysdig_name
-  sysdig_access_key         = module.observability_instances.sysdig_access_key
+  logdna_instance_name      = module.observability_instances.log_analysis_name
+  logdna_ingestion_key      = module.observability_instances.log_analysis_ingestion_key
+  sysdig_instance_name      = module.observability_instances.cloud_monitoring_name
+  sysdig_access_key         = module.observability_instances.cloud_monitoring_access_key
   logdna_agent_tags         = var.logdna_agent_tags
   logdna_add_cluster_name   = true
 }
