@@ -14,6 +14,10 @@ metadata:
 data:
   dragent.yaml: |
     configmap: true
+
+    new_k8s: true
+    k8s_cluster_name: {{ .Values.config.clustername }}
+
     ### Agent tags
     tags: ibm.containers-kubernetes.cluster.name:{{ .Values.config.clustername }}
 
@@ -31,6 +35,10 @@ data:
     # collector certificate validation
     ssl_verify_certificate: true
 
-    #######################################
-    new_k8s: true
-    k8s_cluster_name: {{ .Values.config.clustername }}
+    {{ if .Values.metrics_filter -}}
+    # metrics that must be included/excluded during the metrics collection
+    metrics_filter:
+      {{ range $v := .Values.metrics_filter -}}
+      - {{ $v.type }}: {{ $v.name }}
+      {{ end }}
+    {{- end -}}

@@ -5,6 +5,15 @@ config:
   region: "us-south"
 secret:
   key: ""
+metrics_filter: []
+# example:
+# metrics_filter:
+#  - type: "include"
+#    name: "metricA.*"
+#  - type: "exclude"
+#    name: "metricB.*"
+#  - type: "include"
+#    name: "metricC.*"
 checkov_skips:
   - checkov.io/skip1: CKV_K8S_21
   - checkov.io/skip2: CKV_K8S_30
