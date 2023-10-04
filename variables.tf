@@ -92,4 +92,17 @@ variable "sysdig_access_key" {
   default     = null
 }
 
+variable "sysdig_metrics_filter" {
+  type = list(object({
+    type = string
+    name = string
+  }))
+  description = "To filter custom metrics, specify the Sysdig metrics to include or to exclude. See  https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_inc_exc_metrics."
+  default     = []
+  validation {
+    condition     = length(var.sysdig_metrics_filter) == 0 || can(regex("^(include|exclude)$", var.sysdig_metrics_filter[0].type))
+    error_message = "Invalid input for `sysdig_metrics_filter`. Valid options for 'type' are: `include` and `exclude`. If empty, no metrics are included or excluded."
+  }
+}
+
 ##############################################################################

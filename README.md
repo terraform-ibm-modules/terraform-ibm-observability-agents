@@ -134,6 +134,7 @@ No modules.
 | <a name="input_sysdig_agent_version"></a> [sysdig\_agent\_version](#input\_sysdig\_agent\_version) | IBM Cloud Monitoring Agent Version. To lookup version run: `ibmcloud cr images --restrict ext/sysdig/agent`. If null, the default value is used. | `string` | `"12.16.2"` | no |
 | <a name="input_sysdig_enabled"></a> [sysdig\_enabled](#input\_sysdig\_enabled) | Deploy IBM Cloud Monitoring agent | `bool` | `true` | no |
 | <a name="input_sysdig_instance_name"></a> [sysdig\_instance\_name](#input\_sysdig\_instance\_name) | The name of the IBM Cloud Monitoring instance to use. Required if Sysdig is enabled | `string` | `null` | no |
+| <a name="input_sysdig_metrics_filter"></a> [sysdig\_metrics\_filter](#input\_sysdig\_metrics\_filter) | To filter custom metrics, specify the Sysdig metrics to include or to exclude. See  https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_inc_exc_metrics. | <pre>list(object({<br>    type = string<br>    name = string<br>  }))</pre> | `[]` | no |
 | <a name="input_sysdig_resource_group_id"></a> [sysdig\_resource\_group\_id](#input\_sysdig\_resource\_group\_id) | Resource group that the IBM Cloud Monitoring is in. Defaults to Clusters group | `string` | `null` | no |
 
 ### Outputs

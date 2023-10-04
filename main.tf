@@ -130,6 +130,7 @@ resource "helm_release" "sysdig_agent" {
   wait             = true
   recreate_pods    = true
   force_update     = true
+  reset_values     = true
 
   set {
     name  = "image.version"
@@ -156,6 +157,10 @@ resource "helm_release" "sysdig_agent" {
     type  = "string"
     value = var.sysdig_access_key
   }
+
+  values = [yamlencode({
+    metrics_filter = var.sysdig_metrics_filter
+  })]
 
   provisioner "local-exec" {
     command     = "${path.module}/scripts/confirm-rollout-status.sh sysdig-agent ${local.sysdig_agent_namespace}"

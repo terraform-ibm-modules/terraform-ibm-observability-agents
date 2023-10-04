@@ -164,6 +164,19 @@
         "line": 68
       }
     },
+    "sysdig_metrics_filter": {
+      "name": "sysdig_metrics_filter",
+      "type": "list(object({\n    type = string\n    name = string\n  }))",
+      "description": "To filter custom metrics, specify the Sysdig metrics to include or to exclude. See  https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_inc_exc_metrics.",
+      "default": [],
+      "source": [
+        "helm_release.sysdig_agent.values"
+      ],
+      "pos": {
+        "filename": "variables.tf",
+        "line": 95
+      }
+    },
     "sysdig_resource_group_id": {
       "name": "sysdig_resource_group_id",
       "type": "string",
@@ -213,7 +226,8 @@
       "type": "helm_release",
       "name": "sysdig_agent",
       "attributes": {
-        "count": "sysdig_enabled"
+        "count": "sysdig_enabled",
+        "values": "sysdig_metrics_filter"
       },
       "provider": {
         "name": "helm"
