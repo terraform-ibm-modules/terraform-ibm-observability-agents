@@ -42,7 +42,3 @@ data:
       - {{ $v.type }}: {{ $v.name }}
       {{ end }}
     {{- end -}}
-
-    #######################################
-    new_k8s: true
-    k8s_cluster_name: {{ .Values.config.clustername }}
