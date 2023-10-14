@@ -131,7 +131,7 @@
       "name": "sysdig_agent_version",
       "type": "string",
       "description": "IBM Cloud Monitoring Agent Version. To lookup version run: `ibmcloud cr images --restrict ext/sysdig/agent`. If null, the default value is used.",
-      "default": "12.16.2",
+      "default": "12.16.3",
       "pos": {
         "filename": "variables.tf",
         "line": 80
