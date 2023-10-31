@@ -117,5 +117,5 @@ variable "sysdig_add_cluster_name" {
   description = "If true, configure the sysdig agent to attach a tag containing the cluster name to all log messages."
   default     = true
 }
-# TODO: check if the description requires "log" for sysdig_add_cluster_name in line:117
+
 ##############################################################################
