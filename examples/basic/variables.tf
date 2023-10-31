@@ -33,3 +33,9 @@ variable "logdna_agent_tags" {
   description = "Array of string of tags for logdna agent"
   default     = []
 }
+
+variable "sysdig_agent_tags" {
+  type        = list(string)
+  description = "Array of string of tags for sysdig agent"
+  default     = []
+}

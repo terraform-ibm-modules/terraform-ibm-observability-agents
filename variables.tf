@@ -105,4 +105,17 @@ variable "sysdig_metrics_filter" {
   }
 }
 
+variable "sysdig_agent_tags" {
+  type        = list(string)
+  description = "array of tags to group the host logs pushed by the sysdig agent"
+  default     = []
+  nullable    = false
+}
+
+variable "sysdig_add_cluster_name" {
+  type        = bool
+  description = "If true, configure the sysdig agent to attach a tag containing the cluster name to all log messages."
+  default     = true
+}
+# TODO: check if the description requires "log" for sysdig_add_cluster_name in line:117
 ##############################################################################
