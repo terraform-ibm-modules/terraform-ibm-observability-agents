@@ -61,6 +61,7 @@ locals {
   sysdig_key_validate_msg       = "Values for 'sysdig_access_key' variables must be passed when 'sysdig_enabled = true'"
   # tflint-ignore: terraform_unused_declarations
   sysdig_key_validate_check = regex("^${local.sysdig_key_validate_msg}$", (!local.sysdig_key_validate_condition ? local.sysdig_key_validate_msg : ""))
+  sysdig_agent_tags         = var.sysdig_add_cluster_name ? concat([local.cluster_name], var.sysdig_agent_tags) : var.sysdig_agent_tags
 }
 
 /** LogDNA Configuration Start **/
@@ -156,6 +157,12 @@ resource "helm_release" "sysdig_agent" {
     name  = "secret.key"
     type  = "string"
     value = var.sysdig_access_key
+  }
+
+  set {
+    name  = "agent.tags"
+    type  = "string"
+    value = join("\\,", local.sysdig_agent_tags)
   }
 
   values = [yamlencode({

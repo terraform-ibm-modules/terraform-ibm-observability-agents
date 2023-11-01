@@ -110,8 +110,9 @@ module "observability_agents" {
   logdna_ingestion_key      = module.observability_instances.log_analysis_ingestion_key
   sysdig_instance_name      = module.observability_instances.cloud_monitoring_name
   sysdig_access_key         = module.observability_instances.cloud_monitoring_access_key
-  logdna_agent_tags         = var.logdna_agent_tags
+  logdna_agent_tags         = var.resource_tags
   logdna_add_cluster_name   = true
   # example of how to include / exclude metrics - more info https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_log_metrics
   sysdig_metrics_filter = [{ type = "exclude", name = "metricA.*" }, { type = "include", name = "metricB.*" }]
+  sysdig_agent_tags     = var.resource_tags
 }

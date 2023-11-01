@@ -131,6 +131,8 @@ No modules.
 | <a name="input_logdna_instance_name"></a> [logdna\_instance\_name](#input\_logdna\_instance\_name) | IBM Cloud Logging instance to use. Required if LogDNA is enabled | `string` | `null` | no |
 | <a name="input_logdna_resource_group_id"></a> [logdna\_resource\_group\_id](#input\_logdna\_resource\_group\_id) | Resource group the IBM Cloud Logging instance is in. Defaults to Clusters group | `string` | `null` | no |
 | <a name="input_sysdig_access_key"></a> [sysdig\_access\_key](#input\_sysdig\_access\_key) | Access key used by the IBM Cloud Monitoring agent to communicate with the instance | `string` | `null` | no |
+| <a name="input_sysdig_add_cluster_name"></a> [sysdig\_add\_cluster\_name](#input\_sysdig\_add\_cluster\_name) | If true, configure the sysdig agent to attach a tag containing the cluster name to all metric data. | `bool` | `true` | no |
+| <a name="input_sysdig_agent_tags"></a> [sysdig\_agent\_tags](#input\_sysdig\_agent\_tags) | array of tags to group the host metrics pushed by the sysdig agent | `list(string)` | `[]` | no |
 | <a name="input_sysdig_agent_version"></a> [sysdig\_agent\_version](#input\_sysdig\_agent\_version) | IBM Cloud Monitoring Agent Version. To lookup version run: `ibmcloud cr images --restrict ext/sysdig/agent`. If null, the default value is used. | `string` | `"12.17.1"` | no |
 | <a name="input_sysdig_enabled"></a> [sysdig\_enabled](#input\_sysdig\_enabled) | Deploy IBM Cloud Monitoring agent | `bool` | `true` | no |
 | <a name="input_sysdig_instance_name"></a> [sysdig\_instance\_name](#input\_sysdig\_instance\_name) | The name of the IBM Cloud Monitoring instance to use. Required if Sysdig is enabled | `string` | `null` | no |

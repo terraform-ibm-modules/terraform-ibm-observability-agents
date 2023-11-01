@@ -21,8 +21,6 @@ var ignoreUpdates = []string{
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
 
-var logDNATagsList = []string{"tag1", "tag2"}
-
 // TestMain will be run before any parallel tests, used to set up a shared InfoService object to track region usage
 // for multiple tests
 func TestMain(m *testing.M) {
@@ -37,9 +35,6 @@ func setupOptions(t *testing.T, prefix string, terraformDir string) *testhelper.
 		TerraformDir:  terraformDir,
 		Prefix:        prefix,
 		ResourceGroup: resourceGroup,
-		TerraformVars: map[string]interface{}{
-			"logdna_agent_tags": logDNATagsList,
-		},
 		IgnoreUpdates: testhelper.Exemptions{
 			List: ignoreUpdates,
 		},
