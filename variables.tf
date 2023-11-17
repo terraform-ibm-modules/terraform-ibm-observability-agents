@@ -59,7 +59,7 @@ variable "logdna_add_cluster_name" {
   default     = true
 }
 
-# LogDNA agent custom settings to setup metadata filtering
+# LogDNA agent custom settings to setup Kubernetes metadata logs filtering
 # Ref https://github.com/logdna/logdna-agent-v2/blob/3.8/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering
 
 variable "logdna_agent_custom_line_inclusion" {
