@@ -72,7 +72,7 @@ module "observability_agents" {
 
 ### Customise Kubernetes metadata line filtering in the LogDNA agent
 
-This module supports the Kubernetes metadata filtering customisation of the LogDNA agent by setting the value of the input parameters `logdna_agent_custom_line_exclusion` and `logdna_agent_custom_line_inclusion`. For more information, see [Configuration for Kubernetes Metadata Filtering](https://github.com/logdna/logdna-agent-v2/blob/3.8/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering)
+This module allows to customise the Kubernetes metadata filtering in the LogDNA agent by setting the value of the input parameters `logdna_agent_custom_line_exclusion` and `logdna_agent_custom_line_inclusion`. For more information, see [Configuration for Kubernetes Metadata Filtering](https://github.com/logdna/logdna-agent-v2/blob/3.8/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering)
 
 For example, you can set the following input values for the parameters:
 
