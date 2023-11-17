@@ -27,3 +27,15 @@ variable "region" {
   description = "Region where resources are created"
   default     = "ca-tor"
 }
+
+variable "logdna_agent_custom_line_inclusion" {
+  description = "LogDNA agent custom configuration for line inclusion setting LOGDNA_K8S_METADATA_LINE_INCLUSION."
+  type        = string
+  default     = null
+}
+
+variable "logdna_agent_custom_line_exclusion" {
+  description = "LogDNA agent custom configuration for line exclusion setting LOGDNA_K8S_METADATA_LINE_EXCLUSION."
+  type        = string
+  default     = null
+}

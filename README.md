@@ -70,6 +70,26 @@ module "observability_agents" {
 }
 ```
 
+### Customise Kubernetes metadata line filtering in the LogDNA agent
+
+This module supports the Kubernetes metadata filtering customisation of the LogDNA agent by setting the value of the input parameters `logdna_agent_custom_line_exclusion` and `logdna_agent_custom_line_inclusion`. For more information, see [Configuration for Kubernetes Metadata Filtering](https://github.com/logdna/logdna-agent-v2/blob/3.8/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering)
+
+For example, you can set the following input values for the parameters:
+
+```text
+custom_logdna_at_agent_line_exclusion = "label.app.kubernetes.io/name:sample-app\\, annotation.user:sample-user"
+custom_logdna_at_agent_line_inclusion = "namespace:default"
+```
+
+The resulting daemonset configuration will be:
+
+```text
+- name: LOGDNA_K8S_METADATA_LINE_INCLUSION
+    value: "label.app.kubernetes.io/name:sample-app, annotation.user:sample-user"
+- name: LOGDNA_K8S_METADATA_LINE_EXCLUSION
+    value: "namespace:default"
+```
+
 ## Required IAM access policies
 You need the following permissions to run this module.
 
@@ -125,6 +145,8 @@ No modules.
 | <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | Cluster id to add to agents to | `string` | n/a | yes |
 | <a name="input_cluster_resource_group_id"></a> [cluster\_resource\_group\_id](#input\_cluster\_resource\_group\_id) | Resource group of the cluster | `string` | n/a | yes |
 | <a name="input_logdna_add_cluster_name"></a> [logdna\_add\_cluster\_name](#input\_logdna\_add\_cluster\_name) | If true, configure the logdna agent to attach a tag containing the cluster name to all log messages. | `bool` | `true` | no |
+| <a name="input_logdna_agent_custom_line_exclusion"></a> [logdna\_agent\_custom\_line\_exclusion](#input\_logdna\_agent\_custom\_line\_exclusion) | LogDNA agent custom configuration for line exclusion setting LOGDNA\_K8S\_METADATA\_LINE\_EXCLUSION. | `string` | `null` | no |
+| <a name="input_logdna_agent_custom_line_inclusion"></a> [logdna\_agent\_custom\_line\_inclusion](#input\_logdna\_agent\_custom\_line\_inclusion) | LogDNA agent custom configuration for line inclusion setting LOGDNA\_K8S\_METADATA\_LINE\_INCLUSION. | `string` | `null` | no |
 | <a name="input_logdna_agent_tags"></a> [logdna\_agent\_tags](#input\_logdna\_agent\_tags) | array of tags to group the host logs pushed by the logdna agent | `list(string)` | `[]` | no |
 | <a name="input_logdna_agent_version"></a> [logdna\_agent\_version](#input\_logdna\_agent\_version) | Version of the agent to deploy. To lookup version run: `ibmcloud cr images --restrict ext/logdna-agent`. If null, the default value is used. | `string` | `"3.8.9-20231106.f2f1aff739bf8115"` | no |
 | <a name="input_logdna_enabled"></a> [logdna\_enabled](#input\_logdna\_enabled) | Deploy IBM Cloud Logging agent | `bool` | `true` | no |

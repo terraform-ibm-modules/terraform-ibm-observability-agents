@@ -115,4 +115,7 @@ module "observability_agents" {
   # example of how to include / exclude metrics - more info https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_log_metrics
   sysdig_metrics_filter = [{ type = "exclude", name = "metricA.*" }, { type = "include", name = "metricB.*" }]
   sysdig_agent_tags     = var.resource_tags
+  # logdna agent custom line inclusion/exclusion
+  logdna_agent_custom_line_exclusion = var.logdna_agent_custom_line_exclusion
+  logdna_agent_custom_line_inclusion = var.logdna_agent_custom_line_inclusion
 }
