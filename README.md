@@ -86,9 +86,9 @@ The following is the corresponding DaemonSet configuration:
 
 ```text
 - name: LOGDNA_K8S_METADATA_LINE_INCLUSION
-    value: "label.app.kubernetes.io/name:sample-app, annotation.user:sample-user"
+  value: "label.app.kubernetes.io/name:sample-app, annotation.user:sample-user"
 - name: LOGDNA_K8S_METADATA_LINE_EXCLUSION
-    value: "namespace:default"
+  value: "namespace:default"
 ```
 
 For more information, see [Configuration for Kubernetes Metadata Filtering](https://github.com/logdna/logdna-agent-v2/blob/3.8/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering).
