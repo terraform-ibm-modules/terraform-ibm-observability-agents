@@ -19,11 +19,7 @@ var ignoreUpdates = []string{
 	"module.observability_agents.helm_release.logdna_agent_activity_tracker[0]",
 }
 
-var extTerraformVars = map[string]interface{}{
-	// input vars to handle logdna agent metadata filtering configuration
-	"logdna_agent_custom_line_exclusion": "label.app.kubernetes.io/name:sample-app\\, annotation.user:sample-user",
-	"logdna_agent_custom_line_inclusion": "namespace:default",
-}
+var extTerraformVars = map[string]interface{}{}
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
 

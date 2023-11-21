@@ -8,10 +8,11 @@
 [![Renovate enabled](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com/)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
-This module supports deploying the following observability agents to the provided OCP cluster:
+This module deploys the following observability agents to an RedHat OpenShift Container Platform cluster:
 
-* Logging (LogDNA) agent
-* Monitoring (SysDig) agent
+- Logging agent
+- Monitoring agent
+
 
 ## Usage
 
@@ -70,18 +71,18 @@ module "observability_agents" {
 }
 ```
 
-### Customise Kubernetes metadata line filtering in the LogDNA agent
+## Configuration for Kubernetes metadata filtering in the Logging agent
 
-This module allows to customise the Kubernetes metadata line filtering in the LogDNA agent by setting the value of the input parameters `logdna_agent_custom_line_exclusion` and `logdna_agent_custom_line_inclusion`. For more information, see [Configuration for Kubernetes Metadata Filtering](https://github.com/logdna/logdna-agent-v2/blob/3.8/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering)
+You can configure the Logging agent to filter log lines according to the Kubernetes resources metadata by setting the exclusion and inclusion parameters.
 
-For example, you can set the following input values for the parameters:
+For example, to set the agent to return all log lines coming from the `default`` Kubernetes namespace and exclude anything with a label `app.kubernetes.io/name` with value `sample-app` or an annotation `annotation.user` with value `sample-user`, include these parameters:
 
 ```text
 custom_logdna_at_agent_line_exclusion = "label.app.kubernetes.io/name:sample-app\\, annotation.user:sample-user"
 custom_logdna_at_agent_line_inclusion = "namespace:default"
 ```
 
-The resulting daemonset configuration will be:
+The following is the corresponding DaemonSet configuration:
 
 ```text
 - name: LOGDNA_K8S_METADATA_LINE_INCLUSION
@@ -89,6 +90,8 @@ The resulting daemonset configuration will be:
 - name: LOGDNA_K8S_METADATA_LINE_EXCLUSION
     value: "namespace:default"
 ```
+
+For more information, see [Configuration for Kubernetes Metadata Filtering](https://github.com/logdna/logdna-agent-v2/blob/3.8/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering).
 
 ## Required IAM access policies
 You need the following permissions to run this module.
