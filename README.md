@@ -8,7 +8,7 @@
 [![Renovate enabled](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com/)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
-This module deploys the following observability agents to an RedHat OpenShift Container Platform cluster:
+This module deploys the following observability agents to a Red Hat OpenShift Container Platform cluster:
 
 - Logging agent
 - Monitoring agent
@@ -71,11 +71,11 @@ module "observability_agents" {
 }
 ```
 
-## Configuration for Kubernetes metadata filtering in the Logging agent
+## Configuration for Kubernetes metadata filtering in the logging agent
 
-You can configure the Logging agent to filter log lines according to the Kubernetes resources metadata by setting the exclusion and inclusion parameters.
+You can configure the logging agent to filter log lines according to the Kubernetes resources metadata by setting the exclusion and inclusion parameters.
 
-For example, to set the agent to return all log lines coming from the `default`` Kubernetes namespace and exclude anything with a label `app.kubernetes.io/name` with value `sample-app` or an annotation `annotation.user` with value `sample-user`, include these parameters:
+For example, to set the agent to return all log lines coming from the `default` Kubernetes namespace and exclude anything with a label `app.kubernetes.io/name` with value `sample-app` or an annotation `annotation.user` with value `sample-user`, include these parameters:
 
 ```text
 custom_logdna_at_agent_line_exclusion = "label.app.kubernetes.io/name:sample-app\\, annotation.user:sample-user"
