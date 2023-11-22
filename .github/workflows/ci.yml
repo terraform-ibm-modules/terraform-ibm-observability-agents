@@ -11,5 +11,4 @@ jobs:
     secrets: inherit
     with:
       craSCCv2: true
-      craTarget: "examples/basic"
       craConfigYamlFile: "cra-config.yaml"
