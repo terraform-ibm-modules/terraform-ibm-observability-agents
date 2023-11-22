@@ -1,4 +1,4 @@
-cra=# More info about this file at https://github.com/terraform-ibm-modules/common-pipeline-assets/blob/main/.github/workflows/terraform-test-pipeline.md#cra-config-yaml
+# More info about this file at https://github.com/terraform-ibm-modules/common-pipeline-assets/blob/main/.github/workflows/terraform-test-pipeline.md#cra-config-yaml
 version: "v1"
 CRA_TARGETS:
   - CRA_TARGET: "examples/basic" # Target directory for CRA scan. If not provided, the CRA Scan will not be run.
