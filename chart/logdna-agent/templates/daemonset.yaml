@@ -77,6 +77,14 @@ spec:
                   fieldPath: spec.nodeName
             - name: NAMESPACE
               value: {{ .Release.Namespace }}
+            {{- if .Values.agentMetadataLineInclusion }}
+            - name: LOGDNA_K8S_METADATA_LINE_INCLUSION
+              value: {{ .Values.agentMetadataLineInclusion | quote }}
+            {{- end }}
+            {{- if .Values.agentMetadataLineExclusion }}
+            - name: LOGDNA_K8S_METADATA_LINE_EXCLUSION
+              value: {{ .Values.agentMetadataLineExclusion | quote }}
+            {{- end }}
           resources:
             requests:
               cpu: 20m
