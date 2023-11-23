@@ -2,16 +2,17 @@
 
 # Terraform IBM Observability agents module
 
-[![Stable (With quality checks)](https://img.shields.io/badge/Status-Stable%20(With%20quality%20checks)-green)](https://terraform-ibm-modules.github.io/documentation/#/badge-status)
+[![Graduated (Supported)](https://img.shields.io/badge/Status-Graduated%20(Supported)-brightgreen)](https://terraform-ibm-modules.github.io/documentation/#/badge-status)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![latest release](https://img.shields.io/github/v/release/terraform-ibm-modules/terraform-ibm-observability-agents?logo=GitHub&sort=semver)](https://github.com/terraform-ibm-modules/terraform-ibm-observability-agents/releases/latest)
 [![Renovate enabled](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com/)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
-This module supports deploying the following observability agents to the provided OCP cluster:
+This module deploys the following observability agents to a Red Hat OpenShift Container Platform cluster:
 
-* Logging (LogDNA) agent
-* Monitoring (SysDig) agent
+- Logging agent
+- Monitoring agent
+
 
 ## Usage
 
@@ -70,6 +71,28 @@ module "observability_agents" {
 }
 ```
 
+## Configuration for Kubernetes metadata filtering in the logging agent
+
+You can configure the logging agent to filter log lines according to the Kubernetes resources metadata by setting the exclusion and inclusion parameters.
+
+For example, to set the agent to return all log lines coming from the `default` Kubernetes namespace and exclude anything with a label `app.kubernetes.io/name` with value `sample-app` or an annotation `annotation.user` with value `sample-user`, include these parameters:
+
+```text
+custom_logdna_at_agent_line_exclusion = "label.app.kubernetes.io/name:sample-app\\, annotation.user:sample-user"
+custom_logdna_at_agent_line_inclusion = "namespace:default"
+```
+
+The following is the corresponding DaemonSet configuration:
+
+```text
+- name: LOGDNA_K8S_METADATA_LINE_INCLUSION
+  value: "label.app.kubernetes.io/name:sample-app, annotation.user:sample-user"
+- name: LOGDNA_K8S_METADATA_LINE_EXCLUSION
+  value: "namespace:default"
+```
+
+For more information, see [Configuration for Kubernetes Metadata Filtering](https://github.com/logdna/logdna-agent-v2/blob/3.8/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering).
+
 ## Required IAM access policies
 You need the following permissions to run this module.
 
@@ -125,6 +148,8 @@ No modules.
 | <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | Cluster id to add to agents to | `string` | n/a | yes |
 | <a name="input_cluster_resource_group_id"></a> [cluster\_resource\_group\_id](#input\_cluster\_resource\_group\_id) | Resource group of the cluster | `string` | n/a | yes |
 | <a name="input_logdna_add_cluster_name"></a> [logdna\_add\_cluster\_name](#input\_logdna\_add\_cluster\_name) | If true, configure the logdna agent to attach a tag containing the cluster name to all log messages. | `bool` | `true` | no |
+| <a name="input_logdna_agent_custom_line_exclusion"></a> [logdna\_agent\_custom\_line\_exclusion](#input\_logdna\_agent\_custom\_line\_exclusion) | LogDNA agent custom configuration for line exclusion setting LOGDNA\_K8S\_METADATA\_LINE\_EXCLUSION. | `string` | `null` | no |
+| <a name="input_logdna_agent_custom_line_inclusion"></a> [logdna\_agent\_custom\_line\_inclusion](#input\_logdna\_agent\_custom\_line\_inclusion) | LogDNA agent custom configuration for line inclusion setting LOGDNA\_K8S\_METADATA\_LINE\_INCLUSION. | `string` | `null` | no |
 | <a name="input_logdna_agent_tags"></a> [logdna\_agent\_tags](#input\_logdna\_agent\_tags) | array of tags to group the host logs pushed by the logdna agent | `list(string)` | `[]` | no |
 | <a name="input_logdna_agent_version"></a> [logdna\_agent\_version](#input\_logdna\_agent\_version) | Version of the agent to deploy. To lookup version run: `ibmcloud cr images --restrict ext/logdna-agent`. If null, the default value is used. | `string` | `"3.8.9-20231113.3d09f4dc47c1f590"` | no |
 | <a name="input_logdna_enabled"></a> [logdna\_enabled](#input\_logdna\_enabled) | Deploy IBM Cloud Logging agent | `bool` | `true` | no |

@@ -109,6 +109,24 @@ resource "helm_release" "logdna_agent" {
     value = join("\\,", local.logdna_agent_tags)
   }
 
+  dynamic "set" {
+    for_each = var.logdna_agent_custom_line_inclusion != null ? [var.logdna_agent_custom_line_inclusion] : []
+    content {
+      name  = "agentMetadataLineInclusion"
+      type  = "string"
+      value = set.value
+    }
+  }
+
+  dynamic "set" {
+    for_each = var.logdna_agent_custom_line_exclusion != null ? [var.logdna_agent_custom_line_exclusion] : []
+    content {
+      name  = "agentMetadataLineExclusion"
+      type  = "string"
+      value = set.value
+    }
+  }
+
   provisioner "local-exec" {
     command     = "${path.module}/scripts/confirm-rollout-status.sh logdna-agent ${local.logdna_agent_namespace}"
     interpreter = ["/bin/bash", "-c"]

@@ -19,6 +19,8 @@ var ignoreUpdates = []string{
 	"module.observability_agents.helm_release.logdna_agent_activity_tracker[0]",
 }
 
+var extTerraformVars = map[string]interface{}{}
+
 var sharedInfoSvc *cloudinfo.CloudInfoService
 
 // TestMain will be run before any parallel tests, used to set up a shared InfoService object to track region usage
@@ -29,7 +31,7 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func setupOptions(t *testing.T, prefix string, terraformDir string) *testhelper.TestOptions {
+func setupOptions(t *testing.T, prefix string, terraformDir string, terraformVars map[string]interface{}) *testhelper.TestOptions {
 	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
 		Testing:       t,
 		TerraformDir:  terraformDir,
@@ -40,6 +42,7 @@ func setupOptions(t *testing.T, prefix string, terraformDir string) *testhelper.
 		},
 		CloudInfoService:              sharedInfoSvc,
 		ExcludeActivityTrackerRegions: true,
+		TerraformVars:                 terraformVars,
 	})
 
 	return options
@@ -48,7 +51,7 @@ func setupOptions(t *testing.T, prefix string, terraformDir string) *testhelper.
 func TestRunBasicAgents(t *testing.T) {
 	t.Parallel()
 
-	options := setupOptions(t, "basic-obs-agents", terraformDirOther)
+	options := setupOptions(t, "basic-obs-agents", terraformDirOther, extTerraformVars)
 
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")
@@ -58,7 +61,7 @@ func TestRunBasicAgents(t *testing.T) {
 func TestRunUpgrade(t *testing.T) {
 	t.Parallel()
 
-	options := setupOptions(t, "observ-agents-upg", terraformDirOther)
+	options := setupOptions(t, "observ-agents-upg", terraformDirOther, extTerraformVars)
 
 	output, err := options.RunTestUpgrade()
 	if !options.UpgradeTestSkipped {
