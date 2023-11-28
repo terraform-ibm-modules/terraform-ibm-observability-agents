@@ -96,7 +96,7 @@ variable "sysdig_agent_version" {
   type        = string
   description = "IBM Cloud Monitoring Agent Version. To lookup version run: `ibmcloud cr images --restrict ext/sysdig/agent`. If null, the default value is used."
   # renovate: datasource=docker depName=icr.io/ext/sysdig/agent
-  default  = "12.17.1"
+  default  = "12.18.0"
   nullable = false
 }
 
