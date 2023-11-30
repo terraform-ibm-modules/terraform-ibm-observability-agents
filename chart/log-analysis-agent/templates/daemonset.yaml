@@ -39,27 +39,27 @@ spec:
               drop:
                 - all
           env:
-            - name: LOGDNA_INGESTION_KEY
+            - name: LOG_ANALYSIS_INGESTION_KEY
               valueFrom:
                 secretKeyRef:
-                  key: logdna-agent-key
+                  key: log-analysis-agent-key
                   name: {{ .Values.secret.name }}
-            {{- if ne .Values.metadata.name "logdna-agent-activity-tracker" }}
-            - name: LOGDNA_HOST
+            {{- if ne .Values.metadata.name "log-analysis-agent-activity-tracker" }}
+            - name: LOG_ANALYSIS_HOST
               value: logs.private.{{ .Values.env.region }}.logging.cloud.ibm.com
             {{- else }}
-            - name: LOGDNA_HOST
+            - name: LOG_ANALYSIS_HOST
               value: ingest.private.{{ .Values.env.region }}.atracker.cloud.ibm.com
             {{- end }}
-            - name: LOGDNA_LOOKBACK
+            - name: LOG_ANALYSIS_LOOKBACK
               value: smallfiles
             {{- if .Values.agent.tags }}
-            - name: LOGDNA_TAGS
+            - name: LOG_ANALYSIS_TAGS
               value: {{.Values.agent.tags}}
             {{- end }}
-            - name: LOGDNA_DB_PATH
+            - name: LOG_ANALYSIS_DB_PATH
               value: /var/lib/logdna
-            - name: LOGDNA_REDACT_REGEX
+            - name: LOG_ANALYSIS_REDACT_REGEX
               # regex to redact secret values from logs. The regex is set to match base64-encoded values for each of {"kid":, {"typ":, and {"alg":, respectively.
               value: 'eyJ(?:raWQ|0eXA|hbGc)iOi[^"]+'
             - name: POD_APP_LABEL
@@ -78,11 +78,11 @@ spec:
             - name: NAMESPACE
               value: {{ .Release.Namespace }}
             {{- if .Values.agentMetadataLineInclusion }}
-            - name: LOGDNA_K8S_METADATA_LINE_INCLUSION
+            - name: LOG_ANALYSIS_K8S_METADATA_LINE_INCLUSION
               value: {{ .Values.agentMetadataLineInclusion | quote }}
             {{- end }}
             {{- if .Values.agentMetadataLineExclusion }}
-            - name: LOGDNA_K8S_METADATA_LINE_EXCLUSION
+            - name: LOG_ANALYSIS_K8S_METADATA_LINE_EXCLUSION
               value: {{ .Values.agentMetadataLineExclusion | quote }}
             {{- end }}
           resources:
@@ -91,7 +91,7 @@ spec:
             limits:
               memory: 500Mi
           volumeMounts:
-            {{- if eq .Values.metadata.name "logdna-agent-activity-tracker" }}
+            {{- if eq .Values.metadata.name "log-analysis-agent-activity-tracker" }}
             - name: varlogat
               mountPath: /var/log/at
             {{- end }}
@@ -112,7 +112,7 @@ spec:
             - name: logdnahostname
               mountPath: /etc/logdna-hostname
       volumes:
-        {{- if eq .Values.metadata.name "logdna-agent-activity-tracker" }}
+        {{- if eq .Values.metadata.name "log-analysis-agent-activity-tracker" }}
         - name: varlogat
           hostPath:
             path: /var/log/at

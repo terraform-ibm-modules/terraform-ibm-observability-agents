@@ -1,5 +1,5 @@
 metadata:
-  name: "logdna-agent"
+  name: "log-analysis-agent"
 image:
   repository: "ext/logdna-agent"
   # renovate: datasource=docker depName=icr.io/ext/logdna-agent versioning=regex:^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)-(?<build>\d{8}).\w+?$
@@ -8,7 +8,7 @@ image:
 env:
   region: "ca-tor"
 secret:
-  name: "logdna-agent"
+  name: "log-analysis-agent"
   key: ""
 agent:
   tags: ""

@@ -1,7 +1,0 @@
-apiVersion: v2
-name: sysdig-agent
-description: A Helm chart for a Sysdig agent
-
-type: application
-
-version: 0.1.0

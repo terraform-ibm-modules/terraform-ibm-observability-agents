@@ -1,13 +1,13 @@
-### WARNING: this file is supported from Sysdig Agent 0.80.0
+### WARNING: this file is supported from Cloud Monitoring Agent 0.80.0
 # apiVersion: extensions/v1beta1  # If you are in Kubernetes version 1.8 or less please use this line instead of the following one
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: sysdig-agent
+  name: cloud-monitoring-agent
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: sysdig-agent
-    app.kubernetes.io/instance: sysdig-agent
+    app.kubernetes.io/name: cloud-monitoring-agent
+    app.kubernetes.io/instance: cloud-monitoring-agent
     app.kubernetes.io/version: {{ .Values.image.version }}
   annotations:
     {{- range .Values.checkov_skips }}
@@ -16,13 +16,13 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: sysdig-agent
+      app: cloud-monitoring-agent
   updateStrategy:
     type: RollingUpdate
   template:
     metadata:
       labels:
-        app: sysdig-agent
+        app: cloud-monitoring-agent
     spec:
       volumes:
       - name: modprobe-d
@@ -56,14 +56,14 @@ spec:
       - name: varrun-vol
         hostPath:
           path: /var/run
-      - name: sysdig-agent-config
+      - name: cloud-monitoring-agent-config
         configMap:
-          name: sysdig-agent
+          name: cloud-monitoring-agent
           optional: true
-      - name: sysdig-agent-secrets
+      - name: cloud-monitoring-agent-secrets
         secret:
           # checkov:skip=CKV_SECRET_6
-          secretName: sysdig-agent
+          secretName: cloud-monitoring-agent
       - name: podinfo
         downwardAPI:
           defaultMode: 420
@@ -85,10 +85,10 @@ spec:
           key: node-role.kubernetes.io/master
         - operator: Exists
       # The following line is necessary for RBAC
-      serviceAccountName: sysdig-agent
+      serviceAccountName: cloud-monitoring-agent
       terminationGracePeriodSeconds: 5
       containers:
-      - name: sysdig-agent
+      - name: cloud-monitoring-agent
         image: "{{ .Values.image.registry }}:{{ required "Agent version must be provided" .Values.image.version }}"
         imagePullPolicy: Always
         securityContext:
@@ -130,9 +130,9 @@ spec:
         - mountPath: /dev/shm
           name: dshm
         - mountPath: /opt/draios/etc/kubernetes/config
-          name: sysdig-agent-config
+          name: cloud-monitoring-agent-config
         - mountPath: /opt/draios/etc/kubernetes/secrets
-          name: sysdig-agent-secrets
+          name: cloud-monitoring-agent-secrets
         - mountPath: /host/etc/os-release
           name: osrel
           readOnly: true

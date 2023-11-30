@@ -102,22 +102,22 @@ resource "time_sleep" "wait_operators" {
 
 
 module "observability_agents" {
-  source                    = "../.."
-  depends_on                = [time_sleep.wait_operators]
-  cluster_id                = ibm_container_vpc_cluster.cluster.id
-  cluster_resource_group_id = module.resource_group.resource_group_id
-  logdna_instance_name      = module.observability_instances.log_analysis_name
-  logdna_ingestion_key      = module.observability_instances.log_analysis_ingestion_key
-  sysdig_instance_name      = module.observability_instances.cloud_monitoring_name
-  sysdig_access_key         = module.observability_instances.cloud_monitoring_access_key
-  logdna_agent_tags         = var.resource_tags
-  logdna_add_cluster_name   = true
+  source                         = "../.."
+  depends_on                     = [time_sleep.wait_operators]
+  cluster_id                     = ibm_container_vpc_cluster.cluster.id
+  cluster_resource_group_id      = module.resource_group.resource_group_id
+  log_analysis_instance_name     = module.observability_instances.log_analysis_name
+  log_analysis_ingestion_key     = module.observability_instances.log_analysis_ingestion_key
+  cloud_monitoring_instance_name = module.observability_instances.cloud_monitoring_name
+  cloud_monitoring_access_key    = module.observability_instances.cloud_monitoring_access_key
+  log_analysis_agent_tags        = var.resource_tags
+  log_analysis_add_cluster_name  = true
   # example of how to include / exclude metrics - more info https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_log_metrics
-  sysdig_metrics_filter = [{ type = "exclude", name = "metricA.*" }, { type = "include", name = "metricB.*" }]
-  sysdig_agent_tags     = var.resource_tags
-  # LogDNA agent custom settings to setup Kubernetes metadata logs filtering by setting
-  # LOGDNA_K8S_METADATA_LINE_INCLUSION and LOGDNA_K8S_METADATA_LINE_EXCLUSION in the agent daemonset definition
+  cloud_monitoring_metrics_filter = [{ type = "exclude", name = "metricA.*" }, { type = "include", name = "metricB.*" }]
+  cloud_monitoring_agent_tags     = var.resource_tags
+  # Log Analysis agent custom settings to setup Kubernetes metadata logs filtering by setting
+  # LOG_ANALYSIS_K8S_METADATA_LINE_INCLUSION and LOG_ANALYSIS_K8S_METADATA_LINE_EXCLUSION in the agent daemonset definition
   # Ref https://github.com/logdna/logdna-agent-v2/blob/3.8/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering
-  logdna_agent_custom_line_exclusion = "label.app.kubernetes.io/name:sample-app\\, annotation.user:sample-user"
-  logdna_agent_custom_line_inclusion = "namespace:default"
+  log_analysis_agent_custom_line_exclusion = "label.app.kubernetes.io/name:sample-app\\, annotation.user:sample-user"
+  log_analysis_agent_custom_line_inclusion = "namespace:default"
 }
