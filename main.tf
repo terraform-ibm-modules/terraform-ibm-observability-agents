@@ -48,7 +48,8 @@ locals {
   logdna_chart_location         = "${path.module}/chart/logdna-agent"
   logdna_resource_group_id      = var.logdna_resource_group_id != null ? var.logdna_resource_group_id : var.cluster_resource_group_id
   logdna_agent_namespace        = "ibm-observe"
-  logdna_agent_registry         = "icr.io/ext/logdna-agent"
+  logdna_agent_image_repo       = "icr.io/ibm-iac/logdna-agent"
+  logdna_agent_tag_digest       = "3.9.0-20231127.1da2b0706ea2d823@sha256:e2e83aaae9c9d3f1fe9a868fb4e5691167c0b9e8562fd530cc52202364bab913" # datasource: icr.io/ibm-iac/logdna-agent
   logdna_key_validate_condition = var.logdna_enabled == true && var.logdna_ingestion_key == null
   logdna_key_validate_msg       = "Values for 'logdna_ingestion_key' variables must be passed when 'logdna_enabled = true'"
   # tflint-ignore: terraform_unused_declarations
@@ -56,7 +57,8 @@ locals {
   logdna_agent_tags             = var.logdna_add_cluster_name ? concat([local.cluster_name], var.logdna_agent_tags) : var.logdna_agent_tags
   sysdig_chart_location         = "${path.module}/chart/sysdig-agent"
   sysdig_resource_group_id      = var.sysdig_resource_group_id != null ? var.sysdig_resource_group_id : var.cluster_resource_group_id
-  sysdig_agent_registry         = "icr.io/ext/sysdig/agent"
+  sysdig_agent_image_repo       = "icr.io/ibm-iac/agent"
+  sysdig_agent_tag_digest       = "12.18.0@sha256:29406032a1f050664179f528641f6aefdecee074f642b8160cb5f33d516dcd94" # datasource: icr.io/ibm-iac/agent
   sysdig_agent_namespace        = "ibm-observe"
   sysdig_key_validate_condition = var.sysdig_enabled == true && var.sysdig_access_key == null
   sysdig_key_validate_msg       = "Values for 'sysdig_access_key' variables must be passed when 'sysdig_enabled = true'"
@@ -81,12 +83,12 @@ resource "helm_release" "logdna_agent" {
   set {
     name  = "image.version"
     type  = "string"
-    value = var.logdna_agent_version
+    value = local.logdna_agent_tag_digest
   }
   set {
     name  = "image.registry"
     type  = "string"
-    value = local.logdna_agent_registry
+    value = local.logdna_agent_image_repo
   }
   set {
     name  = "env.region"
@@ -155,12 +157,12 @@ resource "helm_release" "sysdig_agent" {
   set {
     name  = "image.version"
     type  = "string"
-    value = var.sysdig_agent_version
+    value = local.sysdig_agent_tag_digest
   }
   set {
     name  = "image.registry"
     type  = "string"
-    value = local.sysdig_agent_registry
+    value = local.sysdig_agent_image_repo
   }
   set {
     name  = "config.clustername"
