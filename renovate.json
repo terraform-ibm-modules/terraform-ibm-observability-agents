@@ -3,36 +3,20 @@
   "extends": ["github>terraform-ibm-modules/common-dev-assets:commonRenovateConfig"],
   "regexManagers": [
     {
-      "fileMatch": ["^chart/logdna-agent/values.yaml$"],
+      "fileMatch": ["\\.tf$"],
       "matchStrings": [
-        "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?tag: \"(?<currentValue>.*)\"\\s"
+        "[\\w-]+_image_tag_digest\\s*=\\s*\"(?<currentValue>[\\w.-]+)@(?<currentDigest>sha256:[a-f0-9]+)\"\\s*# datasource: (?<depName>[^\\s]+)"
       ],
-      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
-    },
-    {
-      "fileMatch": ["^variables.tf$"],
-      "matchStrings": [
-        "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*? = \"(?<currentValue>.*)\"\\s"
-      ],
-      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+      "datasourceTemplate": "docker"
     }
   ],
+  "labels": ["renovate"],
   "packageRules": [
     {
-      "matchManagers": ["regex"],
-      "matchUpdateTypes": ["patch"],
-      "semanticCommitType": "fix"
-    },
-    {
-      "matchManagers": ["regex"],
-      "matchUpdateTypes": ["minor"],
-      "semanticCommitType": "feat"
-    },
-    {
-      "matchManagers": ["regex"],
-      "matchUpdateTypes": ["major"],
-      "semanticCommitType": "feat",
-      "prFooter" : "BREAKING CHANGE: dependency major version update"
+      "matchDatasources": ["docker"],
+      "groupName": "Images",
+      "commitMessageExtra": "to latest",
+      "group": true
     }
   ]
 }
