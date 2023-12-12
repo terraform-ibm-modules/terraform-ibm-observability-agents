@@ -45,7 +45,7 @@ locals {
   log_analysis_secret_name = "log-analysis-agent" #checkov:skip=CKV_SECRET_6
   # Not publically documented in provider. See https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4485
   cluster_name                        = data.ibm_container_vpc_cluster.cluster.resource_name
-  log_analysis_chart_location         = "${path.module}/chart/log-analysis-agent"
+  log_analysis_chart_location         = "${path.module}/chart/logdna-agent"
   log_analysis_resource_group_id      = var.log_analysis_resource_group_id != null ? var.log_analysis_resource_group_id : var.cluster_resource_group_id
   log_analysis_agent_namespace        = "ibm-observe"
   log_analysis_agent_registry         = "icr.io/ext/logdna-agent"
@@ -54,7 +54,7 @@ locals {
   # tflint-ignore: terraform_unused_declarations
   log_analysis_key_validate_check         = regex("^${local.log_analysis_key_validate_msg}$", (!local.log_analysis_key_validate_condition ? local.log_analysis_key_validate_msg : ""))
   log_analysis_agent_tags                 = var.log_analysis_add_cluster_name ? concat([local.cluster_name], var.log_analysis_agent_tags) : var.log_analysis_agent_tags
-  cloud_monitoring_chart_location         = "${path.module}/chart/cloud-monitoring-agent"
+  cloud_monitoring_chart_location         = "${path.module}/chart/sysdig-agent"
   cloud_monitoring_resource_group_id      = var.cloud_monitoring_resource_group_id != null ? var.cloud_monitoring_resource_group_id : var.cluster_resource_group_id
   cloud_monitoring_agent_registry         = "icr.io/ext/sysdig/agent"
   cloud_monitoring_agent_namespace        = "ibm-observe"

@@ -63,13 +63,13 @@ variable "log_analysis_add_cluster_name" {
 # Ref https://github.com/logdna/logdna-agent-v2/blob/3.8/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering
 
 variable "log_analysis_agent_custom_line_inclusion" {
-  description = "Log Analysis agent custom configuration for line inclusion setting LOG_ANALYSIS_K8S_METADATA_LINE_INCLUSION."
+  description = "Log Analysis agent custom configuration for line inclusion setting LOGDNA_K8S_METADATA_LINE_INCLUSION."
   type        = string
   default     = null
 }
 
 variable "log_analysis_agent_custom_line_exclusion" {
-  description = "Log Analysis agent custom configuration for line exclusion setting LOG_ANALYSIS_K8S_METADATA_LINE_EXCLUSION."
+  description = "Log Analysis agent custom configuration for line exclusion setting LOGDNA_K8S_METADATA_LINE_EXCLUSION."
   type        = string
   default     = null
 }

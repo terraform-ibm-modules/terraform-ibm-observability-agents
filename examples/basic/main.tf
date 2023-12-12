@@ -124,7 +124,7 @@ module "observability_agents" {
   cloud_monitoring_metrics_filter = [{ type = "exclude", name = "metricA.*" }, { type = "include", name = "metricB.*" }]
   cloud_monitoring_agent_tags     = var.resource_tags
   # Log Analysis agent custom settings to setup Kubernetes metadata logs filtering by setting
-  # LOG_ANALYSIS_K8S_METADATA_LINE_INCLUSION and LOG_ANALYSIS_K8S_METADATA_LINE_EXCLUSION in the agent daemonset definition
+  # LOGDNA_K8S_METADATA_LINE_INCLUSION and LOGDNA_K8S_METADATA_LINE_EXCLUSION in the agent daemonset definition
   # Ref https://github.com/logdna/logdna-agent-v2/blob/3.8/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering
   log_analysis_agent_custom_line_exclusion = "label.app.kubernetes.io/name:sample-app\\, annotation.user:sample-user"
   log_analysis_agent_custom_line_inclusion = "namespace:default"

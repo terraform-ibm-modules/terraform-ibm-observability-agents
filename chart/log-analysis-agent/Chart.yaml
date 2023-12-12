@@ -1,7 +1,0 @@
-apiVersion: v2
-name: log-analysis-agent
-description: A Helm chart for a log analysis or activity tracker agent
-
-type: application
-
-version: 0.1.0

@@ -1,7 +1,0 @@
-apiVersion: v2
-name: cloud-monitoring-agent
-description: A Helm chart for a Cloud Monitoring agent
-
-type: application
-
-version: 0.1.0

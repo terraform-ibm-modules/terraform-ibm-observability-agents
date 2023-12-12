@@ -6,7 +6,7 @@
   "regexManagers": [
     {
       "fileMatch": [
-        "^chart/log-analysis-agent/values.yaml$"
+        "^chart/logdna-agent/values.yaml$"
       ],
       "matchStrings": [
         "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?tag: \"(?<currentValue>.*)\"\\s"

@@ -6,4 +6,4 @@ metadata:
 value: 1000000
 preemptionPolicy: PreemptLowerPriority
 globalDefault: false
-description: "Log Analysis Agent"
+description: "Logdna Agent"

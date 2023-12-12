@@ -42,9 +42,9 @@ spec:
             - name: LOGDNA_INGESTION_KEY
               valueFrom:
                 secretKeyRef:
-                  key: log-analysis-agent-key
+                  key: logdna-agent-key
                   name: {{ .Values.secret.name }}
-            {{- if ne .Values.metadata.name "log-analysis-agent-activity-tracker" }}
+            {{- if ne .Values.metadata.name "logdna-agent-activity-tracker" }}
             - name: LOGDNA_HOST
               value: logs.private.{{ .Values.env.region }}.logging.cloud.ibm.com
             {{- else }}
@@ -91,7 +91,7 @@ spec:
             limits:
               memory: 500Mi
           volumeMounts:
-            {{- if eq .Values.metadata.name "log-analysis-agent-activity-tracker" }}
+            {{- if eq .Values.metadata.name "logdna-agent-activity-tracker" }}
             - name: varlogat
               mountPath: /var/log/at
             {{- end }}
@@ -112,7 +112,7 @@ spec:
             - name: logdnahostname
               mountPath: /etc/logdna-hostname
       volumes:
-        {{- if eq .Values.metadata.name "log-analysis-agent-activity-tracker" }}
+        {{- if eq .Values.metadata.name "logdna-agent-activity-tracker" }}
         - name: varlogat
           hostPath:
             path: /var/log/at

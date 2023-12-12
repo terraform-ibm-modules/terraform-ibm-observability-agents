@@ -1,11 +1,11 @@
 kind: SecurityContextConstraints
 apiVersion: security.openshift.io/v1
 metadata:
-  name: ibm-privileged-scc-cloud-monitoring
+  name: ibm-privileged-scc-sysdig
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: cloud-monitoring-agent
-    app.kubernetes.io/instance: cloud-monitoring-agent
+    app.kubernetes.io/name: sysdig-agent
+    app.kubernetes.io/instance: sysdig-agent
     app.kubernetes.io/version: {{ .Values.image.version }}
 allowHostDirVolumePlugin: true
 allowHostIPC: true
@@ -35,6 +35,6 @@ seccompProfiles:
 supplementalGroups:
   type: RunAsAny
 users:
-- system:serviceaccount:{{ .Release.Namespace }}:cloud-monitoring-agent
+- system:serviceaccount:{{ .Release.Namespace }}:sysdig-agent
 volumes:
 - '*'

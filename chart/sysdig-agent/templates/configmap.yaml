@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: cloud-monitoring-agent
+  name: sysdig-agent
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/name: cloud-monitoring-agent
-    app.kubernetes.io/instance: cloud-monitoring-agent
+    app.kubernetes.io/name: sysdig-agent
+    app.kubernetes.io/instance: sysdig-agent
     app.kubernetes.io/version: {{ .Values.image.version }}
   annotations:
     {{- range .Values.checkov_skips }}
@@ -21,9 +21,9 @@ data:
     ### Agent tags
     tags: ibm.containers-kubernetes.cluster.name:{{ .Values.config.clustername }}
 
-    #### Cloud Monitoring Software related config ####
+    #### Sysdig Software related config ####
 
-    # Cloud Monitoring collector address
+    # Sysdig collector address
     collector: ingest.private.{{ .Values.config.region }}.monitoring.cloud.ibm.com
 
     # Collector TCP port

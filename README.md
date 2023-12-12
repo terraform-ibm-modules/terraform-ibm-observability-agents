@@ -85,9 +85,9 @@ custom_log_analysis_at_agent_line_inclusion = "namespace:default"
 The following is the corresponding DaemonSet configuration:
 
 ```text
-- name: LOG_ANALYSIS_K8S_METADATA_LINE_INCLUSION
+- name: LOGDNA_K8S_METADATA_LINE_INCLUSION
   value: "label.app.kubernetes.io/name:sample-app, annotation.user:sample-user"
-- name: LOG_ANALYSIS_K8S_METADATA_LINE_EXCLUSION
+- name: LOGDNA_K8S_METADATA_LINE_EXCLUSION
   value: "namespace:default"
 ```
 
