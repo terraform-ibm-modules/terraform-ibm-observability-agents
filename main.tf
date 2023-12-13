@@ -69,7 +69,7 @@ locals {
 
 resource "helm_release" "log_analysis_agent" {
   count            = var.log_analysis_enabled ? 1 : 0
-  name             = "log-analysis-agent"
+  name             = "logdna-agent"
   chart            = local.log_analysis_chart_location
   namespace        = local.log_analysis_agent_namespace
   create_namespace = true
@@ -142,7 +142,7 @@ resource "helm_release" "log_analysis_agent" {
 resource "helm_release" "cloud_monitoring_agent" {
   count = var.cloud_monitoring_enabled ? 1 : 0
 
-  name             = "cloud-monitoring-agent"
+  name             = "sysdig-agent"
   chart            = local.cloud_monitoring_chart_location
   namespace        = local.cloud_monitoring_agent_namespace
   create_namespace = true

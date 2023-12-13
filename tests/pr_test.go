@@ -16,6 +16,8 @@ const terraformDirOther = "examples/basic"
 var ignoreUpdates = []string{
 	"module.observability_agents.helm_release.log_analysis_agent[0]",
 	"module.observability_agents.helm_release.cloud_monitoring_agent[0]",
+	"module.observability_agents.helm_release.sysdig_agent[0]",
+	"module.observability_agents.helm_release.logdna_agent[0]",
 	"module.observability_agents.helm_release.log_analysis_agent_activity_tracker[0]",
 }
 
