@@ -128,7 +128,7 @@ resource "helm_release" "log_analysis_agent" {
   }
 
   provisioner "local-exec" {
-    command     = "${path.module}/scripts/confirm-rollout-status.sh log-analysis-agent ${local.log_analysis_agent_namespace}"
+    command     = "${path.module}/scripts/confirm-rollout-status.sh logdna-agent ${local.log_analysis_agent_namespace}"
     interpreter = ["/bin/bash", "-c"]
     environment = {
       KUBECONFIG = data.ibm_container_cluster_config.cluster_config.config_file_path
@@ -189,7 +189,7 @@ resource "helm_release" "cloud_monitoring_agent" {
   })]
 
   provisioner "local-exec" {
-    command     = "${path.module}/scripts/confirm-rollout-status.sh cloud-monitoring-agent ${local.cloud_monitoring_agent_namespace}"
+    command     = "${path.module}/scripts/confirm-rollout-status.sh sysdig-agent ${local.cloud_monitoring_agent_namespace}"
     interpreter = ["/bin/bash", "-c"]
     environment = {
       KUBECONFIG = data.ibm_container_cluster_config.cluster_config.config_file_path
