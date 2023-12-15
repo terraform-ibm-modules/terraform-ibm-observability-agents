@@ -1,4 +1,4 @@
-# The following moved blocks allow consumers to upgrade from v2 of the module without instances being destroyed
+# The following moved blocks allow consumers to upgrade without instances being destroyed
 
 moved {
   from = helm_release.logdna_agent[0]
