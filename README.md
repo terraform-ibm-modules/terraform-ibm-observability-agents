@@ -13,8 +13,17 @@ This module deploys the following observability agents to a Red Hat OpenShift Co
 - Logging agent
 - Monitoring agent
 
+<!-- Below content is automatically populated via pre-commit hook -->
+<!-- BEGIN OVERVIEW HOOK -->
+## Overview
+* [terraform-ibm-observability-agents](#terraform-ibm-observability-agents)
+* [Examples](./examples)
+    * [Deploy basic observability agents](./examples/basic)
+* [Contributing](#contributing)
+<!-- END OVERVIEW HOOK -->
 
-## Usage
+## terraform-ibm-observability-agents
+### Usage
 
 ```hcl
 # ############################################################################
@@ -111,11 +120,6 @@ You need the following permissions to run this module.
       - `Manager` service access
 
 <!-- END MODULE HOOK -->
-<!-- BEGIN EXAMPLES HOOK -->
-## Examples
-
-- [ Deploy basic observability agents](examples/basic)
-<!-- END EXAMPLES HOOK -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ### Requirements
 
