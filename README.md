@@ -64,10 +64,10 @@ module "observability_agents" {
   # update this with the Id of your IBM Cloud resource group
   cluster_resource_group_id = "resource group id"
   # update these values with names and keys from the observability instances provisioning
-  logdna_instance_name      = "logdna instance name"
-  logdna_ingestion_key      = "logdna ingestion key"
-  sysdig_instance_name      = "sysdig name"
-  sysdig_access_key         = "sysdig access key"
+  log_analysis_instance_name      = "logdna instance name"
+  log_analysis_ingestion_key      = "logdna ingestion key"
+  cloud_monitoring_instance_name      = "sysdig name"
+  cloud_monitoring_access_key         = "sysdig access key"
 }
 ```
 
@@ -78,8 +78,8 @@ You can configure the logging agent to filter log lines according to the Kuberne
 For example, to set the agent to return all log lines coming from the `default` Kubernetes namespace and exclude anything with a label `app.kubernetes.io/name` with value `sample-app` or an annotation `annotation.user` with value `sample-user`, include these parameters:
 
 ```text
-custom_logdna_at_agent_line_exclusion = "label.app.kubernetes.io/name:sample-app\\, annotation.user:sample-user"
-custom_logdna_at_agent_line_inclusion = "namespace:default"
+custom_log_analysis_at_agent_line_exclusion = "label.app.kubernetes.io/name:sample-app\\, annotation.user:sample-user"
+custom_log_analysis_at_agent_line_inclusion = "namespace:default"
 ```
 
 The following is the corresponding DaemonSet configuration:
@@ -133,37 +133,37 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [helm_release.logdna_agent](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
-| [helm_release.sysdig_agent](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [helm_release.cloud_monitoring_agent](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [helm_release.log_analysis_agent](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [ibm_container_cluster_config.cluster_config](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/container_cluster_config) | data source |
 | [ibm_container_vpc_cluster.cluster](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/container_vpc_cluster) | data source |
-| [ibm_resource_instance.logdna_instance](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/resource_instance) | data source |
-| [ibm_resource_instance.sysdig_instance](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/resource_instance) | data source |
+| [ibm_resource_instance.cloud_monitoring_instance](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/resource_instance) | data source |
+| [ibm_resource_instance.log_analysis_instance](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/resource_instance) | data source |
 
 ### Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_cloud_monitoring_access_key"></a> [cloud\_monitoring\_access\_key](#input\_cloud\_monitoring\_access\_key) | Access key used by the IBM Cloud Monitoring agent to communicate with the instance | `string` | `null` | no |
+| <a name="input_cloud_monitoring_add_cluster_name"></a> [cloud\_monitoring\_add\_cluster\_name](#input\_cloud\_monitoring\_add\_cluster\_name) | If true, configure the cloud monitoring agent to attach a tag containing the cluster name to all metric data. | `bool` | `true` | no |
+| <a name="input_cloud_monitoring_agent_tags"></a> [cloud\_monitoring\_agent\_tags](#input\_cloud\_monitoring\_agent\_tags) | array of tags to group the host metrics pushed by the cloud monitoring agent | `list(string)` | `[]` | no |
+| <a name="input_cloud_monitoring_agent_version"></a> [cloud\_monitoring\_agent\_version](#input\_cloud\_monitoring\_agent\_version) | IBM Cloud Monitoring Agent Version. To lookup version run: `ibmcloud cr images --restrict ext/sysdig/agent`. If null, the default value is used. | `string` | `"12.18.0"` | no |
+| <a name="input_cloud_monitoring_enabled"></a> [cloud\_monitoring\_enabled](#input\_cloud\_monitoring\_enabled) | Deploy IBM Cloud Monitoring agent | `bool` | `true` | no |
+| <a name="input_cloud_monitoring_instance_name"></a> [cloud\_monitoring\_instance\_name](#input\_cloud\_monitoring\_instance\_name) | The name of the IBM Cloud Monitoring instance to use. Required if Cloud Monitoring is enabled | `string` | `null` | no |
+| <a name="input_cloud_monitoring_metrics_filter"></a> [cloud\_monitoring\_metrics\_filter](#input\_cloud\_monitoring\_metrics\_filter) | To filter custom metrics, specify the Cloud Monitoring metrics to include or to exclude. See  https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_inc_exc_metrics. | <pre>list(object({<br>    type = string<br>    name = string<br>  }))</pre> | `[]` | no |
+| <a name="input_cloud_monitoring_resource_group_id"></a> [cloud\_monitoring\_resource\_group\_id](#input\_cloud\_monitoring\_resource\_group\_id) | Resource group that the IBM Cloud Monitoring is in. Defaults to Clusters group | `string` | `null` | no |
 | <a name="input_cluster_config_endpoint_type"></a> [cluster\_config\_endpoint\_type](#input\_cluster\_config\_endpoint\_type) | Specify which type of endpoint to use for for cluster config access: 'default', 'private', 'vpe', 'link'. 'default' value will use the default endpoint of the cluster. | `string` | `"default"` | no |
 | <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | Cluster id to add to agents to | `string` | n/a | yes |
 | <a name="input_cluster_resource_group_id"></a> [cluster\_resource\_group\_id](#input\_cluster\_resource\_group\_id) | Resource group of the cluster | `string` | n/a | yes |
-| <a name="input_logdna_add_cluster_name"></a> [logdna\_add\_cluster\_name](#input\_logdna\_add\_cluster\_name) | If true, configure the logdna agent to attach a tag containing the cluster name to all log messages. | `bool` | `true` | no |
-| <a name="input_logdna_agent_custom_line_exclusion"></a> [logdna\_agent\_custom\_line\_exclusion](#input\_logdna\_agent\_custom\_line\_exclusion) | LogDNA agent custom configuration for line exclusion setting LOGDNA\_K8S\_METADATA\_LINE\_EXCLUSION. | `string` | `null` | no |
-| <a name="input_logdna_agent_custom_line_inclusion"></a> [logdna\_agent\_custom\_line\_inclusion](#input\_logdna\_agent\_custom\_line\_inclusion) | LogDNA agent custom configuration for line inclusion setting LOGDNA\_K8S\_METADATA\_LINE\_INCLUSION. | `string` | `null` | no |
-| <a name="input_logdna_agent_tags"></a> [logdna\_agent\_tags](#input\_logdna\_agent\_tags) | array of tags to group the host logs pushed by the logdna agent | `list(string)` | `[]` | no |
-| <a name="input_logdna_agent_version"></a> [logdna\_agent\_version](#input\_logdna\_agent\_version) | Version of the agent to deploy. To lookup version run: `ibmcloud cr images --restrict ext/logdna-agent`. If null, the default value is used. | `string` | `"3.9.1-20231214.d51836ef681843f3"` | no |
-| <a name="input_logdna_enabled"></a> [logdna\_enabled](#input\_logdna\_enabled) | Deploy IBM Cloud Logging agent | `bool` | `true` | no |
-| <a name="input_logdna_ingestion_key"></a> [logdna\_ingestion\_key](#input\_logdna\_ingestion\_key) | Ingestion key for the IBM Cloud Logging agent to communicate with the instance | `string` | `null` | no |
-| <a name="input_logdna_instance_name"></a> [logdna\_instance\_name](#input\_logdna\_instance\_name) | IBM Cloud Logging instance to use. Required if LogDNA is enabled | `string` | `null` | no |
-| <a name="input_logdna_resource_group_id"></a> [logdna\_resource\_group\_id](#input\_logdna\_resource\_group\_id) | Resource group the IBM Cloud Logging instance is in. Defaults to Clusters group | `string` | `null` | no |
-| <a name="input_sysdig_access_key"></a> [sysdig\_access\_key](#input\_sysdig\_access\_key) | Access key used by the IBM Cloud Monitoring agent to communicate with the instance | `string` | `null` | no |
-| <a name="input_sysdig_add_cluster_name"></a> [sysdig\_add\_cluster\_name](#input\_sysdig\_add\_cluster\_name) | If true, configure the sysdig agent to attach a tag containing the cluster name to all metric data. | `bool` | `true` | no |
-| <a name="input_sysdig_agent_tags"></a> [sysdig\_agent\_tags](#input\_sysdig\_agent\_tags) | array of tags to group the host metrics pushed by the sysdig agent | `list(string)` | `[]` | no |
-| <a name="input_sysdig_agent_version"></a> [sysdig\_agent\_version](#input\_sysdig\_agent\_version) | IBM Cloud Monitoring Agent Version. To lookup version run: `ibmcloud cr images --restrict ext/sysdig/agent`. If null, the default value is used. | `string` | `"12.18.0"` | no |
-| <a name="input_sysdig_enabled"></a> [sysdig\_enabled](#input\_sysdig\_enabled) | Deploy IBM Cloud Monitoring agent | `bool` | `true` | no |
-| <a name="input_sysdig_instance_name"></a> [sysdig\_instance\_name](#input\_sysdig\_instance\_name) | The name of the IBM Cloud Monitoring instance to use. Required if Sysdig is enabled | `string` | `null` | no |
-| <a name="input_sysdig_metrics_filter"></a> [sysdig\_metrics\_filter](#input\_sysdig\_metrics\_filter) | To filter custom metrics, specify the Sysdig metrics to include or to exclude. See  https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_inc_exc_metrics. | <pre>list(object({<br>    type = string<br>    name = string<br>  }))</pre> | `[]` | no |
-| <a name="input_sysdig_resource_group_id"></a> [sysdig\_resource\_group\_id](#input\_sysdig\_resource\_group\_id) | Resource group that the IBM Cloud Monitoring is in. Defaults to Clusters group | `string` | `null` | no |
+| <a name="input_log_analysis_add_cluster_name"></a> [log\_analysis\_add\_cluster\_name](#input\_log\_analysis\_add\_cluster\_name) | If true, configure the log analysis agent to attach a tag containing the cluster name to all log messages. | `bool` | `true` | no |
+| <a name="input_log_analysis_agent_custom_line_exclusion"></a> [log\_analysis\_agent\_custom\_line\_exclusion](#input\_log\_analysis\_agent\_custom\_line\_exclusion) | Log Analysis agent custom configuration for line exclusion setting LOGDNA\_K8S\_METADATA\_LINE\_EXCLUSION. | `string` | `null` | no |
+| <a name="input_log_analysis_agent_custom_line_inclusion"></a> [log\_analysis\_agent\_custom\_line\_inclusion](#input\_log\_analysis\_agent\_custom\_line\_inclusion) | Log Analysis agent custom configuration for line inclusion setting LOGDNA\_K8S\_METADATA\_LINE\_INCLUSION. | `string` | `null` | no |
+| <a name="input_log_analysis_agent_tags"></a> [log\_analysis\_agent\_tags](#input\_log\_analysis\_agent\_tags) | array of tags to group the host logs pushed by the log analysis agent | `list(string)` | `[]` | no |
+| <a name="input_log_analysis_agent_version"></a> [log\_analysis\_agent\_version](#input\_log\_analysis\_agent\_version) | Version of the agent to deploy. To lookup version run: `ibmcloud cr images --restrict ext/logdna-agent`. If null, the default value is used. | `string` | `"3.9.1-20231214.d51836ef681843f3"` | no |
+| <a name="input_log_analysis_enabled"></a> [log\_analysis\_enabled](#input\_log\_analysis\_enabled) | Deploy IBM Cloud Logging agent | `bool` | `true` | no |
+| <a name="input_log_analysis_ingestion_key"></a> [log\_analysis\_ingestion\_key](#input\_log\_analysis\_ingestion\_key) | Ingestion key for the IBM Cloud Logging agent to communicate with the instance | `string` | `null` | no |
+| <a name="input_log_analysis_instance_name"></a> [log\_analysis\_instance\_name](#input\_log\_analysis\_instance\_name) | IBM Cloud Logging instance to use. Required if Log Analysis is enabled | `string` | `null` | no |
+| <a name="input_log_analysis_resource_group_id"></a> [log\_analysis\_resource\_group\_id](#input\_log\_analysis\_resource\_group\_id) | Resource group the IBM Cloud Logging instance is in. Defaults to Clusters group | `string` | `null` | no |
 
 ### Outputs
 

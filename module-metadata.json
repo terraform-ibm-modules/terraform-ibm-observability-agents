@@ -35,28 +35,28 @@
       "cloud_data_type": "resource_group",
       "computed": true
     },
-    "logdna_add_cluster_name": {
-      "name": "logdna_add_cluster_name",
+    "log_analysis_add_cluster_name": {
+      "name": "log_analysis_add_cluster_name",
       "type": "bool",
-      "description": "If true, configure the logdna agent to attach a tag containing the cluster name to all log messages.",
+      "description": "If true, configure the log analysis agent to attach a tag containing the cluster name to all log messages.",
       "default": true,
       "pos": {
         "filename": "variables.tf",
         "line": 56
       }
     },
-    "logdna_agent_tags": {
-      "name": "logdna_agent_tags",
+    "log_analysis_agent_tags": {
+      "name": "log_analysis_agent_tags",
       "type": "list(string)",
-      "description": "array of tags to group the host logs pushed by the logdna agent",
+      "description": "array of tags to group the host logs pushed by the log analysis agent",
       "default": [],
       "pos": {
         "filename": "variables.tf",
         "line": 42
       }
     },
-    "logdna_agent_version": {
-      "name": "logdna_agent_version",
+    "log_analysis_agent_version": {
+      "name": "log_analysis_agent_version",
       "type": "string",
       "description": "Version of the agent to deploy. To lookup version run: `ibmcloud cr images --restrict ext/logdna-agent`. If null, the default value is used.",
       "default": "3.8.9-20231013.519bb7ae64d91f1f",
@@ -65,48 +65,48 @@
         "line": 34
       }
     },
-    "logdna_enabled": {
-      "name": "logdna_enabled",
+    "log_analysis_enabled": {
+      "name": "log_analysis_enabled",
       "type": "bool",
       "description": "Deploy IBM Cloud Logging agent",
       "default": true,
       "source": [
-        "data.ibm_resource_instance.logdna_instance.count",
-        "helm_release.logdna_agent.count"
+        "data.ibm_resource_instance.log_analysis_instance.count",
+        "helm_release.log_analysis_agent.count"
       ],
       "pos": {
         "filename": "variables.tf",
         "line": 15
       }
     },
-    "logdna_ingestion_key": {
-      "name": "logdna_ingestion_key",
+    "log_analysis_ingestion_key": {
+      "name": "log_analysis_ingestion_key",
       "type": "string",
       "description": "Ingestion key for the IBM Cloud Logging agent to communicate with the instance",
       "sensitive": true,
       "source": [
-        "data.ibm_resource_instance.logdna_instance.depends_on"
+        "data.ibm_resource_instance.log_analysis_instance.depends_on"
       ],
       "pos": {
         "filename": "variables.tf",
         "line": 49
       }
     },
-    "logdna_instance_name": {
-      "name": "logdna_instance_name",
+    "log_analysis_instance_name": {
+      "name": "log_analysis_instance_name",
       "type": "string",
-      "description": "IBM Cloud Logging instance to use. Required if LogDNA is enabled",
+      "description": "IBM Cloud Logging instance to use. Required if Log Analysis is enabled",
       "required": true,
       "source": [
-        "data.ibm_resource_instance.logdna_instance.name"
+        "data.ibm_resource_instance.log_analysis_instance.name"
       ],
       "pos": {
         "filename": "variables.tf",
         "line": 21
       }
     },
-    "logdna_resource_group_id": {
-      "name": "logdna_resource_group_id",
+    "log_analysis_resource_group_id": {
+      "name": "log_analysis_resource_group_id",
       "type": "string",
       "description": "Resource group the IBM Cloud Logging instance is in. Defaults to Clusters group",
       "pos": {
@@ -114,21 +114,21 @@
         "line": 28
       }
     },
-    "sysdig_access_key": {
-      "name": "sysdig_access_key",
+    "cloud_monitoring_access_key": {
+      "name": "cloud_monitoring_access_key",
       "type": "string",
       "description": "Access key used by the IBM Cloud Monitoring agent to communicate with the instance",
       "sensitive": true,
       "source": [
-        "data.ibm_resource_instance.sysdig_instance.depends_on"
+        "data.ibm_resource_instance.cloud_monitoring_instance.depends_on"
       ],
       "pos": {
         "filename": "variables.tf",
         "line": 88
       }
     },
-    "sysdig_agent_version": {
-      "name": "sysdig_agent_version",
+    "cloud_monitoring_agent_version": {
+      "name": "cloud_monitoring_agent_version",
       "type": "string",
       "description": "IBM Cloud Monitoring Agent Version. To lookup version run: `ibmcloud cr images --restrict ext/sysdig/agent`. If null, the default value is used.",
       "default": "12.16.3",
@@ -137,48 +137,48 @@
         "line": 80
       }
     },
-    "sysdig_enabled": {
-      "name": "sysdig_enabled",
+    "cloud_monitoring_enabled": {
+      "name": "cloud_monitoring_enabled",
       "type": "bool",
       "description": "Deploy IBM Cloud Monitoring agent",
       "default": true,
       "source": [
-        "data.ibm_resource_instance.sysdig_instance.count",
-        "helm_release.sysdig_agent.count"
+        "data.ibm_resource_instance.cloud_monitoring_instance.count",
+        "helm_release.cloud_monitoring_agent.count"
       ],
       "pos": {
         "filename": "variables.tf",
         "line": 62
       }
     },
-    "sysdig_instance_name": {
-      "name": "sysdig_instance_name",
+    "cloud_monitoring_instance_name": {
+      "name": "cloud_monitoring_instance_name",
       "type": "string",
-      "description": "The name of the IBM Cloud Monitoring instance to use. Required if Sysdig is enabled",
+      "description": "The name of the IBM Cloud Monitoring instance to use. Required if Cloud Monitoring is enabled",
       "required": true,
       "source": [
-        "data.ibm_resource_instance.sysdig_instance.name"
+        "data.ibm_resource_instance.cloud_monitoring_instance.name"
       ],
       "pos": {
         "filename": "variables.tf",
         "line": 68
       }
     },
-    "sysdig_metrics_filter": {
-      "name": "sysdig_metrics_filter",
+    "cloud_monitoring_metrics_filter": {
+      "name": "cloud_monitoring_metrics_filter",
       "type": "list(object({\n    type = string\n    name = string\n  }))",
-      "description": "To filter custom metrics, specify the Sysdig metrics to include or to exclude. See  https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_inc_exc_metrics.",
+      "description": "To filter custom metrics, specify the Cloud Monitoring metrics to include or to exclude. See  https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_inc_exc_metrics.",
       "default": [],
       "source": [
-        "helm_release.sysdig_agent.values"
+        "helm_release.cloud_monitoring_agent.values"
       ],
       "pos": {
         "filename": "variables.tf",
         "line": 95
       }
     },
-    "sysdig_resource_group_id": {
-      "name": "sysdig_resource_group_id",
+    "cloud_monitoring_resource_group_id": {
+      "name": "cloud_monitoring_resource_group_id",
       "type": "string",
       "description": "Resource group that the IBM Cloud Monitoring is in. Defaults to Clusters group",
       "pos": {
@@ -206,12 +206,12 @@
     }
   },
   "managed_resources": {
-    "helm_release.logdna_agent": {
+    "helm_release.log_analysis_agent": {
       "mode": "managed",
       "type": "helm_release",
-      "name": "logdna_agent",
+      "name": "log_analysis_agent",
       "attributes": {
-        "count": "logdna_enabled"
+        "count": "log_analysis_enabled"
       },
       "provider": {
         "name": "helm"
@@ -221,13 +221,13 @@
         "line": 68
       }
     },
-    "helm_release.sysdig_agent": {
+    "helm_release.cloud_monitoring_agent": {
       "mode": "managed",
       "type": "helm_release",
-      "name": "sysdig_agent",
+      "name": "cloud_monitoring_agent",
       "attributes": {
-        "count": "sysdig_enabled",
-        "values": "sysdig_metrics_filter"
+        "count": "cloud_monitoring_enabled",
+        "values": "cloud_monitoring_metrics_filter"
       },
       "provider": {
         "name": "helm"
@@ -271,14 +271,14 @@
         "line": 6
       }
     },
-    "data.ibm_resource_instance.logdna_instance": {
+    "data.ibm_resource_instance.log_analysis_instance": {
       "mode": "data",
       "type": "ibm_resource_instance",
-      "name": "logdna_instance",
+      "name": "log_analysis_instance",
       "attributes": {
-        "count": "logdna_enabled",
-        "depends_on": "logdna_ingestion_key",
-        "name": "logdna_instance_name"
+        "count": "log_analysis_enabled",
+        "depends_on": "log_analysis_ingestion_key",
+        "name": "log_analysis_instance_name"
       },
       "provider": {
         "name": "ibm"
@@ -288,14 +288,14 @@
         "line": 27
       }
     },
-    "data.ibm_resource_instance.sysdig_instance": {
+    "data.ibm_resource_instance.cloud_monitoring_instance": {
       "mode": "data",
       "type": "ibm_resource_instance",
-      "name": "sysdig_instance",
+      "name": "cloud_monitoring_instance",
       "attributes": {
-        "count": "sysdig_enabled",
-        "depends_on": "sysdig_access_key",
-        "name": "sysdig_instance_name"
+        "count": "cloud_monitoring_enabled",
+        "depends_on": "cloud_monitoring_access_key",
+        "name": "cloud_monitoring_instance_name"
       },
       "provider": {
         "name": "ibm"
