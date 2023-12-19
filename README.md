@@ -13,8 +13,17 @@ This module deploys the following observability agents to a Red Hat OpenShift Co
 - Logging agent
 - Monitoring agent
 
+<!-- Below content is automatically populated via pre-commit hook -->
+<!-- BEGIN OVERVIEW HOOK -->
+## Overview
+* [terraform-ibm-observability-agents](#terraform-ibm-observability-agents)
+* [Examples](./examples)
+    * [Deploy basic observability agents](./examples/basic)
+* [Contributing](#contributing)
+<!-- END OVERVIEW HOOK -->
 
-## Usage
+## terraform-ibm-observability-agents
+### Usage
 
 ```hcl
 # ############################################################################
@@ -71,7 +80,7 @@ module "observability_agents" {
 }
 ```
 
-## Configuration for Kubernetes metadata filtering in the logging agent
+### Configuration for Kubernetes metadata filtering in the logging agent
 
 You can configure the logging agent to filter log lines according to the Kubernetes resources metadata by setting the exclusion and inclusion parameters.
 
@@ -93,7 +102,7 @@ The following is the corresponding DaemonSet configuration:
 
 For more information, see [Configuration for Kubernetes Metadata Filtering](https://github.com/logdna/logdna-agent-v2/blob/3.8/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering).
 
-## Required IAM access policies
+### Required IAM access policies
 You need the following permissions to run this module.
 
 - IAM Services
@@ -111,11 +120,6 @@ You need the following permissions to run this module.
       - `Manager` service access
 
 <!-- END MODULE HOOK -->
-<!-- BEGIN EXAMPLES HOOK -->
-## Examples
-
-- [ Deploy basic observability agents](examples/basic)
-<!-- END EXAMPLES HOOK -->
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ### Requirements
 
