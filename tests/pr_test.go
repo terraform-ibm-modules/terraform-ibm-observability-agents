@@ -14,9 +14,13 @@ const resourceGroup = "geretain-test-observability-agents"
 const terraformDirOther = "examples/basic"
 
 var ignoreUpdates = []string{
-	"module.observability_agents.helm_release.logdna_agent[0]",
 	"module.observability_agents.helm_release.sysdig_agent[0]",
+	"module.observability_agents.helm_release.logdna_agent[0]",
 	"module.observability_agents.helm_release.logdna_agent_activity_tracker[0]",
+	"module.observability_agents.helm_release.log_analysis_agent[0]",
+	"module.observability_agents.helm_release.cloud_monitoring_agent[0]",
+	"ibm_is_subnet.testacc_subnet",
+	"module.observability_agents.helm_release.log_analysis_agent_activity_tracker[0]",
 }
 
 var extTerraformVars = map[string]interface{}{}

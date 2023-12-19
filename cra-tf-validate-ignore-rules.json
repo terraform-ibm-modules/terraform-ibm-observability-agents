@@ -11,6 +11,12 @@
             "description:": "Check whether OpenShift clusters are accessible only by using private endpoints",
             "ignore_reason": "This rule is not relevant to the module itself, just the cluster resource that is used in the example that is scanned",
             "is_valid": false
+        },
+        {
+            "scc_rule_id": "rule-64c0bea0-8760-4a6b-a56c-ee375a48961e",
+            "description:": "Check whether Virtual Private Cloud (VPC) has no public gateways attached",
+            "ignore_reason": "This rule is not relevant to the module itself, just the VPC resource that is used in the example that is scanned",
+            "is_valid": false
         }
     ]
 }
