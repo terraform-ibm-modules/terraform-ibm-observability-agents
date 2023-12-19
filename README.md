@@ -80,7 +80,7 @@ module "observability_agents" {
 }
 ```
 
-## Configuration for Kubernetes metadata filtering in the logging agent
+### Configuration for Kubernetes metadata filtering in the logging agent
 
 You can configure the logging agent to filter log lines according to the Kubernetes resources metadata by setting the exclusion and inclusion parameters.
 
@@ -102,7 +102,7 @@ The following is the corresponding DaemonSet configuration:
 
 For more information, see [Configuration for Kubernetes Metadata Filtering](https://github.com/logdna/logdna-agent-v2/blob/3.8/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering).
 
-## Required IAM access policies
+### Required IAM access policies
 You need the following permissions to run this module.
 
 - IAM Services
