@@ -14,7 +14,7 @@ module "resource_group" {
 ##############################################################################
 
 module "observability_instances" {
-  source = "git::https://github.com/terraform-ibm-modules/terraform-ibm-observability-instances?ref=v2.10.3"
+  source = "git::https://github.com/terraform-ibm-modules/terraform-ibm-observability-instances?ref=v2.11.0"
   providers = {
     logdna.at = logdna.at
     logdna.ld = logdna.ld
