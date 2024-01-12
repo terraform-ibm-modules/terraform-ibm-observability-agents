@@ -6,6 +6,7 @@ image:
 config:
   clustername: "test"
   host: "ingest.private.us-south.monitoring.cloud.ibm.com"
+  tags: ""
 secret:
   key: ""
   name: "sysdig-agent"

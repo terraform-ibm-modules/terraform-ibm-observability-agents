@@ -14,8 +14,10 @@ data:
     new_k8s: true
     k8s_cluster_name: {{ .Values.config.clustername }}
 
+    {{- if .Values.config.tags }}
     ### Agent tags
-    tags: ibm.containers-kubernetes.cluster.name:{{ .Values.config.clustername }}
+    tags: {{.Values.config.tags}}
+    {{- end }}
 
     #### Sysdig Software related config ####
 

@@ -25,7 +25,7 @@ locals {
   log_analysis_host               = var.log_analysis_endpoint_type == "private" ? "logs.private.${var.log_analysis_instance_region}.logging.cloud.ibm.com" : "logs.${var.log_analysis_instance_region}.logging.cloud.ibm.com"
   cloud_monitoring_chart_location = "${path.module}/chart/sysdig-agent"
   cloud_monitoring_agent_registry = "icr.io/ext/sysdig/agent"
-  cloud_monitoring_agent_tags     = var.cloud_monitoring_add_cluster_name ? concat([local.cluster_name], var.cloud_monitoring_agent_tags) : var.cloud_monitoring_agent_tags
+  cloud_monitoring_agent_tags     = var.cloud_monitoring_add_cluster_name ? concat(["ibm.containers-kubernetes.cluster.name:${local.cluster_name}"], var.cloud_monitoring_agent_tags) : var.cloud_monitoring_agent_tags
   cloud_monitoring_host           = var.cloud_monitoring_endpoint_type == "private" ? "ingest.private.${var.cloud_monitoring_instance_region}.monitoring.cloud.ibm.com" : "logs.${var.cloud_monitoring_instance_region}.monitoring.cloud.ibm.com"
 
   # VARIABLE VALIDATION
@@ -167,7 +167,7 @@ resource "helm_release" "cloud_monitoring_agent" {
     value = var.cloud_monitoring_access_key
   }
   set {
-    name  = "agent.tags"
+    name  = "config.tags"
     type  = "string"
     value = join("\\,", local.cloud_monitoring_agent_tags)
   }
