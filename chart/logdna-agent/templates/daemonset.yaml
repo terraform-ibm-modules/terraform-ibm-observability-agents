@@ -7,6 +7,10 @@ metadata:
     app.kubernetes.io/name: "{{ .Values.metadata.name }}"
     app.kubernetes.io/instance: "{{ .Values.metadata.name }}"
     app.kubernetes.io/version: {{ .Values.image.version }}
+  annotations:
+    {{- range .Values.checkov_skips }}
+    {{- . | toYaml | nindent 4 -}}
+    {{- end }}
 spec:
   updateStrategy:
     type: RollingUpdate
@@ -44,13 +48,8 @@ spec:
                 secretKeyRef:
                   key: logdna-agent-key
                   name: {{ .Values.secret.name }}
-            {{- if ne .Values.metadata.name "logdna-agent-activity-tracker" }}
             - name: LOGDNA_HOST
-              value: logs.private.{{ .Values.env.region }}.logging.cloud.ibm.com
-            {{- else }}
-            - name: LOGDNA_HOST
-              value: ingest.private.{{ .Values.env.region }}.atracker.cloud.ibm.com
-            {{- end }}
+              value: {{ .Values.env.host }}
             - name: LOGDNA_LOOKBACK
               value: smallfiles
             {{- if .Values.agent.tags }}
@@ -58,7 +57,7 @@ spec:
               value: {{.Values.agent.tags}}
             {{- end }}
             - name: LOGDNA_DB_PATH
-              value: /var/lib/logdna
+              value: {{.Values.agent.dbPath}}
             - name: LOGDNA_REDACT_REGEX
               # regex to redact secret values from logs. The regex is set to match base64-encoded values for each of {"kid":, {"typ":, and {"alg":, respectively.
               value: 'eyJ(?:raWQ|0eXA|hbGc)iOi[^"]+'
@@ -91,16 +90,12 @@ spec:
             limits:
               memory: 500Mi
           volumeMounts:
-            {{- if eq .Values.metadata.name "logdna-agent-activity-tracker" }}
-            - name: varlogat
-              mountPath: /var/log/at
-            {{- end }}
             - name: varlog
               mountPath: /var/log
             - name: vardata
               mountPath: /var/data
             - name: varliblogdna
-              mountPath: /var/lib/logdna
+              mountPath: {{.Values.agent.dbPath}}
             - name: varlibdockercontainers
               mountPath: /var/lib/docker/containers
               readOnly: true
@@ -112,11 +107,6 @@ spec:
             - name: logdnahostname
               mountPath: /etc/logdna-hostname
       volumes:
-        {{- if eq .Values.metadata.name "logdna-agent-activity-tracker" }}
-        - name: varlogat
-          hostPath:
-            path: /var/log/at
-        {{- end }}
         - name: varlog
           hostPath:
             path: /var/log
@@ -125,7 +115,7 @@ spec:
             path: /var/data
         - name: varliblogdna
           hostPath:
-            path: /var/lib/logdna
+            path: {{.Values.agent.dbPath}}
         - name: varlibdockercontainers
           hostPath:
             path: /var/lib/docker/containers
@@ -139,4 +129,10 @@ spec:
           hostPath:
             path: /etc/hostname
       tolerations:
-        - operator: Exists
+      {{- range $val := .Values.tolerations }}
+        - effect: {{ $val.effect | quote }}
+          key: {{ $val.key | quote }}
+          value: {{ $val.value | quote }}
+          operator: {{ $val.operator | quote }}
+          tolerationSeconds: {{ $val.tolerationSeconds }}
+      {{- end}}
