@@ -110,13 +110,6 @@ variable "log_analysis_agent_namespace" {
   nullable    = false
 }
 
-variable "log_analysis_agent_db_path" {
-  description = "The directory in which the agent will store its state database."
-  type        = string
-  default     = "/var/lib/logdna"
-  nullable    = false
-}
-
 variable "log_analysis_agent_tolerations" {
   description = "List of tolerations to apply to Log Analysis agent."
   type = list(object({

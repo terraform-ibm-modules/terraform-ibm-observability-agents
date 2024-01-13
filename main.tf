@@ -18,11 +18,14 @@ data "ibm_container_cluster_config" "cluster_config" {
 
 locals {
   # LOCALS
-  cluster_name                    = data.ibm_container_vpc_cluster.cluster.resource_name # Not publically documented in provider. See https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4485
-  log_analysis_chart_location     = "${path.module}/chart/logdna-agent"
-  log_analysis_agent_registry     = "icr.io/ext/logdna-agent"
-  log_analysis_agent_tags         = var.log_analysis_add_cluster_name ? concat([local.cluster_name], var.log_analysis_agent_tags) : var.log_analysis_agent_tags
-  log_analysis_host               = var.log_analysis_endpoint_type == "private" ? "logs.private.${var.log_analysis_instance_region}.logging.cloud.ibm.com" : "logs.${var.log_analysis_instance_region}.logging.cloud.ibm.com"
+  cluster_name                = data.ibm_container_vpc_cluster.cluster.resource_name # Not publically documented in provider. See https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4485
+  log_analysis_chart_location = "${path.module}/chart/logdna-agent"
+  log_analysis_agent_registry = "icr.io/ext/logdna-agent"
+  log_analysis_agent_tags     = var.log_analysis_add_cluster_name ? concat([local.cluster_name], var.log_analysis_agent_tags) : var.log_analysis_agent_tags
+  log_analysis_host           = var.log_analysis_endpoint_type == "private" ? "logs.private.${var.log_analysis_instance_region}.logging.cloud.ibm.com" : "logs.${var.log_analysis_instance_region}.logging.cloud.ibm.com"
+  # The directory in which the logdna agent will store its state database.
+  # Note that the agent must have write access to the directory and be a persistent volume.
+  log_analysis_agent_db_path      = "/var/lib/logdna"
   cloud_monitoring_chart_location = "${path.module}/chart/sysdig-agent"
   cloud_monitoring_agent_registry = "icr.io/ext/sysdig/agent"
   cloud_monitoring_agent_tags     = var.cloud_monitoring_add_cluster_name ? concat(["ibm.containers-kubernetes.cluster.name:${local.cluster_name}"], var.cloud_monitoring_agent_tags) : var.cloud_monitoring_agent_tags
@@ -85,7 +88,7 @@ resource "helm_release" "log_analysis_agent" {
   set {
     name  = "agent.dbPath"
     type  = "string"
-    value = var.log_analysis_agent_db_path
+    value = local.log_analysis_agent_db_path
   }
 
   values = [
