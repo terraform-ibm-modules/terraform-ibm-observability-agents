@@ -29,11 +29,23 @@ spec:
     spec:
       serviceAccountName: "{{ .Values.metadata.name }}"
       priorityClassName: "{{ .Values.metadata.name }}-ds-priority"
+      initContainers:
+        - name: logdna-db-permissions
+          image: icr.io/goldeneye_images/ubi8-cluster-tools:stable
+          imagePullPolicy: IfNotPresent # Not setting to 'Always' as it can prevent a pod from starting if the image registry can not be reached.
+          command: ["sh", "-c", "chmod -R 775 {{.Values.agent.dbPath}} && chown -R 5000:5000 {{.Values.agent.dbPath}}"]
+          securityContext:
+            privileged: true
+            runAsUser: 0 # must run as root to set directory privileges up for agent container
+          volumeMounts:
+          - name: varliblogdna
+            mountPath: {{.Values.agent.dbPath}}
       containers:
         - name: "{{ .Values.metadata.name }}"
           image: '{{ .Values.image.registry }}:{{ required "Agent version must be provided" .Values.image.version }}'
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent # Not setting to 'Always' as it can prevent a pod from starting if the image registry can not be reached.
           securityContext:
+            privileged: true
             # run the agent as non-root
             runAsUser: 5000
             runAsGroup: 5000
