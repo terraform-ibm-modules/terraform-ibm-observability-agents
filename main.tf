@@ -56,6 +56,11 @@ resource "helm_release" "log_analysis_agent" {
   force_update     = true
 
   set {
+    name  = "metadata.name"
+    type  = "string"
+    value = var.log_analysis_agent_name
+  }
+  set {
     name  = "image.version"
     type  = "string"
     value = var.log_analysis_agent_version
@@ -139,6 +144,11 @@ resource "helm_release" "cloud_monitoring_agent" {
   force_update     = true
   reset_values     = true
 
+  set {
+    name  = "metadata.name"
+    type  = "string"
+    value = var.cloud_monitoring_agent_name
+  }
   set {
     name  = "image.version"
     type  = "string"
