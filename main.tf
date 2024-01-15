@@ -20,6 +20,7 @@ locals {
   # LOCALS
   cluster_name                = data.ibm_container_vpc_cluster.cluster.resource_name # Not publically documented in provider. See https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4485
   log_analysis_chart_location = "${path.module}/chart/logdna-agent"
+  log_analysis_metadata_name  = "logdna-agent"
   log_analysis_agent_registry = "icr.io/ext/logdna-agent"
   log_analysis_agent_tags     = var.log_analysis_add_cluster_name ? concat([local.cluster_name], var.log_analysis_agent_tags) : var.log_analysis_agent_tags
   log_analysis_host           = var.log_analysis_endpoint_type == "private" ? "logs.private.${var.log_analysis_instance_region}.logging.cloud.ibm.com" : "logs.${var.log_analysis_instance_region}.logging.cloud.ibm.com"
@@ -27,6 +28,7 @@ locals {
   # Note that the agent must have write access to the directory (handlded by the initContainer) and be a persistent volume.
   log_analysis_agent_db_path      = "/var/lib/logdna"
   cloud_monitoring_chart_location = "${path.module}/chart/sysdig-agent"
+  cloud_monitoring_metadata_name  = "sysdig-agent"
   cloud_monitoring_agent_registry = "icr.io/ext/sysdig/agent"
   cloud_monitoring_agent_tags     = var.cloud_monitoring_add_cluster_name ? concat(["ibm.containers-kubernetes.cluster.name:${local.cluster_name}"], var.cloud_monitoring_agent_tags) : var.cloud_monitoring_agent_tags
   cloud_monitoring_host           = var.cloud_monitoring_endpoint_type == "private" ? "ingest.private.${var.cloud_monitoring_instance_region}.monitoring.cloud.ibm.com" : "logs.${var.cloud_monitoring_instance_region}.monitoring.cloud.ibm.com"
@@ -58,7 +60,7 @@ resource "helm_release" "log_analysis_agent" {
   set {
     name  = "metadata.name"
     type  = "string"
-    value = var.log_analysis_agent_name
+    value = local.log_analysis_metadata_name # needs to be a constant and not a variable incase any helm conditiona logic will use it
   }
   set {
     name  = "image.version"
@@ -121,7 +123,7 @@ resource "helm_release" "log_analysis_agent" {
   }
 
   provisioner "local-exec" {
-    command     = "${path.module}/scripts/confirm-rollout-status.sh ${var.log_analysis_agent_name} ${var.log_analysis_agent_namespace}"
+    command     = "${path.module}/scripts/confirm-rollout-status.sh ${local.log_analysis_metadata_name} ${var.log_analysis_agent_namespace}"
     interpreter = ["/bin/bash", "-c"]
     environment = {
       KUBECONFIG = data.ibm_container_cluster_config.cluster_config.config_file_path
@@ -147,7 +149,7 @@ resource "helm_release" "cloud_monitoring_agent" {
   set {
     name  = "metadata.name"
     type  = "string"
-    value = var.cloud_monitoring_agent_name
+    value = local.cloud_monitoring_metadata_name # needs to be a constant and not a variable incase any helm conditiona logic will use it
   }
   set {
     name  = "image.version"
@@ -192,7 +194,7 @@ resource "helm_release" "cloud_monitoring_agent" {
   })]
 
   provisioner "local-exec" {
-    command     = "${path.module}/scripts/confirm-rollout-status.sh ${var.cloud_monitoring_agent_name} ${var.cloud_monitoring_agent_namespace}"
+    command     = "${path.module}/scripts/confirm-rollout-status.sh ${local.cloud_monitoring_metadata_name} ${var.cloud_monitoring_agent_namespace}"
     interpreter = ["/bin/bash", "-c"]
     environment = {
       KUBECONFIG = data.ibm_container_cluster_config.cluster_config.config_file_path

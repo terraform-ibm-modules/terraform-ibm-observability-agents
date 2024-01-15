@@ -97,7 +97,7 @@ variable "log_analysis_agent_custom_line_exclusion" {
 }
 
 variable "log_analysis_agent_name" {
-  description = "Log Analysis agent name. Used for naming all kubernetes and helm resources on the cluster."
+  description = "Log Analysis agent helm release name."
   type        = string
   default     = "logdna-agent"
   nullable    = false
@@ -199,7 +199,7 @@ variable "cloud_monitoring_add_cluster_name" {
 }
 
 variable "cloud_monitoring_agent_name" {
-  description = "Cloud Monitoring agent name. Used for naming all kubernetes and helm resources on the cluster."
+  description = "Cloud Monitoring agent helm release name."
   type        = string
   default     = "sysdig-agent"
 }
