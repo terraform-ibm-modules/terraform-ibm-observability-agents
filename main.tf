@@ -24,7 +24,7 @@ locals {
   log_analysis_agent_tags     = var.log_analysis_add_cluster_name ? concat([local.cluster_name], var.log_analysis_agent_tags) : var.log_analysis_agent_tags
   log_analysis_host           = var.log_analysis_endpoint_type == "private" ? "logs.private.${var.log_analysis_instance_region}.logging.cloud.ibm.com" : "logs.${var.log_analysis_instance_region}.logging.cloud.ibm.com"
   # The directory in which the logdna agent will store its state database.
-  # Note that the agent must have write access to the directory and be a persistent volume.
+  # Note that the agent must have write access to the directory (handlded by the initContainer) and be a persistent volume.
   log_analysis_agent_db_path      = "/var/lib/logdna"
   cloud_monitoring_chart_location = "${path.module}/chart/sysdig-agent"
   cloud_monitoring_agent_registry = "icr.io/ext/sysdig/agent"
