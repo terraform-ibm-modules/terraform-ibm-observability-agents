@@ -1,6 +1,6 @@
 apiVersion: v2
 name: logdna-agent
-description: A Helm chart for a logdna or activity tracker agent
+description: A Helm chart for a logdna agent
 
 type: application
 

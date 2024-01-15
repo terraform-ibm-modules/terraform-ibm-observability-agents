@@ -13,3 +13,16 @@ rules:
   - apiGroups: [""]
     resources: ["pods"]
     verbs: ["get","list", "watch"]
+
+  # Below rules are not included in the Openshift yaml so are commented out below:
+  # https://assets.<REGION>.logging.cloud.ibm.com/clients/logdna-agent/<VERSION>/agent-resources-openshift-private.yaml
+
+  # - apiGroups: [""]
+  #   resources: ["nodes"]
+  #   verbs: ["get","list", "watch"]
+  # - apiGroups: ["metrics.k8s.io"]
+  #   resources: ["pods"]
+  #   verbs: ["get","list", "watch"]
+  # - apiGroups: ["metrics.k8s.io"]
+  #   resources: ["nodes"]
+  #   verbs: ["get","list", "watch"]

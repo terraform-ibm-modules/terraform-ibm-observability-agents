@@ -1,13 +1,14 @@
 ##############################################################################
-# observability-agents-module
-#
+# terraform-ibm-observability-agents
 ##############################################################################
 
+# Lookup cluster name from ID
 data "ibm_container_vpc_cluster" "cluster" {
   name              = var.cluster_id
   resource_group_id = var.cluster_resource_group_id
 }
 
+# Download cluster config which is required to connect to cluster
 data "ibm_container_cluster_config" "cluster_config" {
   cluster_name_id   = var.cluster_id
   resource_group_id = var.cluster_resource_group_id
@@ -15,63 +16,39 @@ data "ibm_container_cluster_config" "cluster_config" {
   endpoint_type     = var.cluster_config_endpoint_type != "default" ? var.cluster_config_endpoint_type : null # null value represents default
 }
 
-##############################################################################
-# NOTE ABOUT DATA INSTANCE LOOKUP
-# Since data resource lookups are performed always, including plan phase,
-# there were situations where these calls errored out during initial plan
-# before resources exist. This was due to the NAME attribute of the instances
-# NOT being generated values (known after apply).
-# Adding a "depends_on" to each block to make them depend on their appropriate
-# access/ingestion key values, since those are generated and forces data lookup
-# to be delayed until resources are applied.
-##############################################################################
-data "ibm_resource_instance" "log_analysis_instance" {
-  count             = var.log_analysis_enabled ? 1 : 0
-  name              = var.log_analysis_instance_name
-  resource_group_id = local.log_analysis_resource_group_id
-  service           = "logdna"
-  depends_on        = [var.log_analysis_ingestion_key] # see NOTE above
-}
-
-data "ibm_resource_instance" "cloud_monitoring_instance" {
-  count             = var.cloud_monitoring_enabled ? 1 : 0
-  name              = var.cloud_monitoring_instance_name
-  resource_group_id = local.cloud_monitoring_resource_group_id
-  service           = "sysdig-monitor"
-  depends_on        = [var.cloud_monitoring_access_key] # see NOTE above
-}
-
 locals {
-  log_analysis_secret_name = "log-analysis-agent" #checkov:skip=CKV_SECRET_6
-  # Not publically documented in provider. See https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4485
-  cluster_name                        = data.ibm_container_vpc_cluster.cluster.resource_name
-  log_analysis_chart_location         = "${path.module}/chart/logdna-agent"
-  log_analysis_resource_group_id      = var.log_analysis_resource_group_id != null ? var.log_analysis_resource_group_id : var.cluster_resource_group_id
-  log_analysis_agent_namespace        = "ibm-observe"
-  log_analysis_agent_registry         = "icr.io/ext/logdna-agent"
-  log_analysis_key_validate_condition = var.log_analysis_enabled == true && var.log_analysis_ingestion_key == null
-  log_analysis_key_validate_msg       = "Values for 'log_analysis_ingestion_key' variables must be passed when 'log_analysis_enabled = true'"
+  # LOCALS
+  cluster_name                = data.ibm_container_vpc_cluster.cluster.resource_name # Not publically documented in provider. See https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4485
+  log_analysis_chart_location = "${path.module}/chart/logdna-agent"
+  log_analysis_agent_registry = "icr.io/ext/logdna-agent"
+  log_analysis_agent_tags     = var.log_analysis_add_cluster_name ? concat([local.cluster_name], var.log_analysis_agent_tags) : var.log_analysis_agent_tags
+  log_analysis_host           = var.log_analysis_endpoint_type == "private" ? "logs.private.${var.log_analysis_instance_region}.logging.cloud.ibm.com" : "logs.${var.log_analysis_instance_region}.logging.cloud.ibm.com"
+  # The directory in which the logdna agent will store its state database.
+  # Note that the agent must have write access to the directory and be a persistent volume.
+  log_analysis_agent_db_path      = "/var/lib/logdna"
+  cloud_monitoring_chart_location = "${path.module}/chart/sysdig-agent"
+  cloud_monitoring_agent_registry = "icr.io/ext/sysdig/agent"
+  cloud_monitoring_agent_tags     = var.cloud_monitoring_add_cluster_name ? concat(["ibm.containers-kubernetes.cluster.name:${local.cluster_name}"], var.cloud_monitoring_agent_tags) : var.cloud_monitoring_agent_tags
+  cloud_monitoring_host           = var.cloud_monitoring_endpoint_type == "private" ? "ingest.private.${var.cloud_monitoring_instance_region}.monitoring.cloud.ibm.com" : "logs.${var.cloud_monitoring_instance_region}.monitoring.cloud.ibm.com"
+
+  # VARIABLE VALIDATION
+  log_analysis_key_validate_condition = var.log_analysis_enabled == true && var.log_analysis_instance_region == null && var.log_analysis_ingestion_key == null
+  log_analysis_key_validate_msg       = "Values for 'log_analysis_ingestion_key' and 'log_analysis_instance_region' variables must be passed when 'log_analysis_enabled = true'"
   # tflint-ignore: terraform_unused_declarations
-  log_analysis_key_validate_check         = regex("^${local.log_analysis_key_validate_msg}$", (!local.log_analysis_key_validate_condition ? local.log_analysis_key_validate_msg : ""))
-  log_analysis_agent_tags                 = var.log_analysis_add_cluster_name ? concat([local.cluster_name], var.log_analysis_agent_tags) : var.log_analysis_agent_tags
-  cloud_monitoring_chart_location         = "${path.module}/chart/sysdig-agent"
-  cloud_monitoring_resource_group_id      = var.cloud_monitoring_resource_group_id != null ? var.cloud_monitoring_resource_group_id : var.cluster_resource_group_id
-  cloud_monitoring_agent_registry         = "icr.io/ext/sysdig/agent"
-  cloud_monitoring_agent_namespace        = "ibm-observe"
-  cloud_monitoring_key_validate_condition = var.cloud_monitoring_enabled == true && var.cloud_monitoring_access_key == null
-  cloud_monitoring_key_validate_msg       = "Values for 'cloud_monitoring_access_key' variables must be passed when 'cloud_monitoring_enabled = true'"
+  log_analysis_key_validate_check = regex("^${local.log_analysis_key_validate_msg}$", (!local.log_analysis_key_validate_condition ? local.log_analysis_key_validate_msg : ""))
+
+  cloud_monitoring_key_validate_condition = var.cloud_monitoring_enabled == true && var.cloud_monitoring_instance_region == null && var.cloud_monitoring_access_key == null
+  cloud_monitoring_key_validate_msg       = "Values for 'cloud_monitoring_access_key' and 'log_analysis_instance_region' variables must be passed when 'cloud_monitoring_enabled = true'"
   # tflint-ignore: terraform_unused_declarations
   cloud_monitoring_key_validate_check = regex("^${local.cloud_monitoring_key_validate_msg}$", (!local.cloud_monitoring_key_validate_condition ? local.cloud_monitoring_key_validate_msg : ""))
-  cloud_monitoring_agent_tags         = var.cloud_monitoring_add_cluster_name ? concat([local.cluster_name], var.cloud_monitoring_agent_tags) : var.cloud_monitoring_agent_tags
 }
 
 /** Log Analysis Configuration Start **/
-
 resource "helm_release" "log_analysis_agent" {
   count            = var.log_analysis_enabled ? 1 : 0
-  name             = "logdna-agent"
+  name             = var.log_analysis_agent_name
   chart            = local.log_analysis_chart_location
-  namespace        = local.log_analysis_agent_namespace
+  namespace        = var.log_analysis_agent_namespace
   create_namespace = true
   timeout          = 1200
   wait             = true
@@ -89,14 +66,14 @@ resource "helm_release" "log_analysis_agent" {
     value = local.log_analysis_agent_registry
   }
   set {
-    name  = "env.region"
+    name  = "env.host"
     type  = "string"
-    value = data.ibm_resource_instance.log_analysis_instance[0].location
+    value = local.log_analysis_host
   }
   set {
     name  = "secret.name"
     type  = "string"
-    value = local.log_analysis_secret_name
+    value = var.log_analysis_secret_name
   }
   set_sensitive {
     name  = "secret.key"
@@ -108,6 +85,17 @@ resource "helm_release" "log_analysis_agent" {
     type  = "string"
     value = join("\\,", local.log_analysis_agent_tags)
   }
+  set {
+    name  = "agent.dbPath"
+    type  = "string"
+    value = local.log_analysis_agent_db_path
+  }
+
+  values = [
+    yamlencode({
+      tolerations = var.log_analysis_agent_tolerations
+    })
+  ]
 
   dynamic "set" {
     for_each = var.log_analysis_agent_custom_line_inclusion != null ? [var.log_analysis_agent_custom_line_inclusion] : []
@@ -128,23 +116,22 @@ resource "helm_release" "log_analysis_agent" {
   }
 
   provisioner "local-exec" {
-    command     = "${path.module}/scripts/confirm-rollout-status.sh logdna-agent ${local.log_analysis_agent_namespace}"
+    command     = "${path.module}/scripts/confirm-rollout-status.sh ${var.log_analysis_agent_name} ${var.log_analysis_agent_namespace}"
     interpreter = ["/bin/bash", "-c"]
     environment = {
       KUBECONFIG = data.ibm_container_cluster_config.cluster_config.config_file_path
     }
   }
 }
-
 /** Log Analysis Configuration End **/
 
 /** Cloud Monitoring Configuration Start **/
 resource "helm_release" "cloud_monitoring_agent" {
   count = var.cloud_monitoring_enabled ? 1 : 0
 
-  name             = "sysdig-agent"
+  name             = var.cloud_monitoring_agent_name
   chart            = local.cloud_monitoring_chart_location
-  namespace        = local.cloud_monitoring_agent_namespace
+  namespace        = var.cloud_monitoring_agent_namespace
   create_namespace = true
   timeout          = 1200
   wait             = true
@@ -168,33 +155,38 @@ resource "helm_release" "cloud_monitoring_agent" {
     value = local.cluster_name
   }
   set {
-    name  = "config.region"
+    name  = "config.host"
     type  = "string"
-    value = data.ibm_resource_instance.cloud_monitoring_instance[0].location
+    value = local.cloud_monitoring_host
+  }
+  set {
+    name  = "secret.name"
+    type  = "string"
+    value = var.cloud_monitoring_secret_name
   }
   set_sensitive {
     name  = "secret.key"
     type  = "string"
     value = var.cloud_monitoring_access_key
   }
-
   set {
-    name  = "agent.tags"
+    name  = "config.tags"
     type  = "string"
     value = join("\\,", local.cloud_monitoring_agent_tags)
   }
 
   values = [yamlencode({
     metrics_filter = var.cloud_monitoring_metrics_filter
+    }), yamlencode({
+    tolerations = var.cloud_monitoring_agent_tolerations
   })]
 
   provisioner "local-exec" {
-    command     = "${path.module}/scripts/confirm-rollout-status.sh sysdig-agent ${local.cloud_monitoring_agent_namespace}"
+    command     = "${path.module}/scripts/confirm-rollout-status.sh ${var.cloud_monitoring_agent_name} ${var.cloud_monitoring_agent_namespace}"
     interpreter = ["/bin/bash", "-c"]
     environment = {
       KUBECONFIG = data.ibm_container_cluster_config.cluster_config.config_file_path
     }
   }
 }
-
 /** Cloud Monitoring Configuration End **/
