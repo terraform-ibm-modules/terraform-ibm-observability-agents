@@ -33,13 +33,6 @@ variable "log_analysis_enabled" {
   default     = true
 }
 
-variable "log_analysis_agent_version" {
-  type        = string
-  description = "Version of the agent to deploy. To lookup version run: `ibmcloud cr images --restrict ext/logdna-agent`. If null, the default value is used."
-  # renovate: datasource=docker depName=icr.io/ext/logdna-agent versioning=regex:^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)-(?<build>\d{8}).\w+?$
-  default  = "3.9.1-20231225.fb0af936e8df898f"
-  nullable = false
-}
 
 variable "log_analysis_agent_tags" {
   type        = list(string)
@@ -132,14 +125,6 @@ variable "cloud_monitoring_enabled" {
   type        = bool
   description = "Deploy IBM Cloud Monitoring agent"
   default     = true
-}
-
-variable "cloud_monitoring_agent_version" {
-  type        = string
-  description = "IBM Cloud Monitoring Agent Version. To lookup version run: `ibmcloud cr images --restrict ext/sysdig/agent`. If null, the default value is used."
-  # renovate: datasource=docker depName=icr.io/ext/sysdig/agent
-  default  = "12.19.0"
-  nullable = false
 }
 
 variable "cloud_monitoring_access_key" {
