@@ -25,7 +25,7 @@ locals {
   log_analysis_agent_tags       = var.log_analysis_add_cluster_name ? concat([local.cluster_name], var.log_analysis_agent_tags) : var.log_analysis_agent_tags
   log_analysis_host             = var.log_analysis_endpoint_type == "private" ? "logs.private.${var.log_analysis_instance_region}.logging.cloud.ibm.com" : "logs.${var.log_analysis_instance_region}.logging.cloud.ibm.com"
   # The directory in which the logdna agent will store its state database.
-  # Note that the agent must have write access to the directory and be a persistent volume.
+  # Note that the agent must have write access to the directory (handlded by the initContainer) and be a persistent volume.
   log_analysis_agent_db_path        = "/var/lib/logdna"
   cloud_monitoring_chart_location   = "${path.module}/chart/sysdig-agent"
   cloud_monitoring_image_tag_digest = "12.19.0@sha256:5ab96c580f2cc33bf55afcb9889e9195a70b80e83909d861f020eec461239fad" # datasource: icr.io/ext/sysdig/agent
@@ -57,6 +57,11 @@ resource "helm_release" "log_analysis_agent" {
   recreate_pods    = true
   force_update     = true
 
+  set {
+    name  = "metadata.name"
+    type  = "string"
+    value = var.log_analysis_agent_name
+  }
   set {
     name  = "image.version"
     type  = "string"
@@ -141,6 +146,11 @@ resource "helm_release" "cloud_monitoring_agent" {
   force_update     = true
   reset_values     = true
 
+  set {
+    name  = "metadata.name"
+    type  = "string"
+    value = var.cloud_monitoring_agent_name
+  }
   set {
     name  = "image.version"
     type  = "string"
