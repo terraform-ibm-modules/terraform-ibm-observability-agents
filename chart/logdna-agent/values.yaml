@@ -3,8 +3,6 @@ metadata:
   name: "logdna-agent"
 image:
   repository: "ext/logdna-agent"
-  # renovate: datasource=docker depName=icr.io/ext/logdna-agent versioning=regex:^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)-(?<build>\d{8}).\w+?$
-  version: "3.9.1-20231225.fb0af936e8df898f"
   registry: icr.io
 env:
   host: "logs.private.us-south.logging.cloud.ibm.com"
@@ -17,7 +15,6 @@ agent:
 checkov_skips:
   - checkov.io/skip1: CKV_K8S_21  # "The default namespace should not be used" - false positive - the helm namespace is always used, but not picked up by linter
   - checkov.io/skip2: CKV_K8S_11  # "CPU limits should be set" - ignoring as chart not owned by us
-  - checkov.io/skip3: CKV_K8S_43  # Valid issue, tracked at https://github.ibm.com/GoldenEye/issues/issues/6704
   - checkov.io/skip4: CKV_K8S_38  # "Ensure that Service Account Tokens are only mounted where necessary" - ignoring as chart not owned by us
   - checkov.io/skip5: CKV_K8S_29  # "Apply security context to your pods and containers" - ignoring as chart not owned by us
   - checkov.io/skip6: CKV_K8S_25  # "Minimize the admission of containers with added capability" - ignoring as chart not owned by us
