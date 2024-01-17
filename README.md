@@ -1,4 +1,4 @@
-# Terraform IBM Observability agents module
+# Terraform IBM Observability Agents Module
 
 [![Graduated (Supported)](https://img.shields.io/badge/Status-Graduated%20(Supported)-brightgreen)](https://terraform-ibm-modules.github.io/documentation/#/badge-status)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
@@ -87,8 +87,8 @@ The following is the corresponding DaemonSet configuration:
 
 For more information, see [Configuration for Kubernetes Metadata Filtering](https://github.com/logdna/logdna-agent-v2/blob/3.8/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering).
 
-### Required IAM access policies
-You need the following permissions to run this module.
+### Required IAM Access Policies
+You need the following permissions to run this module:
 
 - IAM Services
   - **IBM Cloud Activity Tracker** service
@@ -166,6 +166,6 @@ No outputs.
 <!-- Leave this section as is so that your module has a link to local development environment set up steps for contributors to follow -->
 ## Contributing
 
-You can report issues and request features for this module in GitHub issues in the module repo. See [Report an issue or request a feature](https://github.com/terraform-ibm-modules/.github/blob/main/.github/SUPPORT.md).
+You can report issues and request features for this module in GitHub issues in the module repository. See [Report an issue or request a feature](https://github.com/terraform-ibm-modules/.github/blob/main/.github/SUPPORT.md).
 
-To set up your local development environment, see [Local development setup](https://terraform-ibm-modules.github.io/documentation/#/local-dev-setup) in the project documentation.
+To set up your local development environment, see [Local Development Setup](https://terraform-ibm-modules.github.io/documentation/#/local-dev-setup) in the project documentation.

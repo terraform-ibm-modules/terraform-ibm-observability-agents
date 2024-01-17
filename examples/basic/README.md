@@ -1,4 +1,4 @@
-# Deploy basic observability agents
+# Deploy Basic Observability Agents
 
 An end-to-end example that uses the module's default variable values.
 
