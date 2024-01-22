@@ -56,6 +56,7 @@ provider "helm" {
 
 module "observability_agents" {
   source                           = "terraform-ibm-modules/observability-agents/ibm"
+  version                          = "X.X.X" # Replace "X.X.X" with a release version to lock into a specific release
   cluster_id                       = "cluster id" # update this with your cluster id where the agents will be installed
   cluster_resource_group_id        = "resource group id" # update this with the Id of your IBM Cloud resource group
   log_analysis_ingestion_key       = "XXXXXXXX"
