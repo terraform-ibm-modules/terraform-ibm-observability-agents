@@ -28,7 +28,7 @@ locals {
   # Note that the agent must have write access to the directory (handlded by the initContainer) and be a persistent volume.
   log_analysis_agent_db_path        = "/var/lib/logdna"
   cloud_monitoring_chart_location   = "${path.module}/chart/sysdig-agent"
-  cloud_monitoring_image_tag_digest = "12.19.0@sha256:5ab96c580f2cc33bf55afcb9889e9195a70b80e83909d861f020eec461239fad" # datasource: icr.io/ext/sysdig/agent
+  cloud_monitoring_image_tag_digest = "12.20.0@sha256:65c84c1f87a797d9e364938cdc1761ec02a84458483f08b82cee9dbd8e24b7ea" # datasource: icr.io/ext/sysdig/agent
   cloud_monitoring_agent_registry   = "icr.io/ext/sysdig/agent"
   cloud_monitoring_agent_tags       = var.cloud_monitoring_add_cluster_name ? concat(["ibm.containers-kubernetes.cluster.name:${local.cluster_name}"], var.cloud_monitoring_agent_tags) : var.cloud_monitoring_agent_tags
   cloud_monitoring_host             = var.cloud_monitoring_endpoint_type == "private" ? "ingest.private.${var.cloud_monitoring_instance_region}.monitoring.cloud.ibm.com" : "logs.${var.cloud_monitoring_instance_region}.monitoring.cloud.ibm.com"
