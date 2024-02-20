@@ -19,6 +19,8 @@ rules:
   - limitranges
   - namespaces
   - nodes
+  - nodes/metrics
+  - nodes/proxy
   - resourcequotas
   - persistentvolumes
   - persistentvolumeclaims
@@ -26,6 +28,13 @@ rules:
   - get
   - list
   - watch
+- apiGroups:
+    - ""
+  resources:
+    - events
+  verbs:
+    - create
+    - patch
 - apiGroups:
   - apps
   resources:
@@ -58,6 +67,7 @@ rules:
   - networking.k8s.io
   resources:
   - networkpolicies
+  - ingresses
   verbs:
   - get
   - list
@@ -67,19 +77,46 @@ rules:
   resources:
   - daemonsets
   - deployments
-  - ingresses
   - replicasets
   verbs:
   - get
   - list
   - watch
-- apiGroups:
-  - coordination.k8s.io
-  resources:
-  - leases
-  verbs:
-  - get
-  - list
-  - create
-  - update
-  - watch
+  - nonResourceURLs:
+    - /metrics
+    verbs:
+    - get
+  - apiGroups:
+    - storage.k8s.io
+    resources:
+    - storageclasses
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - certificates.k8s.io
+    resources:
+    - certificatesigningrequests
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - policy
+    resources:
+    - poddisruptionbudgets
+    verbs:
+    - get
+    - list
+    - watch
+{{- if and .Values.psp.create (include "agent.kubeVersionLessThan" (dict "root" . "major" 1 "minor" 25)) }}
+  - apiGroups:
+      - "policy"
+    resources:
+      - "podsecuritypolicies"
+    resourceNames:
+      - "{{ template "agent.fullname" . }}"
+    verbs:
+      - "use"
+{{- end }}
