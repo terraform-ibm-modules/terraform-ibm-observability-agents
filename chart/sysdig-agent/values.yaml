@@ -19,3 +19,6 @@ metrics_filter: []
 #    name: "metricB.*"
 #  - type: "include"
 #    name: "metricC.*"
+psp:
+  # true here enables creation of Pod Security Policy to allow the agent run with the required permissions
+  create: true
