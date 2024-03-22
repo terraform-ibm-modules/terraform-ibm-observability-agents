@@ -4,6 +4,12 @@ variable "ibmcloud_api_key" {
   sensitive   = true
 }
 
+variable "is_openshift" {
+  type        = bool
+  description = "Defines wehter this is an OpenShift or Kubernetes cluster"
+  default     = true
+}
+
 variable "prefix" {
   type        = string
   description = "Prefix for name of all resource created by this example"

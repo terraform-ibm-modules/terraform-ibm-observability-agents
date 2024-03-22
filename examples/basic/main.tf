@@ -5,7 +5,7 @@
 module "resource_group" {
   source = "git::https://github.com/terraform-ibm-modules/terraform-ibm-resource-group.git?ref=v1.1.5"
   # if an existing resource group is not set (null) create a new one using prefix
-  resource_group_name          = var.resource_group == null ? "${var.prefix}-resource-group" : null
+  # resource_group_name          = var.resource_group == null ? "${var.prefix}-resource-group" : null
   existing_resource_group_name = var.resource_group
 }
 
@@ -57,6 +57,7 @@ resource "ibm_is_subnet" "testacc_subnet" {
 }
 
 resource "ibm_resource_instance" "cos_instance" {
+  count             = var.is_openshift ? 1 : 0
   name              = "${var.prefix}-cos"
   service           = "cloud-object-storage"
   plan              = "standard"
@@ -68,18 +69,20 @@ resource "ibm_resource_instance" "cos_instance" {
 # Lookup the current default kube version
 data "ibm_container_cluster_versions" "cluster_versions" {}
 locals {
-  default_ocp_version = "${data.ibm_container_cluster_versions.cluster_versions.default_openshift_version}_openshift"
+  # default_ocp_version = "${data.ibm_container_cluster_versions.cluster_versions.default_openshift_version}_openshift"
+  default_version = var.is_openshift ? "${data.ibm_container_cluster_versions.cluster_versions.default_openshift_version}_openshift" : data.ibm_container_cluster_versions.cluster_versions.default_kube_version
 }
 
 resource "ibm_container_vpc_cluster" "cluster" {
   name                 = var.prefix
   vpc_id               = ibm_is_vpc.example_vpc.id
-  kube_version         = local.default_ocp_version
+  kube_version         = local.default_version
   flavor               = "bx2.4x16"
   worker_count         = "2"
-  entitlement          = "cloud_pak"
-  cos_instance_crn     = ibm_resource_instance.cos_instance.id
+  entitlement          = var.is_openshift ? "cloud_pak" : null
+  cos_instance_crn     = var.is_openshift ? ibm_resource_instance.cos_instance[0].id : null
   force_delete_storage = true
+  wait_till            = "Normal"
   zones {
     subnet_id = ibm_is_subnet.testacc_subnet.id
     name      = "${var.region}-1"
