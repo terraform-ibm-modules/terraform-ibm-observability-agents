@@ -69,7 +69,6 @@ resource "ibm_resource_instance" "cos_instance" {
 # Lookup the current default kube version
 data "ibm_container_cluster_versions" "cluster_versions" {}
 locals {
-  # default_ocp_version = "${data.ibm_container_cluster_versions.cluster_versions.default_openshift_version}_openshift"
   default_version = var.is_openshift ? "${data.ibm_container_cluster_versions.cluster_versions.default_openshift_version}_openshift" : data.ibm_container_cluster_versions.cluster_versions.default_kube_version
 }
 
