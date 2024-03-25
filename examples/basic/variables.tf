@@ -6,7 +6,7 @@ variable "ibmcloud_api_key" {
 
 variable "is_openshift" {
   type        = bool
-  description = "Defines wehter this is an OpenShift or Kubernetes cluster"
+  description = "Defines whether this is an OpenShift or Kubernetes cluster"
   default     = true
 }
 
