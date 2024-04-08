@@ -10,8 +10,7 @@ import (
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testhelper"
 )
 
-// const resourceGroup = "geretain-test-observability-agents"
-const resourceGroup = "default"
+const resourceGroup = "geretain-test-observability-agents"
 const terraformDirOther = "examples/basic"
 
 var ignoreUpdates = []string{
