@@ -73,3 +73,16 @@ func TestRunUpgrade(t *testing.T) {
 		assert.NotNil(t, output, "Expected some output")
 	}
 }
+
+func TestRunBasicAgentsKubernetes(t *testing.T) {
+	t.Parallel()
+
+	var extTerraformVarsK8s = map[string]interface{}{}
+	extTerraformVarsK8s["is_openshift"] = false
+
+	options := setupOptions(t, "basic-obs-agents-k8s", terraformDirOther, extTerraformVarsK8s)
+
+	output, err := options.RunTestConsistency()
+	assert.Nil(t, err, "This should not have errored")
+	assert.NotNil(t, output, "Expected some output")
+}
