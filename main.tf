@@ -20,7 +20,7 @@ locals {
   # LOCALS
   cluster_name                  = data.ibm_container_vpc_cluster.cluster.resource_name # Not publically documented in provider. See https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4485
   log_analysis_chart_location   = "${path.module}/chart/logdna-agent"
-  log_analysis_image_tag_digest = "3.9.1-20231225.fb0af936e8df898f@sha256:3d572353ca69c8d0817ba0c9cb80ef269f4e6f524cee3c98ffe18ef9420b253f" # datasource: icr.io/ext/logdna-agent versioning=regex:^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)-(?<build>\d{8}).\w+?$
+  log_analysis_image_tag_digest = "3.9.2-20240501.3bcb6cf89eda58a3@sha256:ecc967d0fa2f1e23360a118602e8eeebb1c12fbced39c84a3b20e5cfa3cd211f" # datasource: icr.io/ext/logdna-agent versioning=regex:^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)-(?<build>\d{8}).\w+?$
   log_analysis_agent_registry   = "icr.io/ext/logdna-agent"
   log_analysis_agent_tags       = var.log_analysis_add_cluster_name ? concat([local.cluster_name], var.log_analysis_agent_tags) : var.log_analysis_agent_tags
   log_analysis_host             = var.log_analysis_endpoint_type == "private" ? "logs.private.${var.log_analysis_instance_region}.logging.cloud.ibm.com" : "logs.${var.log_analysis_instance_region}.logging.cloud.ibm.com"
