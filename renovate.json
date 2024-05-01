@@ -5,9 +5,10 @@
     {
       "fileMatch": ["\\.tf$"],
       "matchStrings": [
-        "[\\w-]+_image_tag_digest\\s*=\\s*\"(?<currentValue>[\\w.-]+)@(?<currentDigest>sha256:[a-f0-9]+)\"\\s*# datasource: (?<depName>[^\\s]+)"
+        "[\\w-]+_image_tag_digest\\s*=\\s*\"(?<currentValue>[\\w.-]+)@(?<currentDigest>sha256:[a-f0-9]+)\"\\s*# datasource: (?<depName>[^\\s]+)\\s*( versioning=(?<versioning>.*?))?\\s.*?"
       ],
-      "datasourceTemplate": "docker"
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
   ],
   "packageRules": [
