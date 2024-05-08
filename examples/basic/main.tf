@@ -35,25 +35,28 @@ module "observability_instances" {
 ##############################################################################
 
 resource "ibm_is_vpc" "example_vpc" {
+  count          = var.is_vpc_cluster ? 1 : 0
   name           = "${var.prefix}-vpc"
   resource_group = module.resource_group.resource_group_id
   tags           = var.resource_tags
 }
 
 resource "ibm_is_public_gateway" "public_gateway" {
+  count          = var.is_vpc_cluster ? 1 : 0
   name           = "${var.prefix}-gateway-1"
-  vpc            = ibm_is_vpc.example_vpc.id
+  vpc            = ibm_is_vpc.example_vpc[0].id
   resource_group = module.resource_group.resource_group_id
   zone           = "${var.region}-1"
 }
 
 resource "ibm_is_subnet" "testacc_subnet" {
+  count                    = var.is_vpc_cluster ? 1 : 0
   name                     = "${var.prefix}-subnet"
-  vpc                      = ibm_is_vpc.example_vpc.id
+  vpc                      = ibm_is_vpc.example_vpc[0].id
   zone                     = "${var.region}-1"
   total_ipv4_address_count = 256
   resource_group           = module.resource_group.resource_group_id
-  public_gateway           = ibm_is_public_gateway.public_gateway.id
+  public_gateway           = ibm_is_public_gateway.public_gateway[0].id
 }
 
 resource "ibm_resource_instance" "cos_instance" {
@@ -72,9 +75,11 @@ locals {
   default_version = var.is_openshift ? "${data.ibm_container_cluster_versions.cluster_versions.default_openshift_version}_openshift" : data.ibm_container_cluster_versions.cluster_versions.default_kube_version
 }
 
+# Create either a VPC or classic cluster, depending on the is_vpc_cluster variable
 resource "ibm_container_vpc_cluster" "cluster" {
+  count                = var.is_vpc_cluster ? 1 : 0
   name                 = var.prefix
-  vpc_id               = ibm_is_vpc.example_vpc.id
+  vpc_id               = ibm_is_vpc.example_vpc[0].id
   kube_version         = local.default_version
   flavor               = "bx2.4x16"
   worker_count         = "2"
@@ -83,7 +88,7 @@ resource "ibm_container_vpc_cluster" "cluster" {
   force_delete_storage = true
   wait_till            = "Normal"
   zones {
-    subnet_id = ibm_is_subnet.testacc_subnet.id
+    subnet_id = ibm_is_subnet.testacc_subnet[0].id
     name      = "${var.region}-1"
   }
   resource_group_id = module.resource_group.resource_group_id
@@ -95,8 +100,27 @@ resource "ibm_container_vpc_cluster" "cluster" {
   }
 }
 
+resource "ibm_container_cluster" "cluster" {
+  count                = var.is_vpc_cluster ? 0 : 1
+  name                 = var.prefix
+  datacenter           = var.datacenter
+  hardware             = "shared"
+  kube_version         = local.default_version
+  entitlement          = var.is_openshift ? "cloud_pak" : null
+  force_delete_storage = true
+  machine_type         = "b3c.4x16"
+  wait_till            = "Normal"
+  resource_group_id    = module.resource_group.resource_group_id
+  tags                 = var.resource_tags
+
+  timeouts {
+    delete = "2h"
+    create = "3h"
+  }
+}
+
 data "ibm_container_cluster_config" "cluster_config" {
-  cluster_name_id   = ibm_container_vpc_cluster.cluster.id
+  cluster_name_id   = var.is_vpc_cluster ? ibm_container_vpc_cluster.cluster[0].id : ibm_container_cluster.cluster[0].id
   resource_group_id = module.resource_group.resource_group_id
 }
 
@@ -114,7 +138,8 @@ resource "time_sleep" "wait_operators" {
 module "observability_agents" {
   source                        = "../.."
   depends_on                    = [time_sleep.wait_operators]
-  cluster_id                    = ibm_container_vpc_cluster.cluster.id
+  is_vpc_cluster                = var.is_vpc_cluster 
+  cluster_id                    = var.is_vpc_cluster ? ibm_container_vpc_cluster.cluster[0].id : ibm_container_cluster.cluster[0].id
   cluster_resource_group_id     = module.resource_group.resource_group_id
   log_analysis_instance_region  = module.observability_instances.region
   log_analysis_ingestion_key    = module.observability_instances.log_analysis_ingestion_key

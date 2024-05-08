@@ -10,7 +10,8 @@ import (
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testhelper"
 )
 
-const resourceGroup = "geretain-test-observability-agents"
+// const resourceGroup = "geretain-test-observability-agents"
+const resourceGroup = "default"
 const terraformDirOther = "examples/basic"
 
 var ignoreUpdates = []string{
@@ -77,10 +78,21 @@ func TestRunUpgrade(t *testing.T) {
 func TestRunBasicAgentsKubernetes(t *testing.T) {
 	t.Parallel()
 
-	var extTerraformVarsK8s = map[string]interface{}{}
-	extTerraformVarsK8s["is_openshift"] = false
+	extTerraformVars["is_openshift"] = false
 
-	options := setupOptions(t, "basic-obs-agents-k8s", terraformDirOther, extTerraformVarsK8s)
+	options := setupOptions(t, "basic-obs-agents-k8s", terraformDirOther, extTerraformVars)
+
+	output, err := options.RunTestConsistency()
+	assert.Nil(t, err, "This should not have errored")
+	assert.NotNil(t, output, "Expected some output")
+}
+
+func TestRunBasicAgentsClassic(t *testing.T) {
+	t.Parallel()
+
+	extTerraformVars["is_vpc_cluster"] = false
+
+	options := setupOptions(t, "basic-obs-agents-classic", terraformDirOther, extTerraformVars)
 
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")
