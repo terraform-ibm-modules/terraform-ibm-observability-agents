@@ -25,7 +25,7 @@ data "ibm_container_cluster_config" "cluster_config" {
 
 locals {
   # LOCALS
-  cluster_name                  = var.is_vpc_cluster ? data.ibm_container_vpc_cluster.cluster[0].resource_name : data.ibm_container_cluster.cluster[0].resource_name
+  cluster_name                  = var.is_vpc_cluster ? data.ibm_container_vpc_cluster.cluster[0].resource_name : data.ibm_container_cluster.cluster[0].resource_name # Not publically documented in provider. See https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4485
   log_analysis_chart_location   = "${path.module}/chart/logdna-agent"
   log_analysis_image_tag_digest = "3.9.2-20240501.3bcb6cf89eda58a3@sha256:ecc967d0fa2f1e23360a118602e8eeebb1c12fbced39c84a3b20e5cfa3cd211f" # datasource: icr.io/ext/logdna-agent versioning=regex:^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)-(?<build>\d+)
   log_analysis_agent_registry   = "icr.io/ext/logdna-agent"
