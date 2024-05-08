@@ -24,7 +24,7 @@ variable "cluster_config_endpoint_type" {
 }
 
 variable "is_vpc" {
-  description = "Specify true if target cluster is a VPC cluster, false if it is classic cluster."
+  description = "Specify true if the target cluster for the observability agents is a VPC cluster, false if it is classic cluster."
   type        = bool
   default     = true
 }
