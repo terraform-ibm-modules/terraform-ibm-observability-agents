@@ -101,17 +101,18 @@ resource "ibm_container_vpc_cluster" "cluster" {
 }
 
 resource "ibm_container_cluster" "cluster" {
-  count                = var.is_vpc_cluster ? 0 : 1
-  name                 = var.prefix
-  datacenter           = var.datacenter
-  hardware             = "shared"
-  kube_version         = local.default_version
-  entitlement          = var.is_openshift ? "cloud_pak" : null
-  force_delete_storage = true
-  machine_type         = "b3c.4x16"
-  wait_till            = "Normal"
-  resource_group_id    = module.resource_group.resource_group_id
-  tags                 = var.resource_tags
+  count                    = var.is_vpc_cluster ? 0 : 1
+  name                     = var.prefix
+  datacenter               = var.datacenter
+  hardware                 = "shared"
+  kube_version             = local.default_version
+  entitlement              = var.is_openshift ? "cloud_pak" : null
+  force_delete_storage     = true
+  machine_type             = "b3c.4x16"
+  private_service_endpoint = true
+  wait_till                = "Normal"
+  resource_group_id        = module.resource_group.resource_group_id
+  tags                     = var.resource_tags
 
   timeouts {
     delete = "2h"
@@ -138,7 +139,7 @@ resource "time_sleep" "wait_operators" {
 module "observability_agents" {
   source                        = "../.."
   depends_on                    = [time_sleep.wait_operators]
-  is_vpc_cluster                = var.is_vpc_cluster 
+  is_vpc_cluster                = var.is_vpc_cluster
   cluster_id                    = var.is_vpc_cluster ? ibm_container_vpc_cluster.cluster[0].id : ibm_container_cluster.cluster[0].id
   cluster_resource_group_id     = module.resource_group.resource_group_id
   log_analysis_instance_region  = module.observability_instances.region

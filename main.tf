@@ -10,10 +10,10 @@ data "ibm_container_vpc_cluster" "cluster" {
 }
 
 data "ibm_container_cluster" "cluster" {
-   count             = var.is_vpc_cluster ? 0 : 1
-   name              = var.cluster_id
-   resource_group_id = var.cluster_resource_group_id
- }
+  count             = var.is_vpc_cluster ? 0 : 1
+  name              = var.cluster_id
+  resource_group_id = var.cluster_resource_group_id
+}
 
 # Download cluster config which is required to connect to cluster
 data "ibm_container_cluster_config" "cluster_config" {
