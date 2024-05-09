@@ -101,18 +101,18 @@ resource "ibm_container_vpc_cluster" "cluster" {
 }
 
 resource "ibm_container_cluster" "cluster" {
-  count                    = var.is_vpc_cluster ? 0 : 1
-  name                     = var.prefix
-  datacenter               = var.datacenter
-  hardware                 = "shared"
-  kube_version             = local.default_version
-  entitlement              = var.is_openshift ? "cloud_pak" : null
-  force_delete_storage     = true
-  machine_type             = "b3c.4x16"
-  private_service_endpoint = true
-  wait_till                = "Normal"
-  resource_group_id        = module.resource_group.resource_group_id
-  tags                     = var.resource_tags
+  #checkov:skip=CKV2_IBM_7:Public endpoint is required for testing purposes
+  count                = var.is_vpc_cluster ? 0 : 1
+  name                 = var.prefix
+  datacenter           = var.datacenter
+  hardware             = "shared"
+  kube_version         = local.default_version
+  entitlement          = var.is_openshift ? "cloud_pak" : null
+  force_delete_storage = true
+  machine_type         = "b3c.4x16"
+  wait_till            = "Normal"
+  resource_group_id    = module.resource_group.resource_group_id
+  tags                 = var.resource_tags
 
   timeouts {
     delete = "2h"
