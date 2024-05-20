@@ -23,7 +23,7 @@ locals {
   log_analysis_image_tag_digest = "3.9.2-20240517.5d5c02f76b134e40@sha256:097ea593e70ca0368775e682682ae31347ace074a200776111269c4f76c4a038" # datasource: icr.io/ext/logdna-agent versioning=regex:^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)-(?<build>\d+)
   log_analysis_agent_registry   = "icr.io/ext/logdna-agent"
   log_analysis_agent_tags       = var.log_analysis_add_cluster_name ? concat([local.cluster_name], var.log_analysis_agent_tags) : var.log_analysis_agent_tags
-  log_analysis_host             = var.log_analysis_endpoint_type == "private" ? "logs.private.${var.log_analysis_instance_region}.logging.cloud.ibm.com" : "logs.${var.log_analysis_instance_region}.logging.cloud.ibm.com"
+  log_analysis_host             = var.log_analysis_enabled ? var.log_analysis_endpoint_type == "private" ? "logs.private.${var.log_analysis_instance_region}.logging.cloud.ibm.com" : "logs.${var.log_analysis_instance_region}.logging.cloud.ibm.com" : null
   # The directory in which the logdna agent will store its state database.
   # Note that the agent must have write access to the directory (handlded by the initContainer) and be a persistent volume.
   log_analysis_agent_db_path        = "/var/lib/logdna"
@@ -31,7 +31,7 @@ locals {
   cloud_monitoring_image_tag_digest = "13.1.1@sha256:656ddc6c9c17fe3c3c1b29792565330952f305cbe142e935dfa96efc2956fe86" # datasource: icr.io/ext/sysdig/agent
   cloud_monitoring_agent_registry   = "icr.io/ext/sysdig/agent"
   cloud_monitoring_agent_tags       = var.cloud_monitoring_add_cluster_name ? concat(["ibm.containers-kubernetes.cluster.name:${local.cluster_name}"], var.cloud_monitoring_agent_tags) : var.cloud_monitoring_agent_tags
-  cloud_monitoring_host             = var.cloud_monitoring_endpoint_type == "private" ? "ingest.private.${var.cloud_monitoring_instance_region}.monitoring.cloud.ibm.com" : "logs.${var.cloud_monitoring_instance_region}.monitoring.cloud.ibm.com"
+  cloud_monitoring_host             = var.cloud_monitoring_enabled ? var.cloud_monitoring_endpoint_type == "private" ? "ingest.private.${var.cloud_monitoring_instance_region}.monitoring.cloud.ibm.com" : "logs.${var.cloud_monitoring_instance_region}.monitoring.cloud.ibm.com" : null
 
   # VARIABLE VALIDATION
   log_analysis_key_validate_condition = var.log_analysis_enabled == true && var.log_analysis_instance_region == null && var.log_analysis_ingestion_key == null
