@@ -105,6 +105,7 @@ resource "ibm_container_cluster" "cluster" {
   count                = var.is_vpc_cluster ? 0 : 1
   name                 = var.prefix
   datacenter           = var.datacenter
+  default_pool_size    = 2
   hardware             = "shared"
   kube_version         = local.default_version
   entitlement          = var.is_openshift ? "cloud_pak" : null
