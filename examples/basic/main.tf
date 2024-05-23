@@ -111,6 +111,8 @@ resource "ibm_container_cluster" "cluster" {
   entitlement          = var.is_openshift ? "cloud_pak" : null
   force_delete_storage = true
   machine_type         = "b3c.4x16"
+  public_vlan_id       = ibm_network_vlan.public_vlan[0].id
+  private_vlan_id      = ibm_network_vlan.private_vlan[0].id
   wait_till            = "Normal"
   resource_group_id    = module.resource_group.resource_group_id
   tags                 = var.resource_tags
@@ -119,6 +121,18 @@ resource "ibm_container_cluster" "cluster" {
     delete = "2h"
     create = "3h"
   }
+}
+
+resource "ibm_network_vlan" "public_vlan" {
+  count      = var.is_vpc_cluster ? 0 : 1
+  datacenter = var.datacenter
+  type       = "PUBLIC"
+}
+
+resource "ibm_network_vlan" "private_vlan" {
+  count      = var.is_vpc_cluster ? 0 : 1
+  datacenter = var.datacenter
+  type       = "PRIVATE"
 }
 
 data "ibm_container_cluster_config" "cluster_config" {
