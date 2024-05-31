@@ -12,24 +12,24 @@ secret:
 agent:
   tags: ""
   dbPath: "/var/lib/logdna"
-checkov_skips:
-  - checkov.io/skip1: CKV_K8S_21  # "The default namespace should not be used" - false positive - the helm namespace is always used, but not picked up by linter
-  - checkov.io/skip2: CKV_K8S_11  # "CPU limits should be set" - ignoring as chart not owned by us
-  - checkov.io/skip4: CKV_K8S_38  # "Ensure that Service Account Tokens are only mounted where necessary" - ignoring as chart not owned by us
-  - checkov.io/skip5: CKV_K8S_29  # "Apply security context to your pods and containers" - ignoring as chart not owned by us
-  - checkov.io/skip6: CKV_K8S_25  # "Minimize the admission of containers with added capability" - ignoring as chart not owned by us
-  - checkov.io/skip7: CKV_K8S_35  # "Prefer using secrets as files over secrets as environment variables" - ignoring as chart not owned by us
-  - checkov.io/skip8: CKV_K8S_9   # "Readiness Probe Should be Configured" - ignoring as chart not owned by us
-  - checkov.io/skip9: CKV_K8S_22  # "Use read-only filesystem for containers where possible" - ignoring as chart not owned by us
-  - checkov.io/skip10: CKV_K8S_40 # "Containers should run as a high UID to avoid host conflict" - ignoring as chart not owned by us
-  - checkov.io/skip11: CKV_K8S_20 # "Containers should not run with allowPrivilegeEscalation" - see https://github.ibm.com/GoldenEye/issues/issues/67
-  - checkov.io/skip12: CKV_K8S_12 # "Memory requests should be set" - ignoring as chart not owned by us
-  - checkov.io/skip13: CKV_K8S_8  # "Liveness Probe Should be Configured" - ignoring as chart not owned by us
-  - checkov.io/skip14: CKV_K8S_31 # "Ensure that the seccomp profile is set to docker/default or runtime/default" - ignoring as chart not owned by us
-  - checkov.io/skip15: CKV_K8S_37 # "Minimize the admission of containers with capabilities assigned" - ignoring as chart not owned by us
-  - checkov.io/skip16: CKV_K8S_31 # "Ensure that the seccomp profile is set to docker/default or runtime/default" - ignoring as chart not owned by us
-  - checkov.io/skip17: CKV_K8S_15 # "Image Pull Policy should be Always" - when imagePullPolicy is Always, the image is pulled every time the pod is started. While this can help ensure deployment consistency, it can also prevent a pod from starting if the image registry can not be reached.
-  - checkov.io/skip18: CKV_K8S_13 # "Memory limits should be set" - ignoring as chart not owned by us
-  - checkov.io/skip19: CKV_K8S_10 # "CPU requests should be set" - ignoring as chart not owned by us
-  - checkov.io/skip20: CKV_K8S_16 # "Container should not be privileged" - ignoring as chart not owned by us
-  - checkov.io/skip21: CKV_K8S_28 # "Minimize the admission of containers with the NET_RAW capability" - ignoring as chart not owned by us
+# checkov_skips:
+#   - checkov.io/skip1: CKV_K8S_21  # "The default namespace should not be used" - false positive - the helm namespace is always used, but not picked up by linter
+#   - checkov.io/skip2: CKV_K8S_11  # "CPU limits should be set" - ignoring as chart not owned by us
+#   - checkov.io/skip4: CKV_K8S_38  # "Ensure that Service Account Tokens are only mounted where necessary" - ignoring as chart not owned by us
+#   - checkov.io/skip5: CKV_K8S_29  # "Apply security context to your pods and containers" - ignoring as chart not owned by us
+#   - checkov.io/skip6: CKV_K8S_25  # "Minimize the admission of containers with added capability" - ignoring as chart not owned by us
+#   - checkov.io/skip7: CKV_K8S_35  # "Prefer using secrets as files over secrets as environment variables" - ignoring as chart not owned by us
+#   - checkov.io/skip8: CKV_K8S_9   # "Readiness Probe Should be Configured" - ignoring as chart not owned by us
+#   - checkov.io/skip9: CKV_K8S_22  # "Use read-only filesystem for containers where possible" - ignoring as chart not owned by us
+#   - checkov.io/skip10: CKV_K8S_40 # "Containers should run as a high UID to avoid host conflict" - ignoring as chart not owned by us
+#   - checkov.io/skip11: CKV_K8S_20 # "Containers should not run with allowPrivilegeEscalation" - see https://github.ibm.com/GoldenEye/issues/issues/67
+#   - checkov.io/skip12: CKV_K8S_12 # "Memory requests should be set" - ignoring as chart not owned by us
+#   - checkov.io/skip13: CKV_K8S_8  # "Liveness Probe Should be Configured" - ignoring as chart not owned by us
+#   - checkov.io/skip14: CKV_K8S_31 # "Ensure that the seccomp profile is set to docker/default or runtime/default" - ignoring as chart not owned by us
+#   - checkov.io/skip15: CKV_K8S_37 # "Minimize the admission of containers with capabilities assigned" - ignoring as chart not owned by us
+#   - checkov.io/skip16: CKV_K8S_31 # "Ensure that the seccomp profile is set to docker/default or runtime/default" - ignoring as chart not owned by us
+#   - checkov.io/skip17: CKV_K8S_15 # "Image Pull Policy should be Always" - when imagePullPolicy is Always, the image is pulled every time the pod is started. While this can help ensure deployment consistency, it can also prevent a pod from starting if the image registry can not be reached.
+#   - checkov.io/skip18: CKV_K8S_13 # "Memory limits should be set" - ignoring as chart not owned by us
+#   - checkov.io/skip19: CKV_K8S_10 # "CPU requests should be set" - ignoring as chart not owned by us
+#   - checkov.io/skip20: CKV_K8S_16 # "Container should not be privileged" - ignoring as chart not owned by us
+#   - checkov.io/skip21: CKV_K8S_28 # "Minimize the admission of containers with the NET_RAW capability" - ignoring as chart not owned by us
