@@ -77,10 +77,19 @@ func TestRunUpgrade(t *testing.T) {
 func TestRunBasicAgentsKubernetes(t *testing.T) {
 	t.Parallel()
 
-	var extTerraformVarsK8s = map[string]interface{}{}
-	extTerraformVarsK8s["is_openshift"] = false
+	options := setupOptions(t, "basic-obs-agents-k8s", terraformDirOther, extTerraformVars)
+	options.TerraformVars["is_openshift"] = false
 
-	options := setupOptions(t, "basic-obs-agents-k8s", terraformDirOther, extTerraformVarsK8s)
+	output, err := options.RunTestConsistency()
+	assert.Nil(t, err, "This should not have errored")
+	assert.NotNil(t, output, "Expected some output")
+}
+
+func TestRunBasicAgentsClassic(t *testing.T) {
+	t.Parallel()
+
+	options := setupOptions(t, "basic-obs-agents-classic", terraformDirOther, extTerraformVars)
+	options.TerraformVars["is_vpc_cluster"] = false
 
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")

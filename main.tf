@@ -2,8 +2,15 @@
 # terraform-ibm-observability-agents
 ##############################################################################
 
-# Lookup cluster name from ID
+# Lookup cluster name from ID. The is_vpc_cluster variable defines whether to use the VPC data block or the Classic data block
 data "ibm_container_vpc_cluster" "cluster" {
+  count             = var.is_vpc_cluster ? 1 : 0
+  name              = var.cluster_id
+  resource_group_id = var.cluster_resource_group_id
+}
+
+data "ibm_container_cluster" "cluster" {
+  count             = var.is_vpc_cluster ? 0 : 1
   name              = var.cluster_id
   resource_group_id = var.cluster_resource_group_id
 }
@@ -18,7 +25,7 @@ data "ibm_container_cluster_config" "cluster_config" {
 
 locals {
   # LOCALS
-  cluster_name                  = data.ibm_container_vpc_cluster.cluster.resource_name # Not publically documented in provider. See https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4485
+  cluster_name                  = var.is_vpc_cluster ? data.ibm_container_vpc_cluster.cluster[0].resource_name : data.ibm_container_cluster.cluster[0].resource_name # Not publically documented in provider. See https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4485
   log_analysis_chart_location   = "${path.module}/chart/logdna-agent"
   log_analysis_image_tag_digest = "3.10.0-20240620.7524d812f60db3d2@sha256:8d73adc74bbd398128aac67037e708e6286ebc4cfcabbfe4d118f7d2ceeb775b" # datasource: icr.io/ext/logdna-agent versioning=regex:^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)-(?<build>\d+)
   log_analysis_agent_registry   = "icr.io/ext/logdna-agent"

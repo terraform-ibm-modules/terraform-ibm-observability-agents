@@ -10,6 +10,12 @@ variable "is_openshift" {
   default     = true
 }
 
+variable "is_vpc_cluster" {
+  type        = bool
+  description = "Specify true if the target cluster for the observability agents is a VPC cluster, false if it is classic cluster."
+  default     = true
+}
+
 variable "prefix" {
   type        = string
   description = "Prefix for name of all resource created by this example"
@@ -32,4 +38,10 @@ variable "region" {
   type        = string
   description = "Region where resources are created"
   default     = "ca-tor"
+}
+
+variable "datacenter" {
+  type        = string
+  description = "If creating a classic cluster, the data center where the cluster is created"
+  default     = "syd01"
 }
