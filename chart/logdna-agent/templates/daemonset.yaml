@@ -28,7 +28,7 @@ spec:
       priorityClassName: "{{ .Values.metadata.name }}-ds-priority"
       initContainers:
         - name: logdna-db-permissions
-          image: icr.io/goldeneye_images/ubi8-cluster-tools:stable
+          image: icr.io/goldeneye_images/ubi9-cluster-tools:stable
           imagePullPolicy: IfNotPresent # Not setting to 'Always' as it can prevent a pod from starting if the image registry can not be reached.
           command: ["sh", "-c", "chmod -R 775 {{.Values.agent.dbPath}} && chown -R 5000:5000 {{.Values.agent.dbPath}}"]
           securityContext:
