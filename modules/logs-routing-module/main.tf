@@ -16,7 +16,7 @@ data "ibm_container_cluster_config" "cluster_config" {
 }
 
 locals {
-  logs_routing_chart_location   = "../../helm-charts/logs-routing-agent"
+  logs_routing_chart_location   = "../../chart/logs-routing-agent"
   logs_routing_host             = "ingester.private.${var.logs_routing_region}.logs-router.cloud.ibm.com"
   logs_routing_ingestion_key    = var.logs_routing_ingestion_key != null ? var.logs_routing_ingestion_key : ""
   logs_routing_trusted_profile  = var.logs_routing_trusted_profile != null ? var.logs_routing_trusted_profile : ""

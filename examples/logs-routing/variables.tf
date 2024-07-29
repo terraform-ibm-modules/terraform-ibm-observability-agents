@@ -33,15 +33,3 @@ variable "region" {
   description = "The region where the resources are created."
   default     = "us-east"
 }
-
-variable "atracker_trusted_profile" {
-  type        = string
-  description = "The IBM Cloud trusted profile ID. Used only when `atracker_iam_mode` is set to `TrustedProfile`."
-  default     = null
-}
-
-variable "service_names" {
-  type        = list(string)
-  description = "Your IBM Cloud service names that will be included as part of the `logSourceCRN` value in the logs."
-  default = [ "goldeneye" ]
-}

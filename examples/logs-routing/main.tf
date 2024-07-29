@@ -116,13 +116,13 @@ resource "time_sleep" "wait_operators" {
 ##############################################################################
 
 module "observability_agents" {
-  source                           = "../../modules/logs-routing-module"
-  depends_on                       = [time_sleep.wait_operators]
-  cluster_id                       = ibm_container_vpc_cluster.cluster.id
-  cluster_resource_group_id        = module.resource_group.resource_group_id
-  logs_routing_enabled             = true
-  logs_routing_region              = var.region
-  logs_routing_trusted_profile     = module.trusted_profile.trusted_profile.id
-  logs_routing_agent_namespace     = local.logs_routing_agent_namespace
-  logs_routing_agent_name          = local.logs_routing_agent_name
+  source                       = "../../modules/logs-routing-module"
+  depends_on                   = [time_sleep.wait_operators]
+  cluster_id                   = ibm_container_vpc_cluster.cluster.id
+  cluster_resource_group_id    = module.resource_group.resource_group_id
+  logs_routing_enabled         = true
+  logs_routing_region          = var.region
+  logs_routing_trusted_profile = module.trusted_profile.trusted_profile.id
+  logs_routing_agent_namespace = local.logs_routing_agent_namespace
+  logs_routing_agent_name      = local.logs_routing_agent_name
 }
