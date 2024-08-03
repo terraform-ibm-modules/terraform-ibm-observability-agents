@@ -12,6 +12,7 @@ import (
 
 const resourceGroup = "geretain-test-observability-agents"
 const terraformDirOther = "examples/basic"
+const terraformDirLogsRouting = "examples/logs-routing"
 
 var ignoreUpdates = []string{
 	"module.observability_agents.helm_release.sysdig_agent[0]",
@@ -47,6 +48,29 @@ func setupOptions(t *testing.T, prefix string, terraformDir string, terraformVar
 		CloudInfoService:              sharedInfoSvc,
 		ExcludeActivityTrackerRegions: true,
 		TerraformVars:                 terraformVars,
+	})
+
+	return options
+}
+
+func logsRoutingsetupOptions(t *testing.T, prefix string, terraformDir string, isOpenshift bool) *testhelper.TestOptions {
+
+	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
+		Testing:       t,
+		TerraformDir:  terraformDir,
+		Prefix:        prefix,
+		ResourceGroup: resourceGroup,
+		IgnoreUpdates: testhelper.Exemptions{ // Ignore for consistency check
+			List: []string{
+				"module.observability_agents.helm_release.logs_routing_agent[0]",
+			},
+		},
+		TerraformVars: map[string]interface{}{
+			"region":       "us-east",
+			"is_openshift": isOpenshift,
+		},
+		CloudInfoService:              sharedInfoSvc,
+		ExcludeActivityTrackerRegions: true,
 	})
 
 	return options
@@ -91,6 +115,15 @@ func TestRunBasicAgentsClassic(t *testing.T) {
 	options := setupOptions(t, "basic-obs-agents-classic", terraformDirOther, extTerraformVars)
 	options.TerraformVars["is_vpc_cluster"] = false
 
+	output, err := options.RunTestConsistency()
+	assert.Nil(t, err, "This should not have errored")
+	assert.NotNil(t, output, "Expected some output")
+}
+
+func TestRunLogsRoutingAgentsKubernetes(t *testing.T) {
+	t.Parallel()
+
+	options := logsRoutingsetupOptions(t, "log-router-iks", terraformDirLogsRouting, false)
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")
 	assert.NotNil(t, output, "Expected some output")

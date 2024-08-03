@@ -1,0 +1,191 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Values.metadata.name }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: "{{ .Values.metadata.name }}"
+    version: {{ required "Missing version" .Values.image.version }}
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+      Flush                   1
+      Log_Level               {{ .Values.loggingLevel | default "info" }}
+      Daemon                  off
+      Parsers_File            parsers.conf
+      Plugins_File            plugins.conf
+      HTTP_Server             On
+      HTTP_Listen             0.0.0.0
+      HTTP_Port               8081
+      Health_Check            On
+      HC_Errors_Count         1
+      HC_Retry_Failure_Count  1
+      HC_Period               30
+      storage.path            /fluent-bit/cache
+      storage.max_chunks_up   192
+      storage.metrics         On
+    @INCLUDE input-kubernetes.conf
+    @INCLUDE filter-kubernetes.conf
+    @INCLUDE filter-add-meta-data.conf
+    {{- if .Values.filterAddICLmetadata.subsystemName }}
+    @INCLUDE filter-add-ICL-meta-data.conf
+    {{- end }}
+    {{- if .Values.sendDirectlyToICL.enabled }}
+    @INCLUDE output-logs-router-icl-output-plugin.conf
+    {{- else }}
+    @INCLUDE output-logs-router-agent-plugin.conf
+    {{- end }}
+  input-kubernetes.conf: |
+    [INPUT]
+        Name              tail
+        Tag               kube.*
+        {{- if .Values.additionalLogSourcePaths }}
+        Path              /var/log/containers/*.log,{{ .Values.additionalLogSourcePaths }}
+        {{- else }}
+        Path              /var/log/containers/*.log
+        {{- end }}
+        Path_Key          file
+        {{- if .Values.excludeLogSourcePaths }}
+        Exclude_Path      "/var/log/at/*",{{ .Values.excludeLogSourcePaths }}
+        {{- else }}
+        Exclude_Path      "/var/log/at/*"
+        {{- end }}
+        DB                /var/log/fluent-bit/fluent-bit.DB
+        Buffer_Chunk_Size 32KB
+        Buffer_Max_Size   256KB
+        Parser            cri
+        Skip_Long_Lines   On
+        Refresh_Interval  10
+        storage.type      filesystem
+        storage.pause_on_chunks_overlimit on
+  filter-kubernetes.conf: |
+    [FILTER]
+        Name                kubernetes
+        Match               kube.*
+        Buffer_Size         10MB
+        Kube_URL            https://kubernetes.default.svc:443
+        Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
+        Kube_Tag_Prefix     kube.var.log.containers.
+        Merge_Log           On
+        Merge_Log_Key       log_processed
+        K8S-Logging.Parser  On
+        K8S-Logging.Exclude Off
+        Use_Kubelet         On
+        Kubelet_Port        10250
+        Kubelet_Host        ${HOST_IP}
+  filter-add-meta-data.conf: |
+    [FILTER]
+        Name record_modifier
+        Match *
+        Record meta.cluster_name "{{ .Values.cluster.name }}"
+        Record node_name ${NODE_NAME}
+    {{- if .Values.additional_metadata }}
+    {{- range $v := .Values.additional_metadata }}
+        Record meta.{{ $v.key }} {{ $v.value }}
+    {{- end }}
+    {{- end }}
+  {{- if .Values.filterAddICLmetadata.subsystemName }}
+  filter-add-ICL-meta-data.conf: |
+      [FILTER]
+          Name modify
+          Match *
+          Add subsystemName {{ .Values.filterAddICLmetadata.subsystemName }}
+          Add applicationName {{ .Values.filterAddICLmetadata.applicationName }}
+  {{- end }}
+  {{- if .Values.sendDirectlyToICL.enabled }}
+  output-logs-router-icl-output-plugin.conf: |
+    [OUTPUT]
+        # fluentbit config
+        Name logger-icl-output-plugin
+        Id logs-router-icl-output-plugin
+        Match *
+        Retry_Limit 8
+        # Connection
+        Target_Host {{ required "Missing ICL target host" .Values.sendDirectlyToICL.targetHost }}
+        Target_Port {{ required "Missing ICL target port" .Values.sendDirectlyToICL.targetPort }}
+        Target_Path /logs/v1/singles
+        # Authentication
+        Authentication_Mode {{ required "Missing iamMode" .Values.env.iamMode }}
+        IAM_Environment {{ required "Missing iamEnvironment" .Values.env.iamEnvironment }}
+        {{- if eq .Values.env.iamMode "TrustedProfile" }}
+        Trusted_Profile_ID {{ required "Missing trustedProfileID" .Values.env.trustedProfileID }}
+        CR_Token_Mount_Path /var/run/secrets/tokens/vault-token
+        {{- end }}
+        # Logging
+        Logging_Level {{ .Values.loggingLevel | default "info" }}
+        # Buffer storage
+        storage.total_limit_size 5G
+  {{- else }}
+  output-logs-router-agent-plugin.conf: |
+    [OUTPUT]
+        # fluentbit config
+        Name logger-agent-plugin
+        Id logs-router-agent-plugin
+        Match *
+        Retry_Limit 8
+        # Connection
+        Target_Host {{ required "Missing ingestionHost" .Values.env.ingestionHost }}
+        Target_Port {{ required "Missing ingestionPort" .Values.env.ingestionPort }}
+        Target_Path /v1/logs/ws
+        # Authentication
+        Authentication_Mode {{ required "Missing iamMode" .Values.env.iamMode }}
+        IAM_Environment {{ required "Missing iamEnvironment" .Values.env.iamEnvironment }}
+        {{- if eq .Values.env.iamMode "TrustedProfile" }}
+        Trusted_Profile_ID {{ required "Missing trustedProfileID" .Values.env.trustedProfileID }}
+        CR_Token_Mount_Path /var/run/secrets/tokens/vault-token
+        {{- end }}
+        # Logging
+        Logging_Level {{ .Values.loggingLevel | default "info" }}
+        # Buffer storage
+        storage.total_limit_size 5G
+  {{- end }}
+  parsers.conf: |
+    [PARSER]
+        Name   apache
+        Format regex
+        Regex  ^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*?)(?: +\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+    [PARSER]
+        Name   apache2
+        Format regex
+        Regex  ^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+    [PARSER]
+        Name   apache_error
+        Format regex
+        Regex  ^\[[^ ]* (?<time>[^\]]*)\] \[(?<level>[^\]]*)\](?: \[pid (?<pid>[^\]]*)\])?( \[client (?<client>[^\]]*)\])? (?<message>.*)$
+    [PARSER]
+        Name   nginx
+        Format regex
+        Regex ^(?<remote>[^ ]*) (?<host>[^ ]*) (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*?)(?: +\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+    [PARSER]
+        Name   json
+        Format json
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+    [PARSER]
+        Name        docker
+        Format      json
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L
+        Time_Keep   On
+    [PARSER]
+        Name cri
+        Format regex
+        Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<message>.*)$
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+    [PARSER]
+        Name        syslog
+        Format      regex
+        Regex       ^\<(?<pri>[0-9]+)\>(?<time>[^ ]* {1,2}[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[a-zA-Z0-9_\/\.\-]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? *(?<message>.*)$
+        Time_Key    time
+        Time_Format %b %d %H:%M:%S
+  plugins.conf: |
+    [PLUGINS]
+        Path    {{- if .Values.sendDirectlyToICL.enabled }} /fluent-bit/bin/logs-router-icl-output-plugin.so {{- else }} /fluent-bit/bin/logs-router-agent-plugin.so {{- end }}
