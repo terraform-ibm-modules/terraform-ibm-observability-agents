@@ -26,6 +26,7 @@ module "observability_instances" {
   activity_tracker_provision     = false
   enable_platform_logs           = false
   enable_platform_metrics        = false
+  cloud_logs_provision           = false
   log_analysis_instance_name     = "${var.prefix}-log-analysis"
   cloud_monitoring_instance_name = "${var.prefix}-cloud-monitoring"
 }
