@@ -14,7 +14,7 @@ module "resource_group" {
 ##############################################################################
 
 module "observability_instances" {
-  source = "git::https://github.com/terraform-ibm-modules/terraform-ibm-observability-instances?ref=v2.13.2"
+  source = "git::https://github.com/terraform-ibm-modules/terraform-ibm-observability-instances?ref=v2.14.0"
   providers = {
     logdna.at = logdna.at
     logdna.ld = logdna.ld
@@ -26,6 +26,7 @@ module "observability_instances" {
   activity_tracker_provision     = false
   enable_platform_logs           = false
   enable_platform_metrics        = false
+  cloud_logs_provision           = false
   log_analysis_instance_name     = "${var.prefix}-log-analysis"
   cloud_monitoring_instance_name = "${var.prefix}-cloud-monitoring"
 }
