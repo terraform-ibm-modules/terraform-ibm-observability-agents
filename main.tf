@@ -27,7 +27,7 @@ locals {
   # LOCALS
   cluster_name                  = var.is_vpc_cluster ? data.ibm_container_vpc_cluster.cluster[0].resource_name : data.ibm_container_cluster.cluster[0].resource_name # Not publically documented in provider. See https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4485
   log_analysis_chart_location   = "${path.module}/chart/logdna-agent"
-  log_analysis_image_tag_digest = "3.10.0-20240620.7524d812f60db3d2@sha256:8d73adc74bbd398128aac67037e708e6286ebc4cfcabbfe4d118f7d2ceeb775b" # datasource: icr.io/ext/logdna-agent versioning=regex:^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)-(?<build>\d+)
+  log_analysis_image_tag_digest = "3.10.1-20240827.12afa351b661bc07@sha256:3a7ebc7fb58de67db2af15f35ba827c96a92c06e933abb4c67431854a24bd156" # datasource: icr.io/ext/logdna-agent versioning=regex:^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)-(?<build>\d+)
   log_analysis_agent_registry   = "icr.io/ext/logdna-agent"
   log_analysis_agent_tags       = var.log_analysis_add_cluster_name ? concat([local.cluster_name], var.log_analysis_agent_tags) : var.log_analysis_agent_tags
   log_analysis_host             = var.log_analysis_enabled ? var.log_analysis_endpoint_type == "private" ? "logs.private.${var.log_analysis_instance_region}.logging.cloud.ibm.com" : "logs.${var.log_analysis_instance_region}.logging.cloud.ibm.com" : null
@@ -35,7 +35,7 @@ locals {
   # Note that the agent must have write access to the directory (handlded by the initContainer) and be a persistent volume.
   log_analysis_agent_db_path        = "/var/lib/logdna"
   cloud_monitoring_chart_location   = "${path.module}/chart/sysdig-agent"
-  cloud_monitoring_image_tag_digest = "13.3.2@sha256:e659298eef1f8d1162792da094ffca8bd581eaefc879f14481cf390735f506c2" # datasource: icr.io/ext/sysdig/agent
+  cloud_monitoring_image_tag_digest = "13.3.3@sha256:3c641188d929429300c58c7fb8c043307a2cb0d543ddac9051752a0f211fa24a" # datasource: icr.io/ext/sysdig/agent
   cloud_monitoring_agent_registry   = "icr.io/ext/sysdig/agent"
   cloud_monitoring_agent_tags       = var.cloud_monitoring_add_cluster_name ? concat(["ibm.containers-kubernetes.cluster.name:${local.cluster_name}"], var.cloud_monitoring_agent_tags) : var.cloud_monitoring_agent_tags
   cloud_monitoring_host             = var.cloud_monitoring_enabled ? var.cloud_monitoring_endpoint_type == "private" ? "ingest.private.${var.cloud_monitoring_instance_region}.monitoring.cloud.ibm.com" : "logs.${var.cloud_monitoring_instance_region}.monitoring.cloud.ibm.com" : null
