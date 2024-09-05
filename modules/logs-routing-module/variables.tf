@@ -94,6 +94,20 @@ variable "logs_routing_exclude_log_source_paths" {
   nullable    = false
 }
 
+variable "logs_routing_selected_log_source_paths" {
+  type        = list(string)
+  description = "The list of specific log sources paths. Logs will only be collected from the specified log source paths."
+  default     = []
+  nullable    = false
+}
+
+variable "logs_routing_log_source_namespaces" {
+  type        = list(string)
+  description = "The list of namespaces from which logs should be forwarded by agent. When specified logs from only these namespaces will be sent by the agent."
+  default     = []
+  nullable    = false
+}
+
 variable "logs_routing_iam_mode" {
   type        = string
   default     = "TrustedProfile"

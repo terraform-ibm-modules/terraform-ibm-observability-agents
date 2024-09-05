@@ -1,5 +1,6 @@
 locals {
-  logs_routing_agent_image_tag_digest = "1.2.2"
+  logs_routing_agent_image_tag_digest    = "1.2.2"
+  logs_routing_selected_log_source_paths = distinct(concat([for namespace in var.logs_routing_log_source_namespaces : "/var/log/containers/*_${namespace}_*.log"], var.logs_routing_selected_log_source_paths))
 }
 # Lookup cluster name from ID
 data "ibm_container_vpc_cluster" "cluster" {
@@ -87,6 +88,11 @@ resource "helm_release" "logs_routing_agent" {
     name  = "excludeLogSourcePaths"
     type  = "string"
     value = join("\\,", var.logs_routing_exclude_log_source_paths)
+  }
+  set {
+    name  = "selectedLogSourcePaths"
+    type  = "string"
+    value = join("\\,", local.logs_routing_selected_log_source_paths)
   }
   set {
     name  = "cluster.name"
