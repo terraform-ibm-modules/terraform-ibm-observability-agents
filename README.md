@@ -18,6 +18,7 @@ This module deploys the following observability agents to a Red Hat OpenShift Co
 * [Submodules](./modules)
 * [Examples](./examples)
     * [Deploy basic observability agents](./examples/basic)
+    * [Direct to IBM Cloud Logs Example](./examples/cloud-logs)
     * [Log Routing Example](./examples/logs-routing)
 * [Contributing](#contributing)
 <!-- END OVERVIEW HOOK -->

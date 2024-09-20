@@ -13,6 +13,7 @@ import (
 const resourceGroup = "geretain-test-observability-agents"
 const terraformDirOther = "examples/basic"
 const terraformDirLogsRouting = "examples/logs-routing"
+const terraformDirDirectToICL = "examples/cloud-logs"
 
 var ignoreUpdates = []string{
 	"module.observability_agents.helm_release.sysdig_agent[0]",
@@ -124,6 +125,26 @@ func TestRunLogsRoutingAgentsKubernetes(t *testing.T) {
 	t.Parallel()
 
 	options := logsRoutingsetupOptions(t, "log-router-iks", terraformDirLogsRouting, false)
+	output, err := options.RunTestConsistency()
+	assert.Nil(t, err, "This should not have errored")
+	assert.NotNil(t, output, "Expected some output")
+}
+
+func TestRunDirectToICLExample(t *testing.T) {
+	t.Parallel()
+
+	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
+		Testing:       t,
+		TerraformDir:  terraformDirDirectToICL,
+		Prefix:        "direct",
+		ResourceGroup: resourceGroup,
+		IgnoreUpdates: testhelper.Exemptions{ // Ignore for consistency check
+			List: []string{
+				"module.observability_agents.helm_release.logs_routing_agent[0]",
+			},
+		},
+		CloudInfoService: sharedInfoSvc,
+	})
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")
 	assert.NotNil(t, output, "Expected some output")

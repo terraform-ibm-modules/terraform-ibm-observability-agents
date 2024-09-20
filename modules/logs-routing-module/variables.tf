@@ -165,3 +165,25 @@ variable "logs_routing_subsystem_name" {
   type        = string
   default     = null
 }
+
+variable "logs_routing_enable_direct_to_cloud_logs" {
+  description = "Whether to send logs directly to IBM Cloud Logs. If this is true, a value for `cloud_logs_target_host` and `cloud_logs_target_port` must be set."
+  type        = bool
+  default     = false
+}
+
+variable "cloud_logs_target_host" {
+  description = "The host for IBM Cloud Logs ingestion. Ensure you use the ingress endpoint."
+  type        = string
+  default     = null
+}
+
+variable "cloud_logs_target_port" {
+  type        = number
+  default     = 3443
+  description = "The target port for the IBM Cloud Logs ingestion endpoint. The port must be 443 if you connect by using a VPE gateway, or port 3443 when you connect by using CSEs."
+  validation {
+    error_message = "The Logs Routing supertenant ingestion port can only be `3443` or `443`."
+    condition     = contains([3443, 443], var.cloud_logs_target_port)
+  }
+}

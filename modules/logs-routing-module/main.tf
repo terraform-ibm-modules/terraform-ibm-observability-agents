@@ -23,10 +23,13 @@ locals {
   logs_routing_trusted_profile  = var.logs_routing_trusted_profile != null ? var.logs_routing_trusted_profile : ""
   logs_routing_application_name = var.logs_routing_application_name != null ? var.logs_routing_application_name : ""
   logs_routing_subsystem_name   = var.logs_routing_subsystem_name != null ? var.logs_routing_subsystem_name : ""
+  cloud_logs_target_host = var.cloud_logs_target_host != null ? var.cloud_logs_target_host : ""
   # tflint-ignore: terraform_unused_declarations
   validate_iam_mode = var.logs_routing_enabled == true && (var.logs_routing_iam_mode == "IAMAPIKey" && (var.logs_routing_ingestion_key == null || var.logs_routing_ingestion_key == "")) ? tobool("When passing 'IAMAPIKey' value for 'logs_routing_iam_mode' you cannot set 'logs_routing_ingestion_key' as null or empty string.") : true
   # tflint-ignore: terraform_unused_declarations
   validate_trusted_profile_mode = var.logs_routing_enabled == true && (var.logs_routing_iam_mode == "TrustedProfile" && (var.logs_routing_trusted_profile == null || var.logs_routing_trusted_profile == "")) ? tobool(" When passing 'TrustedProfile' value for 'logs_routing_iam_mode' you cannot set 'logs_routing_trusted_profile' as null or empty string.") : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_direct_to_icl = var.logs_routing_enabled == true && (var.logs_routing_enable_direct_to_cloud_logs && (var.cloud_logs_target_host == null || var.cloud_logs_target_host == "")) ? tobool(" When 'logs_routing_enable_direct_to_cloud_logs' is enabled, you cannot set 'cloud_logs_target_host' as null or empty string.") : true
 }
 
 resource "helm_release" "logs_routing_agent" {
@@ -110,6 +113,18 @@ resource "helm_release" "logs_routing_agent" {
   set {
     name  = "filterAddICLmetadata.subsystemName"
     value = local.logs_routing_subsystem_name
+  }
+  set {
+    name  = "sendDirectlyToICL.enabled"
+    value = var.logs_routing_enable_direct_to_cloud_logs
+  }
+  set {
+    name  = "sendDirectlyToICL.targetHost"
+    value = local.cloud_logs_target_host
+  }
+  set {
+    name  = "sendDirectlyToICL.targetPort"
+    value = var.cloud_logs_target_port
   }
 
   # dummy value hack to force update https://github.com/hashicorp/terraform-provider-helm/issues/515#issuecomment-813088122
