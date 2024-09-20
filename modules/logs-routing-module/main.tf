@@ -23,7 +23,7 @@ locals {
   logs_routing_trusted_profile  = var.logs_routing_trusted_profile != null ? var.logs_routing_trusted_profile : ""
   logs_routing_application_name = var.logs_routing_application_name != null ? var.logs_routing_application_name : ""
   logs_routing_subsystem_name   = var.logs_routing_subsystem_name != null ? var.logs_routing_subsystem_name : ""
-  cloud_logs_target_host = var.cloud_logs_target_host != null ? var.cloud_logs_target_host : ""
+  cloud_logs_target_host        = var.cloud_logs_target_host != null ? var.cloud_logs_target_host : ""
   # tflint-ignore: terraform_unused_declarations
   validate_iam_mode = var.logs_routing_enabled == true && (var.logs_routing_iam_mode == "IAMAPIKey" && (var.logs_routing_ingestion_key == null || var.logs_routing_ingestion_key == "")) ? tobool("When passing 'IAMAPIKey' value for 'logs_routing_iam_mode' you cannot set 'logs_routing_ingestion_key' as null or empty string.") : true
   # tflint-ignore: terraform_unused_declarations
