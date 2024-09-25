@@ -10,4 +10,4 @@ The example provisions the following resources:
 - A Trusted Profile.
 - A IBM Cloud Logs Instance.
 - A Virtual Private Endpoint.
-- Logs Routing cluster agents.
+- Logs agents.

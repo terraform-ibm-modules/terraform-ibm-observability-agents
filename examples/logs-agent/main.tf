@@ -3,8 +3,7 @@
 ##############################################################################
 
 module "resource_group" {
-  source  = "terraform-ibm-modules/resource-group/ibm"
-  version = "1.1.6"
+  source = "git::https://github.com/terraform-ibm-modules/terraform-ibm-resource-group.git?ref=v1.1.6"
   # if an existing resource group is not set (null) create a new one using prefix
   resource_group_name          = var.resource_group == null ? "${var.prefix}-resource-group" : null
   existing_resource_group_name = var.resource_group
@@ -15,8 +14,8 @@ module "resource_group" {
 ##############################################################################
 
 locals {
-  logs_routing_agent_namespace = "ibm-observe"
-  logs_routing_agent_name      = "logger-agent"
+  logs_agent_namespace = "ibm-observe"
+  logs_agent_name      = "logger-agent"
 }
 
 module "trusted_profile" {
@@ -26,14 +25,9 @@ module "trusted_profile" {
   trusted_profile_description = "Example Trusted Profile"
 
   trusted_profile_policies = [{
-    roles = ["Writer"]
+    roles = ["Sender"]
     resources = [{
-      service = "logs-router"
-    }]
-    }, {
-    roles = ["Viewer"]
-    resources = [{
-      service = "metrics-router"
+      service = "logs"
     }]
   }]
 
@@ -41,8 +35,8 @@ module "trusted_profile" {
     cr_type = var.is_openshift ? "ROKS_SA" : "IKS_SA"
     links = [{
       crn       = ibm_container_vpc_cluster.cluster.crn
-      namespace = local.logs_routing_agent_namespace
-      name      = local.logs_routing_agent_name
+      namespace = local.logs_agent_namespace
+      name      = local.logs_agent_name
     }]
     }
   ]
@@ -112,17 +106,72 @@ resource "time_sleep" "wait_operators" {
 }
 
 ##############################################################################
+# Observability Instance
+##############################################################################
+
+
+module "observability_instance" {
+  source  = "terraform-ibm-modules/observability-instances/ibm"
+  version = "2.16.0"
+  providers = {
+    logdna.at = logdna.at
+    logdna.ld = logdna.ld
+  }
+  region                     = var.region
+  log_analysis_provision     = false
+  cloud_monitoring_provision = false
+  activity_tracker_provision = false
+  cloud_logs_instance_name   = "${var.prefix}-cloud-logs"
+  resource_group_id          = module.resource_group.resource_group_id
+  cloud_logs_plan            = "standard"
+  cloud_logs_tags            = var.resource_tags
+  cloud_logs_access_tags     = var.access_tags
+}
+
+data "ibm_is_security_groups" "vpc_security_groups" {
+  depends_on = [ibm_container_vpc_cluster.cluster]
+  vpc_id     = ibm_is_vpc.example_vpc.id
+}
+
+module "vpe" {
+  source   = "terraform-ibm-modules/vpe-gateway/ibm"
+  version  = "4.3.0"
+  region   = var.region
+  prefix   = var.prefix
+  vpc_id   = ibm_is_vpc.example_vpc.id
+  vpc_name = "${var.prefix}-vpc"
+  subnet_zone_list = [
+    {
+      name = ibm_is_subnet.testacc_subnet.name
+      id   = ibm_is_subnet.testacc_subnet.id
+      zone = ibm_is_subnet.testacc_subnet.zone
+    }
+  ]
+  resource_group_id  = module.resource_group.resource_group_id
+  security_group_ids = [for group in data.ibm_is_security_groups.vpc_security_groups.security_groups : group.id if group.name == "kube-${ibm_container_vpc_cluster.cluster.id}"] # Select only security group attached to the Cluster
+  cloud_service_by_crn = [
+    {
+      crn          = module.observability_instance.cloud_logs_crn
+      service_name = "logs"
+    }
+  ]
+  service_endpoints = "private"
+}
+
+##############################################################################
 # Observability Agents
 ##############################################################################
 
 module "observability_agents" {
-  source                       = "../../modules/logs-routing-module"
-  depends_on                   = [time_sleep.wait_operators]
-  cluster_id                   = ibm_container_vpc_cluster.cluster.id
-  cluster_resource_group_id    = module.resource_group.resource_group_id
-  logs_routing_enabled         = true
-  logs_routing_region          = var.region
-  logs_routing_trusted_profile = module.trusted_profile.trusted_profile.id
-  logs_routing_agent_namespace = local.logs_routing_agent_namespace
-  logs_routing_agent_name      = local.logs_routing_agent_name
+  source                                 = "../../modules/logs-agent-module"
+  depends_on                             = [time_sleep.wait_operators, module.vpe]
+  cluster_id                             = ibm_container_vpc_cluster.cluster.id
+  cluster_resource_group_id              = module.resource_group.resource_group_id
+  logs_agent_enabled                     = true
+  logs_agent_trusted_profile             = module.trusted_profile.trusted_profile.id
+  logs_agent_namespace                   = local.logs_agent_namespace
+  logs_agent_name                        = local.logs_agent_name
+  logs_agent_enable_direct_to_cloud_logs = true
+  cloud_logs_ingress_endpoint            = module.observability_instance.cloud_logs_ingress_private_endpoint
+  cloud_logs_ingress_port                = 443
 }

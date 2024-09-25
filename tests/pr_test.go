@@ -12,8 +12,7 @@ import (
 
 const resourceGroup = "geretain-test-observability-agents"
 const terraformDirOther = "examples/basic"
-const terraformDirLogsRouting = "examples/logs-routing"
-const terraformDirDirectToICL = "examples/cloud-logs"
+const terraformDirLogsAgent = "examples/logs-agent"
 
 var ignoreUpdates = []string{
 	"module.observability_agents.helm_release.sysdig_agent[0]",
@@ -54,7 +53,7 @@ func setupOptions(t *testing.T, prefix string, terraformDir string, terraformVar
 	return options
 }
 
-func logsRoutingsetupOptions(t *testing.T, prefix string, terraformDir string, isOpenshift bool) *testhelper.TestOptions {
+func logsAgentsetupOptions(t *testing.T, prefix string, terraformDir string, isOpenshift bool) *testhelper.TestOptions {
 
 	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
 		Testing:       t,
@@ -63,7 +62,7 @@ func logsRoutingsetupOptions(t *testing.T, prefix string, terraformDir string, i
 		ResourceGroup: resourceGroup,
 		IgnoreUpdates: testhelper.Exemptions{ // Ignore for consistency check
 			List: []string{
-				"module.observability_agents.helm_release.logs_routing_agent[0]",
+				"module.observability_agents.helm_release.logs_agent[0]",
 			},
 		},
 		TerraformVars: map[string]interface{}{
@@ -121,30 +120,19 @@ func TestRunBasicAgentsClassic(t *testing.T) {
 	assert.NotNil(t, output, "Expected some output")
 }
 
-func TestRunLogsRoutingAgentsKubernetes(t *testing.T) {
+func TestRunLogsAgentKubernetes(t *testing.T) {
 	t.Parallel()
 
-	options := logsRoutingsetupOptions(t, "log-router-iks", terraformDirLogsRouting, false)
+	options := logsAgentsetupOptions(t, "log-agent-iks", terraformDirLogsAgent, false)
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")
 	assert.NotNil(t, output, "Expected some output")
 }
 
-func TestRunDirectToICLExample(t *testing.T) {
-	t.Skip()
+func TestRunLogsAgentExample(t *testing.T) {
+	t.Parallel()
 
-	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
-		Testing:       t,
-		TerraformDir:  terraformDirDirectToICL,
-		Prefix:        "direct",
-		ResourceGroup: resourceGroup,
-		IgnoreUpdates: testhelper.Exemptions{ // Ignore for consistency check
-			List: []string{
-				"module.observability_agents.helm_release.logs_routing_agent[0]",
-			},
-		},
-		CloudInfoService: sharedInfoSvc,
-	})
+	options := logsAgentsetupOptions(t, "log-agent-roks", terraformDirLogsAgent, true)
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")
 	assert.NotNil(t, output, "Expected some output")

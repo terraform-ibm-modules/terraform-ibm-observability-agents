@@ -27,46 +27,40 @@ variable "cluster_config_endpoint_type" {
 # Logs Routing variables
 ##############################################################################
 
-variable "logs_routing_enabled" {
+variable "logs_agent_enabled" {
   type        = bool
   description = "Whether to deploy the Logs Routing agent."
   default     = true
 }
 
-variable "logs_routing_agent_name" {
+variable "logs_agent_name" {
   description = "The name of the Logs Routing agent. The name is used in all Kubernetes and Helm resources in the cluster."
   type        = string
   default     = "logger-agent"
   nullable    = false
 }
 
-variable "logs_routing_agent_namespace" {
+variable "logs_agent_namespace" {
   type        = string
   description = "The namespace where the Logs Routing agent is deployed. The default value is `ibm-observe`."
   default     = "ibm-observe"
   nullable    = false
 }
 
-variable "logs_routing_trusted_profile" {
+variable "logs_agent_trusted_profile" {
   type        = string
-  description = "The IBM Cloud trusted profile ID. Used only when `logs_routing_iam_mode` is set to `TrustedProfile`."
+  description = "The IBM Cloud trusted profile ID. Used only when `logs_agent_iam_mode` is set to `TrustedProfile`."
   default     = null
 }
 
-variable "logs_routing_ingestion_key" {
+variable "logs_agent_iam_api_key" {
   type        = string
   description = "The IBM Cloud API key for the Logs Routing agent to authenticate and communicate with the Logs Routing."
   sensitive   = true
   default     = null
 }
 
-variable "logs_routing_region" {
-  type        = string
-  description = "The region where the Logs Routing ingestion endpoint is located."
-  default     = "us-east"
-}
-
-variable "logs_routing_agent_tolerations" {
+variable "logs_agent_agent_tolerations" {
   description = "List of tolerations to apply to Logs Routing agent."
   type = list(object({
     key               = optional(string)
@@ -80,65 +74,55 @@ variable "logs_routing_agent_tolerations" {
   }]
 }
 
-variable "logs_routing_additional_log_source_paths" {
+variable "logs_agent_additional_log_source_paths" {
   type        = list(string)
   description = "The list of additional log sources. By default, the Logs Routing agent collects logs from a single source at `/var/log/containers/logger-agent-ds-*.log`."
   default     = []
   nullable    = false
 }
 
-variable "logs_routing_exclude_log_source_paths" {
+variable "logs_agent_exclude_log_source_paths" {
   type        = list(string)
   description = "The list of log sources to exclude. Specify the paths that the Logs Routing agent ignores."
   default     = []
   nullable    = false
 }
 
-variable "logs_routing_selected_log_source_paths" {
+variable "logs_agent_selected_log_source_paths" {
   type        = list(string)
   description = "The list of specific log sources paths. Logs will only be collected from the specified log source paths."
   default     = []
   nullable    = false
 }
 
-variable "logs_routing_log_source_namespaces" {
+variable "logs_agent_log_source_namespaces" {
   type        = list(string)
   description = "The list of namespaces from which logs should be forwarded by agent. When specified logs from only these namespaces will be sent by the agent."
   default     = []
   nullable    = false
 }
 
-variable "logs_routing_iam_mode" {
+variable "logs_agent_iam_mode" {
   type        = string
   default     = "TrustedProfile"
   description = "IAM authentication mode: `TrustedProfile` or `IAMAPIKey`."
   validation {
     error_message = "The IAM mode can only be `TrustedProfile` or `IAMAPIKey`."
-    condition     = contains(["TrustedProfile", "IAMAPIKey"], var.logs_routing_iam_mode)
+    condition     = contains(["TrustedProfile", "IAMAPIKey"], var.logs_agent_iam_mode)
   }
 }
 
-variable "logs_routing_iam_environment" {
+variable "logs_agent_iam_environment" {
   type        = string
   default     = "PrivateProduction"
   description = "IAM authentication Environment: `Production` or `PrivateProduction` or `Staging` or `PrivateStaging`."
   validation {
     error_message = "The IAM environment can only be `Production` or `PrivateProduction` or `Staging` or `PrivateStaging`."
-    condition     = contains(["Production", "PrivateProduction", "Staging", "PrivateStaging"], var.logs_routing_iam_environment)
+    condition     = contains(["Production", "PrivateProduction", "Staging", "PrivateStaging"], var.logs_agent_iam_environment)
   }
 }
 
-variable "logs_routing_port" {
-  type        = number
-  default     = 3443
-  description = "The target port for the ingestion endpoint. The port must be 443 if you connect by using a VPE gateway, or port 3443 when you connect by using CSEs."
-  validation {
-    error_message = "The Logs Routing ingestion port can only be `3443` or `443`."
-    condition     = contains([3443, 443], var.logs_routing_port)
-  }
-}
-
-variable "logs_routing_additional_metadata" {
+variable "logs_agent_additional_metadata" {
   description = "The list of additional metadata fields to add to the routed logs."
   type = list(object({
     key   = optional(string)
@@ -147,43 +131,30 @@ variable "logs_routing_additional_metadata" {
   default = []
 }
 
-variable "logs_routing_enable_scc" {
+variable "logs_agent_enable_scc" {
   description = "Whether to enable creation of Security Context Constraints in Openshift."
   type        = bool
   default     = true
 }
 
-variable "logs_routing_application_name" {
-  description = "The name of the application."
-  type        = string
-  default     = null
-}
-
-
-variable "logs_routing_subsystem_name" {
-  description = "The name of the sub-system."
-  type        = string
-  default     = null
-}
-
-variable "logs_routing_enable_direct_to_cloud_logs" {
-  description = "Whether to send logs directly to IBM Cloud Logs. If this is true, a value for `cloud_logs_target_host` and `cloud_logs_target_port` must be set."
+variable "logs_agent_enable_direct_to_cloud_logs" {
+  description = "Whether to send logs directly to IBM Cloud Logs. If this is true, a value for `cloud_logs_ingress_endpoint` and `cloud_logs_target_port` must be set."
   type        = bool
   default     = false
 }
 
-variable "cloud_logs_target_host" {
+variable "cloud_logs_ingress_endpoint" {
   description = "The host for IBM Cloud Logs ingestion. Ensure you use the ingress endpoint."
   type        = string
   default     = null
 }
 
-variable "cloud_logs_target_port" {
+variable "cloud_logs_ingress_port" {
   type        = number
   default     = 3443
   description = "The target port for the IBM Cloud Logs ingestion endpoint. The port must be 443 if you connect by using a VPE gateway, or port 3443 when you connect by using CSEs."
   validation {
     error_message = "The Logs Routing supertenant ingestion port can only be `3443` or `443`."
-    condition     = contains([3443, 443], var.cloud_logs_target_port)
+    condition     = contains([3443, 443], var.cloud_logs_ingress_port)
   }
 }
