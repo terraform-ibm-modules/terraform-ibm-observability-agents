@@ -174,4 +174,5 @@ module "observability_agents" {
   logs_agent_enable_direct_to_cloud_logs = true
   cloud_logs_ingress_endpoint            = module.observability_instance.cloud_logs_ingress_private_endpoint
   cloud_logs_ingress_port                = 443
+  logs_agent_enable_scc                  = var.is_openshift ? true : false
 }
