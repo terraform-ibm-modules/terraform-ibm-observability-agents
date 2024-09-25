@@ -77,7 +77,7 @@ func logsAgentsetupOptions(t *testing.T, prefix string, terraformDir string, isO
 }
 
 func TestRunBasicAgents(t *testing.T) {
-	t.Skip()
+	t.Parallel()
 
 	options := setupOptions(t, "basic-obs-agents", terraformDirOther, extTerraformVars)
 
@@ -87,7 +87,7 @@ func TestRunBasicAgents(t *testing.T) {
 }
 
 func TestRunUpgrade(t *testing.T) {
-	t.Skip()
+	t.Parallel()
 
 	options := setupOptions(t, "observ-agents-upg", terraformDirOther, extTerraformVars)
 
@@ -99,7 +99,7 @@ func TestRunUpgrade(t *testing.T) {
 }
 
 func TestRunBasicAgentsKubernetes(t *testing.T) {
-	t.Skip()
+	t.Parallel()
 
 	options := setupOptions(t, "basic-obs-agents-k8s", terraformDirOther, extTerraformVars)
 	options.TerraformVars["is_openshift"] = false
@@ -110,7 +110,7 @@ func TestRunBasicAgentsKubernetes(t *testing.T) {
 }
 
 func TestRunBasicAgentsClassic(t *testing.T) {
-	t.Skip()
+	t.Parallel()
 
 	options := setupOptions(t, "basic-obs-agents-classic", terraformDirOther, extTerraformVars)
 	options.TerraformVars["is_vpc_cluster"] = false
