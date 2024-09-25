@@ -1,0 +1,267 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Values.metadata.name }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: "{{ .Values.metadata.name }}"
+    version: {{ required "Missing version" .Values.image.version }}
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+      Flush                   1
+      Log_Level               {{ .Values.loggingLevel | default "info" }}
+      Daemon                  off
+      Parsers_File            parsers.conf
+      Plugins_File            plugins.conf
+      HTTP_Server             On
+      HTTP_Listen             0.0.0.0
+      HTTP_Port               8081
+      Health_Check            On
+      HC_Errors_Count         1
+      HC_Retry_Failure_Count  1
+      HC_Period               30
+      storage.path            /fluent-bit/cache
+      storage.max_chunks_up   192
+      storage.metrics         On
+    @INCLUDE input-kubernetes.conf
+    @INCLUDE filter-kubernetes.conf
+    @INCLUDE filter-add-meta-data.conf
+    @INCLUDE filter-lua.conf
+    @INCLUDE output-logs-plugin.conf
+  input-kubernetes.conf: |
+    [INPUT]
+        Name              tail
+        Tag               kube.*
+        {{- if .Values.selectedLogSourcePaths }}
+        Path              {{ .Values.selectedLogSourcePaths }}
+        {{- else }}
+        {{- if .Values.additionalLogSourcePaths }}
+        Path              /var/log/containers/*.log,{{ .Values.additionalLogSourcePaths }}
+        {{- else }}
+        Path              /var/log/containers/*.log
+        {{- end }}
+        {{- end }}
+        Path_Key          file
+        {{- if .Values.excludeLogSourcePaths }}
+        Exclude_Path      "/var/log/at/*",{{ .Values.excludeLogSourcePaths }}
+        {{- else }}
+        Exclude_Path      "/var/log/at/*"
+        {{- end }}
+        DB                /var/log/fluent-bit/fluent-bit.DB
+        Buffer_Chunk_Size 32KB
+        Buffer_Max_Size   256KB
+        Parser            cri
+        Skip_Long_Lines   On
+        Refresh_Interval  10
+        storage.type      filesystem
+        storage.pause_on_chunks_overlimit on
+  filter-kubernetes.conf: |
+    [FILTER]
+        Name                kubernetes
+        Match               kube.*
+        Buffer_Size         10MB
+        Kube_URL            https://kubernetes.default.svc:443
+        Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
+        Kube_Tag_Prefix     kube.var.log.containers.
+        Annotations         {{ .Values.includeAnnotations | default false | ternary "On" "Off" }}
+        Labels              On
+        Merge_Log           On
+        Merge_Log_Key       log_processed
+        K8S-Logging.Parser  On
+        K8S-Logging.Exclude Off
+        Use_Kubelet         On
+        Kubelet_Port        10250
+        Kubelet_Host        ${HOST_IP}
+    [FILTER]
+        Name nest
+        Match *
+        Operation lift
+        Nested_under log_processed
+  filter-add-meta-data.conf: |
+    [FILTER]
+        Name modify
+        Match *
+    {{- if .Values.clusterName }}
+        Set kubernetes_cluster_name "{{ .Values.clusterName }}"
+    {{- end }}
+        Set node_name ${NODE_NAME}
+        {{- template "logs.defaultMetadata" . }}
+    {{- if .Values.additionalMetadata }}
+    {{- range $k, $v := .Values.additionalMetadata }}
+        Set additional_metadata.{{ $k }} {{ $v }}
+    {{- end }}
+    [FILTER]
+        Name nest
+        Operation nest
+        Match *
+        Wildcard additional_metadata.*
+        Nest_under meta
+        Remove_prefix additional_metadata.
+    {{- end }}
+  output-logs-plugin.conf: |
+    [OUTPUT]
+        # fluentbit config
+        Name logger-icl-output-plugin
+        Id logs-router-icl-output-plugin
+        Match *
+        Retry_Limit {{ .Values.retryLimit | default "False" }}
+        # Connection
+        Target_Host {{ required "Missing target host" .Values.env.ingestionHost }}
+        Target_Port {{ required "Missing target port" .Values.env.ingestionPort }}
+        Target_Path /logs/v1/singles
+        # Authentication
+        Authentication_Mode {{ .Values.env.iamMode | default "TrustedProfile" }}
+        IAM_Environment {{ .Values.env.iamEnvironment | default "Production" }}
+        {{- if eq .Values.env.iamMode "TrustedProfile" }}
+        Trusted_Profile_ID {{ required "Missing trustedProfileID" .Values.env.trustedProfileID }}
+        CR_Token_Mount_Path /var/run/secrets/tokens/vault-token
+        {{- end }}
+        # Logging
+        Logging_Level {{ .Values.loggingLevel | default "info" }}
+
+        # Buffer storage
+        storage.total_limit_size 5G
+  parsers.conf: |
+    [PARSER]
+        Name   apache
+        Format regex
+        Regex  ^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*?)(?: +\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+    [PARSER]
+        Name   apache2
+        Format regex
+        Regex  ^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+    [PARSER]
+        Name   apache_error
+        Format regex
+        Regex  ^\[[^ ]* (?<time>[^\]]*)\] \[(?<level>[^\]]*)\](?: \[pid (?<pid>[^\]]*)\])?( \[client (?<client>[^\]]*)\])? (?<message>.*)$
+    [PARSER]
+        Name   nginx
+        Format regex
+        Regex ^(?<remote>[^ ]*) (?<host>[^ ]*) (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*?)(?: +\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+    [PARSER]
+        Name   json
+        Format json
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+    [PARSER]
+        Name        docker
+        Format      json
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L
+        Time_Keep   On
+    [PARSER]
+        Name cri
+        Format regex
+        Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<log>.*)$
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+    [PARSER]
+        Name        syslog
+        Format      regex
+        Regex       ^\<(?<pri>[0-9]+)\>(?<time>[^ ]* {1,2}[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[a-zA-Z0-9_\/\.\-]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? *(?<message>.*)$
+        Time_Key    time
+        Time_Format %b %d %H:%M:%S
+  plugins.conf: |
+    [PLUGINS]
+        Path    /fluent-bit/bin/logs-router-icl-output-plugin.so
+  filter-lua.conf: |
+    [FILTER]
+        Name lua
+        Match kube.*
+        script filter.lua
+        call flatten_kubernetes_metadata
+  filter.lua: |
+    -- Function to replace dots in all keys of a table to underscores.
+    function convert_dot_keys_to_underscore(kv_map)
+        local has_updates = false
+        local new_keys = {}
+        local remove_keys = {}
+
+        for k,v in pairs(kv_map) do
+            new_key, changed = string.gsub(k,"%.","_")
+            if changed > 0 then
+                -- records the new keys in another table since you cannot
+                -- update the table while looping through it
+                new_keys[new_key] = v
+                table.insert(remove_keys, k)
+                has_updates = true
+            end
+        end
+
+        if has_updates == true then
+            -- Update original map with the underscore version of the key
+            for new_key, original_value in pairs(new_keys) do
+                kv_map[new_key] = original_value
+            end
+
+            -- Loop through the list of keys and remove the entries from the
+            -- original map by setting the values to nil
+            for index, key_to_remove in pairs(remove_keys) do
+                kv_map[key_to_remove]= nil
+            end
+        end
+
+        return has_updates
+    end
+
+    -- Use a Lua function to flatten the kubernetes labels and annotation hierarchies
+    -- when can have type conflicts with the logging backend because of conflicts like:
+    --    kubernetes.labels.app: my_app
+    --    kubernetes.labels.app.attr: attribute
+    -- In the above example you can end up with app as both a string and an object
+    -- when the dot gets expanded by the logs service.
+    function flatten_kubernetes_metadata(tag, timestamp, record)
+        --
+        if record.kubernetes == nil then
+            -- No changes
+            return 0,0,0
+        end
+        --
+        local has_updates = false
+
+        if record.kubernetes.labels ~= nil then
+            -- Flatten the fields under kubernetes.labels
+            if type(record.kubernetes.labels) == "table" then
+                updated = convert_dot_keys_to_underscore(record.kubernetes.labels)
+
+                if updated then
+                    has_updates = true
+                end
+            end
+        end
+
+        if record.kubernetes.annotations ~= nil then
+            -- Flatten the fields under kubernetes.annotations
+            if type(record.kubernetes.annotations) == "table" then
+                updated = convert_dot_keys_to_underscore(record.kubernetes.annotations)
+
+                if updated then
+                    has_updates = true
+                end
+            end
+        end
+
+        if record.kubernetes_cluster_name ~= nil then
+            -- Move the record.kubernetes_cluster_name into the kubernetes hierarchy
+            record.kubernetes.cluster_name = record.kubernetes_cluster_name
+            record.kubernetes_cluster_name = nil
+            has_updates = true
+        end
+
+        if has_updates == true then
+            -- There are changes
+            -- Tell Fluentbit to keep the original timestamp, but use this updated record
+            return 2,0,record
+        end
+
+        -- No changes tell Fluentbit to use the original timestamp and record
+        return 0,0,0
+    end

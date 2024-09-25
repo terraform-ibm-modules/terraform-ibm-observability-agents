@@ -1,0 +1,24 @@
+metadata:
+  name: "logs-agent"
+image:
+  version: "1.3.0" # required
+env:
+  # ingestionHost is a required field. For example:
+  # ingestionHost: "<logs instance uuid>.ingress.us-east.logs.cloud.ibm.com"
+  ingestionHost: "" # required
+
+  # If you are using CSE proxy, then use port number "3443"
+  # If you are using private VPE Gateway, then use port number "443"
+  # If you are using the public endpoint, then use port number "443"
+  ingestionPort: "" # required
+
+  iamMode: "TrustedProfile"
+  # trustedProfileID - trusted profile id - required for iam trusted profile mode
+  trustedProfileID: "" # required if iamMode is TrustedProfile
+
+# Optionally provide the name of the cluster to add an additional label to the logs
+clusterName: "" # recommended
+
+scc:
+  # true here enables creation of Security Context Constraints in Openshift
+  create: true

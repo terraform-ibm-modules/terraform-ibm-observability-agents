@@ -1,0 +1,163 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: "{{ .Values.metadata.name }}"
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    version: {{ required "Missing version" .Values.image.version }}
+
+  labels:
+    app: "{{ .Values.metadata.name }}"
+    version: {{ required "Missing version" .Values.image.version }}
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: "{{ .Values.metadata.name }}"
+  template:
+    metadata:
+      labels:
+        name: "{{ .Values.metadata.name }}"
+        app: "{{ .Values.metadata.name }}"
+        version: {{ required "Missing version" .Values.image.version }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/api/v2/metrics/prometheus"
+        prometheus.io/port: "8081"
+    spec:
+      initContainers:
+        - command:
+            - scripts/make_db_dir.sh
+          image: icr.io/ibm/observe/logs-router-agent-init:{{ .Values.image.version }}
+          imagePullPolicy: Always
+          name: create-db-dir
+          securityContext:
+            privileged: true
+            runAsUser: 0
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /var/log
+              name: varlog
+            {{- if contains "+IKS" .Capabilities.KubeVersion.Version }}
+            - mountPath: /var/data
+              name: vardata
+            {{- end }}
+      containers:
+        - args:
+            - --config=/fluent-bit/etc/fluent-bit.conf
+          command:
+            - /fluent-bit/bin/fluent-bit
+          image: icr.io/ibm/observe/logs-router-agent:{{ .Values.image.version }}
+          imagePullPolicy: Always
+          name: fluent-bit
+          env:
+          {{- if hasKey .Values "secret"}}
+          {{- if .Values.secret.iamAPIKey }}
+            - name: IAM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.metadata.name }}
+                  key: IAM_API_KEY
+                  optional: true
+          {{- end }}
+          {{- end }}
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          resources:
+            {{- template "logs.daemonsetResources" . }}
+          securityContext:
+            capabilities:
+              add:
+                - DAC_READ_SEARCH
+            privileged: false
+            runAsGroup: 10000
+            runAsUser: 10000
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /var/run/secrets/tokens
+              name: vault-token
+            - mountPath: /var/log
+              name: varlog
+              readOnly: true
+            {{- if contains "+IKS" .Capabilities.KubeVersion.Version }}
+            - mountPath: /var/data
+              name: vardata
+              readOnly: true
+            {{- end }}
+            - mountPath: /var/log/fluent-bit
+              name: varlogfluentbit
+            - mountPath: /fluent-bit/etc/
+              name: "{{ .Values.metadata.name }}"
+            - mountPath: /fluent-bit/cache
+              name: fluent-bit-cache
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health/
+              port: 8081
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health/
+              port: 8081
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 20
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      serviceAccount: "{{ .Values.metadata.name }}"
+      serviceAccountName: "{{ .Values.metadata.name }}"
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: vault-token
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: vault-token
+                  expirationSeconds: 7200
+                  audience: iam
+        - hostPath:
+            path: /var/log
+            type: ""
+          name: varlog
+        {{- if contains "+IKS" .Capabilities.KubeVersion.Version }}
+        - hostPath:
+            path: /var/data
+            type: ""
+          name: vardata
+        {{- end }}
+        - hostPath:
+            path: /var/log/fluent-bit
+            type: ""
+          name: varlogfluentbit
+        - configMap:
+            name: "{{ .Values.metadata.name }}"
+          name: "{{ .Values.metadata.name }}"
+        - name: fluent-bit-cache
+          emptyDir:
+            sizeLimit: 6Gi
+      tolerations:
+      {{- range $val := .Values.tolerations }}
+        - effect: {{ $val.effect | quote }}
+          key: {{ $val.key | quote }}
+          value: {{ $val.value | quote }}
+          operator: {{ $val.operator | quote }}
+          tolerationSeconds: {{ $val.tolerationSeconds }}
+      {{- end}}
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate

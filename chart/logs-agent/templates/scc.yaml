@@ -1,0 +1,54 @@
+{{- if and .Values.scc.create (.Capabilities.APIVersions.Has "security.openshift.io/v1") }}
+kind: SecurityContextConstraints
+apiVersion: security.openshift.io/v1
+metadata:
+  annotations:
+    kubernetes.io/description: |-
+      hostmount-logger is similar to hostmount-anyuid, but it drops more of
+      the Linux SYSCAP capabilities to reduce blast radius.
+  name: "hostmount-logger-{{ .Values.metadata.name }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    name: "{{ .Values.metadata.name }}"
+    version: {{ required "Missing version" .Values.image.version }}
+priority: 20
+allowHostDirVolumePlugin: true
+allowHostIPC: false
+allowHostNetwork: false
+allowHostPID: false
+allowHostPorts: false
+allowPrivilegeEscalation: true
+allowPrivilegedContainer: true
+allowedCapabilities:
+  - DAC_READ_SEARCH
+# defaultAddCapabilities: null
+fsGroup:
+  type: RunAsAny
+groups: []
+readOnlyRootFilesystem: false
+requiredDropCapabilities:
+  - MKNOD
+  - FSETID
+  - KILL
+  - NET_BIND_SERVICE
+  - NET_RAW
+runAsUser:
+  type: RunAsAny
+seLinuxContext:
+  type: MustRunAs
+  seLinuxOptions:
+    type: container_logreader_t
+supplementalGroups:
+  type: RunAsAny
+users:
+  - "system:serviceaccount:{{ .Release.Namespace }}:{{ .Values.metadata.name }}"
+volumes:
+  - configMap
+  - downwardAPI
+  - emptyDir
+  - hostPath
+  - nfs
+  - persistentVolumeClaim
+  - projected
+  - secret
+{{- end }}
