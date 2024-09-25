@@ -17,8 +17,7 @@ data "ibm_container_cluster_config" "cluster_config" {
 }
 
 locals {
-  logs_agent_chart_location = "oci://icr.io/ibm/observe/logs-agent-helm"
-  # logs_agent_host             = "ingester.private.${var.logs_agent_region}.logs-router.cloud.ibm.com"
+  logs_agent_chart_location   = "oci://icr.io/ibm/observe/logs-agent-helm"
   logs_agent_iam_api_key      = var.logs_agent_iam_api_key != null ? var.logs_agent_iam_api_key : ""
   logs_agent_trusted_profile  = var.logs_agent_trusted_profile != null ? var.logs_agent_trusted_profile : ""
   cloud_logs_ingress_endpoint = var.cloud_logs_ingress_endpoint != null ? var.cloud_logs_ingress_endpoint : ""
