@@ -1,7 +1,0 @@
-apiVersion: v2
-name: logs-routing-agent
-description: A Helm chart for a Logs Routing Agent
-
-type: application
-
-version: 1.2.3

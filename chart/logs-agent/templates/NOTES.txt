@@ -1,8 +1,0 @@
-The agent for IBM Cloud Logs is starting up on each node in your cluster.
-Logs will start to appear in your instance in a minute.
-
-To verify the agents are started, run:
-  $ kubectl -n {{ .Release.Namespace }} get ds {{ .Release.Name }}
-
-Some changes to the configuration may require the pods to be restarted:
-  $ kubectl -n {{ .Release.Namespace }} rollout restart ds/{{ .Release.Name }}
