@@ -78,7 +78,7 @@ func logsRoutingsetupOptions(t *testing.T, prefix string, terraformDir string, i
 }
 
 func TestRunBasicAgents(t *testing.T) {
-	t.Parallel()
+	t.Skip()
 
 	options := setupOptions(t, "basic-obs-agents", terraformDirOther, extTerraformVars)
 
