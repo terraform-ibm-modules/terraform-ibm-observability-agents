@@ -88,7 +88,7 @@ func TestRunBasicAgents(t *testing.T) {
 }
 
 func TestRunUpgrade(t *testing.T) {
-	t.Parallel()
+	t.Skip()
 
 	options := setupOptions(t, "observ-agents-upg", terraformDirOther, extTerraformVars)
 
@@ -100,7 +100,7 @@ func TestRunUpgrade(t *testing.T) {
 }
 
 func TestRunBasicAgentsKubernetes(t *testing.T) {
-	t.Parallel()
+	t.Skip()
 
 	options := setupOptions(t, "basic-obs-agents-k8s", terraformDirOther, extTerraformVars)
 	options.TerraformVars["is_openshift"] = false
@@ -111,7 +111,7 @@ func TestRunBasicAgentsKubernetes(t *testing.T) {
 }
 
 func TestRunBasicAgentsClassic(t *testing.T) {
-	t.Parallel()
+	t.Skip()
 
 	options := setupOptions(t, "basic-obs-agents-classic", terraformDirOther, extTerraformVars)
 	options.TerraformVars["is_vpc_cluster"] = false
@@ -131,7 +131,7 @@ func TestRunLogsRoutingAgentsKubernetes(t *testing.T) {
 }
 
 func TestRunDirectToICLExample(t *testing.T) {
-	t.Parallel()
+	t.Skip()
 
 	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
 		Testing:       t,

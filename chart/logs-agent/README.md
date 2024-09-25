@@ -75,7 +75,7 @@ helm install <install-name> --dry-run oci://icr.io/ibm/observe/logs-agent --vers
 If you are using `iamMode` as `iamAPIKey` then you can pass the key as a parameter:
 
 ```sh
-helm install <install-name> --dry-run oci://icr.io/ibm/observe/logs-agent --version <version> -f ./logs-values.yaml -n ibm-observe --create-namespace --set secret.iamAPIKey=<your iamAPIKey>
+helm install <install-name> --dry-run oci://icr.io/ibm/observe/logs-agent --version <version> -f ./logs-values.yaml -n ibm-observe --create-namespace --set secret.iamAPIKey=<your iamAPIKey> # pragma: allowlist secret
 ```
 
 After inspecting the dry-run output you can run the install by removing the --dry-run
@@ -125,12 +125,12 @@ This option allows you to choose to leverage an IAM APIKey instead of the defaul
 If `env.iamMode: "TrustedProfile"` is set, then the `env.trustedProfileID` variable must also be provided.
 
 If `env.iamMode: "IAMAPIKey"` is set, then the configuration expects a secret to be defined that contains an IAM Apikey with permissions.
-If the `secret.iamAPIKey` variable is provided on the helm command (ie. `--set secret.iamAPIKey=<your iamAPIKey>`), then the helm chart will create the Kubernetes secret.
+If the `secret.iamAPIKey` variable is provided on the helm command (ie. `--set secret.iamAPIKey=<your iamAPIKey>`), then the helm chart will create the Kubernetes secret. # pragma: allowlist secret
 
 Alternatively, you can create the secret ahead of time with the command:
 
 ```sh
-kubectl create secret generic <helm install-name> -n ibm-observe --from-literal=IAM_API_KEY=<apikey>
+kubectl create secret generic <helm install-name> -n ibm-observe --from-literal=IAM_API_KEY=<apikey> # pragma: allowlist secret
 ```
 
 ```yaml
