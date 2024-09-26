@@ -16,6 +16,8 @@ spec:
       app: "{{ .Values.metadata.name }}"
   updateStrategy:
     type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
   template:
     metadata:
       labels:
