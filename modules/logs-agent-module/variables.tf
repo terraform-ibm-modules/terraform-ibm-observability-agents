@@ -154,7 +154,7 @@ variable "cloud_logs_ingress_endpoint" {
   default     = null
 
   validation {
-    condition = (var.cloud_logs_ingress_endpoint != null && var.cloud_logs_ingress_endpoint != "")
+    condition     = (var.cloud_logs_ingress_endpoint != null && var.cloud_logs_ingress_endpoint != "")
     error_message = "When 'logs_agent_enabled' is enabled, you cannot set 'cloud_logs_ingress_endpoint' as null or empty string."
   }
 }
