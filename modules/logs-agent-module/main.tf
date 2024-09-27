@@ -21,12 +21,6 @@ locals {
   logs_agent_iam_api_key      = var.logs_agent_iam_api_key != null ? var.logs_agent_iam_api_key : ""
   logs_agent_trusted_profile  = var.logs_agent_trusted_profile != null ? var.logs_agent_trusted_profile : ""
   cloud_logs_ingress_endpoint = var.cloud_logs_ingress_endpoint != null ? var.cloud_logs_ingress_endpoint : ""
-  # tflint-ignore: terraform_unused_declarations
-  validate_iam_mode = (var.logs_agent_iam_mode == "IAMAPIKey" && (var.logs_agent_iam_api_key == null || var.logs_agent_iam_api_key == "")) ? tobool("When passing 'IAMAPIKey' value for 'logs_agent_iam_mode' you cannot set 'logs_agent_ingestion_key' as null or empty string.") : true
-  # tflint-ignore: terraform_unused_declarations
-  validate_trusted_profile_mode = (var.logs_agent_iam_mode == "TrustedProfile" && (var.logs_agent_trusted_profile == null || var.logs_agent_trusted_profile == "")) ? tobool(" When passing 'TrustedProfile' value for 'logs_agent_iam_mode' you cannot set 'logs_agent_trusted_profile' as null or empty string.") : true
-  # tflint-ignore: terraform_unused_declarations
-  validate_direct_to_icl = (var.cloud_logs_ingress_endpoint == null || var.cloud_logs_ingress_endpoint == "") ? tobool(" When 'logs_agent_enabled' is enabled, you cannot set 'cloud_logs_ingress_endpoint' as null or empty string.") : true
 }
 
 resource "helm_release" "logs_agent" {

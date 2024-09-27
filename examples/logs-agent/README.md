@@ -9,5 +9,5 @@ The example provisions the following resources:
 - A Red Hat OpenShift Container Platform VPC cluster or a Kubernetes cluster.
 - A Trusted Profile.
 - An IBM Cloud Logs instance
-- A Virtual Private Endpoint.
+- A Virtual Private Endpoint for Cloud Logs.
 - Logs agents.
