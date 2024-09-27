@@ -108,7 +108,7 @@ variable "logs_agent_selected_log_source_paths" {
 
 variable "logs_agent_log_source_namespaces" {
   type        = list(string)
-  description = "The list of namespaces from which logs should be forwarded by agent. When specified logs from only these namespaces will be sent by the agent."
+  description = "The list of namespaces from which logs should be forwarded by agent. If namespaces are not listed, logs from all namespaces will be sent."
   default     = []
   nullable    = false
 }
@@ -126,7 +126,7 @@ variable "logs_agent_iam_mode" {
 variable "logs_agent_iam_environment" {
   type        = string
   default     = "PrivateProduction"
-  description = "IAM authentication Environment: `Production` or `PrivateProduction` or `Staging` or `PrivateStaging`."
+  description = "IAM authentication Environment: `Production` or `PrivateProduction` or `Staging` or `PrivateStaging`. `Production` specifies the public endpoint & `PrivateProduction` specifies the private endpoint."
   validation {
     error_message = "The IAM environment can only be `Production` or `PrivateProduction` or `Staging` or `PrivateStaging`."
     condition     = contains(["Production", "PrivateProduction", "Staging", "PrivateStaging"], var.logs_agent_iam_environment)

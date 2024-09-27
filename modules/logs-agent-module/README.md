@@ -3,6 +3,7 @@
 You can use this module to deploy Logs Agent in your cluster. The agent can collect and route application logs from a Red Hat OpenShift or Kubernetes cluster to an IBM Cloud Logs of your choice.
 
 ## Usage
+
 ```hcl
 # ############################################################################
 # Init cluster config for helm
