@@ -18,7 +18,7 @@ This module deploys the following observability agents to a Red Hat OpenShift Co
 * [Submodules](./modules)
     * [logs-agent-module](./modules/logs-agent-module)
 * [Examples](./examples)
-    * [Direct to IBM Cloud Logs Example](./examples/logs-agent)
+    * [Cloud Logs agent using VPE ingress endpoint with a Trusted Profile](./examples/logs-agent)
     * [Log Analysis agent](./examples/basic)
 * [Contributing](#contributing)
 <!-- END OVERVIEW HOOK -->
@@ -180,7 +180,7 @@ You need the following permissions to run this module.
 | <a name="input_logs_agent_name"></a> [logs\_agent\_name](#input\_logs\_agent\_name) | The name of the Logs agent. The name is used in all Kubernetes and Helm resources in the cluster. | `string` | `"logger-agent"` | no |
 | <a name="input_logs_agent_namespace"></a> [logs\_agent\_namespace](#input\_logs\_agent\_namespace) | The namespace where the Logs agent is deployed. The default value is `ibm-observe`. | `string` | `"ibm-observe"` | no |
 | <a name="input_logs_agent_selected_log_source_paths"></a> [logs\_agent\_selected\_log\_source\_paths](#input\_logs\_agent\_selected\_log\_source\_paths) | The list of specific log sources paths. Logs will only be collected from the specified log source paths. | `list(string)` | `[]` | no |
-| <a name="input_logs_agent_trusted_profile"></a> [logs\_agent\_trusted\_profile](#input\_logs\_agent\_trusted\_profile) | The IBM Cloud trusted profile ID. Used only when `logs_agent_iam_mode` is set to `TrustedProfile`. | `string` | `null` | no |
+| <a name="input_logs_agent_trusted_profile"></a> [logs\_agent\_trusted\_profile](#input\_logs\_agent\_trusted\_profile) | The IBM Cloud trusted profile ID. Used only when `logs_agent_iam_mode` is set to `TrustedProfile`. The trusted profile must have an IBM Cloud Logs `Sender` role. | `string` | `null` | no |
 
 ### Outputs
 

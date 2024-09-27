@@ -27,12 +27,6 @@ variable "cluster_config_endpoint_type" {
 # Logs Agents variables
 ##############################################################################
 
-variable "logs_agent_enabled" {
-  type        = bool
-  description = "Whether to deploy the Logs agent."
-  default     = true
-}
-
 variable "logs_agent_name" {
   description = "The name of the Logs agent. The name is used in all Kubernetes and Helm resources in the cluster."
   type        = string
@@ -49,7 +43,7 @@ variable "logs_agent_namespace" {
 
 variable "logs_agent_trusted_profile" {
   type        = string
-  description = "The IBM Cloud trusted profile ID. Used only when `logs_agent_iam_mode` is set to `TrustedProfile`."
+  description = "The IBM Cloud trusted profile ID. Used only when `logs_agent_iam_mode` is set to `TrustedProfile`. The trusted profile must have an IBM Cloud Logs `Sender` role."
   default     = null
 }
 

@@ -22,9 +22,5 @@ terraform {
       source  = "hashicorp/time"
       version = ">= 0.9.1"
     }
-    logdna = {
-      source  = "logdna/logdna"
-      version = ">= 1.14.2, < 2.0.0"
-    }
   }
 }

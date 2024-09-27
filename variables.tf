@@ -247,7 +247,7 @@ variable "logs_agent_namespace" {
 
 variable "logs_agent_trusted_profile" {
   type        = string
-  description = "The IBM Cloud trusted profile ID. Used only when `logs_agent_iam_mode` is set to `TrustedProfile`."
+  description = "The IBM Cloud trusted profile ID. Used only when `logs_agent_iam_mode` is set to `TrustedProfile`. The trusted profile must have an IBM Cloud Logs `Sender` role."
   default     = null
 }
 

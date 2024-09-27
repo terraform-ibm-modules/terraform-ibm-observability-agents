@@ -66,11 +66,9 @@ func logsAgentsetupOptions(t *testing.T, prefix string, terraformDir string, isO
 			},
 		},
 		TerraformVars: map[string]interface{}{
-			"region":       "us-east",
 			"is_openshift": isOpenshift,
 		},
-		CloudInfoService:              sharedInfoSvc,
-		ExcludeActivityTrackerRegions: true,
+		CloudInfoService: sharedInfoSvc,
 	})
 
 	return options
