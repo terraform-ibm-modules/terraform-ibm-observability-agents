@@ -1,4 +1,4 @@
-# Deploy basic observability agents
+# Log Analysis agent
 
 An end-to-end example that uses the module's default variable values.
 

@@ -26,7 +26,7 @@ locals {
   # tflint-ignore: terraform_unused_declarations
   validate_trusted_profile_mode = var.logs_agent_enabled == true && (var.logs_agent_iam_mode == "TrustedProfile" && (var.logs_agent_trusted_profile == null || var.logs_agent_trusted_profile == "")) ? tobool(" When passing 'TrustedProfile' value for 'logs_agent_iam_mode' you cannot set 'logs_agent_trusted_profile' as null or empty string.") : true
   # tflint-ignore: terraform_unused_declarations
-  validate_direct_to_icl = var.logs_agent_enabled == true && (var.logs_agent_enable_direct_to_cloud_logs && (var.cloud_logs_ingress_endpoint == null || var.cloud_logs_ingress_endpoint == "")) ? tobool(" When 'logs_agent_enable_direct_to_cloud_logs' is enabled, you cannot set 'cloud_logs_ingress_endpoint' as null or empty string.") : true
+  validate_direct_to_icl = var.logs_agent_enabled == true && (var.cloud_logs_ingress_endpoint == null || var.cloud_logs_ingress_endpoint == "") ? tobool(" When 'logs_agent_enabled' is enabled, you cannot set 'cloud_logs_ingress_endpoint' as null or empty string.") : true
 }
 
 resource "helm_release" "logs_agent" {

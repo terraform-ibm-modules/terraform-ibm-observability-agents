@@ -24,17 +24,17 @@ variable "cluster_config_endpoint_type" {
 }
 
 ##############################################################################
-# Logs Routing variables
+# Logs Agents variables
 ##############################################################################
 
 variable "logs_agent_enabled" {
   type        = bool
-  description = "Whether to deploy the Logs Routing agent."
+  description = "Whether to deploy the Logs agent."
   default     = true
 }
 
 variable "logs_agent_name" {
-  description = "The name of the Logs Routing agent. The name is used in all Kubernetes and Helm resources in the cluster."
+  description = "The name of the Logs agent. The name is used in all Kubernetes and Helm resources in the cluster."
   type        = string
   default     = "logger-agent"
   nullable    = false
@@ -42,7 +42,7 @@ variable "logs_agent_name" {
 
 variable "logs_agent_namespace" {
   type        = string
-  description = "The namespace where the Logs Routing agent is deployed. The default value is `ibm-observe`."
+  description = "The namespace where the Logs agent is deployed. The default value is `ibm-observe`."
   default     = "ibm-observe"
   nullable    = false
 }
@@ -55,13 +55,13 @@ variable "logs_agent_trusted_profile" {
 
 variable "logs_agent_iam_api_key" {
   type        = string
-  description = "The IBM Cloud API key for the Logs Routing agent to authenticate and communicate with the Logs Routing."
+  description = "The IBM Cloud API key for the Logs agent to authenticate and communicate with the IBM Cloud Logs. It is required if `logs_agent_iam_mode` is set to `IAMAPIKey`."
   sensitive   = true
   default     = null
 }
 
 variable "logs_agent_agent_tolerations" {
-  description = "List of tolerations to apply to Logs Routing agent."
+  description = "List of tolerations to apply to Logs agent."
   type = list(object({
     key               = optional(string)
     operator          = optional(string)
@@ -76,14 +76,14 @@ variable "logs_agent_agent_tolerations" {
 
 variable "logs_agent_additional_log_source_paths" {
   type        = list(string)
-  description = "The list of additional log sources. By default, the Logs Routing agent collects logs from a single source at `/var/log/containers/logger-agent-ds-*.log`."
+  description = "The list of additional log sources. By default, the Logs agent collects logs from a single source at `/var/log/containers/logger-agent-ds-*.log`."
   default     = []
   nullable    = false
 }
 
 variable "logs_agent_exclude_log_source_paths" {
   type        = list(string)
-  description = "The list of log sources to exclude. Specify the paths that the Logs Routing agent ignores."
+  description = "The list of log sources to exclude. Specify the paths that the Logs agent ignores."
   default     = []
   nullable    = false
 }
@@ -132,19 +132,13 @@ variable "logs_agent_additional_metadata" {
 }
 
 variable "logs_agent_enable_scc" {
-  description = "Whether to enable creation of Security Context Constraints in Openshift."
+  description = "Whether to enable creation of Security Context Constraints in Openshift. When installing on an OpenShift cluster, this setting is mandatory to configure permissions for pods within your cluster."
   type        = bool
   default     = true
 }
 
-variable "logs_agent_enable_direct_to_cloud_logs" {
-  description = "Whether to send logs directly to IBM Cloud Logs. If this is true, a value for `cloud_logs_ingress_endpoint` and `cloud_logs_target_port` must be set."
-  type        = bool
-  default     = false
-}
-
 variable "cloud_logs_ingress_endpoint" {
-  description = "The host for IBM Cloud Logs ingestion. Ensure you use the ingress endpoint."
+  description = "The host for IBM Cloud Logs ingestion. Ensure you use the ingress endpoint. See https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-endpoints_ingress."
   type        = string
   default     = null
 }

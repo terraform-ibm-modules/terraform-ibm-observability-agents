@@ -163,16 +163,15 @@ module "vpe" {
 ##############################################################################
 
 module "observability_agents" {
-  source                                 = "../../modules/logs-agent-module"
-  depends_on                             = [time_sleep.wait_operators, module.vpe]
-  cluster_id                             = ibm_container_vpc_cluster.cluster.id
-  cluster_resource_group_id              = module.resource_group.resource_group_id
-  logs_agent_enabled                     = true
-  logs_agent_trusted_profile             = module.trusted_profile.trusted_profile.id
-  logs_agent_namespace                   = local.logs_agent_namespace
-  logs_agent_name                        = local.logs_agent_name
-  logs_agent_enable_direct_to_cloud_logs = true
-  cloud_logs_ingress_endpoint            = module.observability_instance.cloud_logs_ingress_private_endpoint
-  cloud_logs_ingress_port                = 443
-  logs_agent_enable_scc                  = var.is_openshift ? true : false
+  source                      = "../../modules/logs-agent-module"
+  depends_on                  = [time_sleep.wait_operators, module.vpe]
+  cluster_id                  = ibm_container_vpc_cluster.cluster.id
+  cluster_resource_group_id   = module.resource_group.resource_group_id
+  logs_agent_enabled          = true
+  logs_agent_trusted_profile  = module.trusted_profile.trusted_profile.id
+  logs_agent_namespace        = local.logs_agent_namespace
+  logs_agent_name             = local.logs_agent_name
+  cloud_logs_ingress_endpoint = module.observability_instance.cloud_logs_ingress_private_endpoint
+  cloud_logs_ingress_port     = 443
+  logs_agent_enable_scc       = var.is_openshift ? true : false
 }

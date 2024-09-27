@@ -36,7 +36,7 @@ variable "is_vpc_cluster" {
 variable "log_analysis_enabled" {
   type        = bool
   description = "Deploy IBM Cloud Logging agent"
-  default     = true
+  default     = false
 }
 
 
@@ -219,4 +219,122 @@ variable "cloud_monitoring_agent_tolerations" {
       effect : "NoSchedule"
       key : "node-role.kubernetes.io/master"
   }]
+}
+
+##############################################################################
+# Logs Agents variables
+##############################################################################
+
+variable "logs_agent_enabled" {
+  type        = bool
+  description = "Whether to deploy the Logs agent."
+  default     = true
+}
+
+variable "logs_agent_name" {
+  description = "The name of the Logs agent. The name is used in all Kubernetes and Helm resources in the cluster."
+  type        = string
+  default     = "logger-agent"
+  nullable    = false
+}
+
+variable "logs_agent_namespace" {
+  type        = string
+  description = "The namespace where the Logs agent is deployed. The default value is `ibm-observe`."
+  default     = "ibm-observe"
+  nullable    = false
+}
+
+variable "logs_agent_trusted_profile" {
+  type        = string
+  description = "The IBM Cloud trusted profile ID. Used only when `logs_agent_iam_mode` is set to `TrustedProfile`."
+  default     = null
+}
+
+variable "logs_agent_iam_api_key" {
+  type        = string
+  description = "The IBM Cloud API key for the Logs agent to authenticate and communicate with the IBM Cloud Logs. It is required if `logs_agent_iam_mode` is set to `IAMAPIKey`."
+  sensitive   = true
+  default     = null
+}
+
+variable "logs_agent_agent_tolerations" {
+  description = "List of tolerations to apply to Logs agent."
+  type = list(object({
+    key               = optional(string)
+    operator          = optional(string)
+    value             = optional(string)
+    effect            = optional(string)
+    tolerationSeconds = optional(number)
+  }))
+  default = [{
+    operator = "Exists"
+  }]
+}
+
+variable "logs_agent_additional_log_source_paths" {
+  type        = list(string)
+  description = "The list of additional log sources. By default, the Logs agent collects logs from a single source at `/var/log/containers/logger-agent-ds-*.log`."
+  default     = []
+  nullable    = false
+}
+
+variable "logs_agent_exclude_log_source_paths" {
+  type        = list(string)
+  description = "The list of log sources to exclude. Specify the paths that the Logs agent ignores."
+  default     = []
+  nullable    = false
+}
+
+variable "logs_agent_selected_log_source_paths" {
+  type        = list(string)
+  description = "The list of specific log sources paths. Logs will only be collected from the specified log source paths."
+  default     = []
+  nullable    = false
+}
+
+variable "logs_agent_log_source_namespaces" {
+  type        = list(string)
+  description = "The list of namespaces from which logs should be forwarded by agent. When specified logs from only these namespaces will be sent by the agent."
+  default     = []
+  nullable    = false
+}
+
+variable "logs_agent_iam_mode" {
+  type        = string
+  default     = "TrustedProfile"
+  description = "IAM authentication mode: `TrustedProfile` or `IAMAPIKey`."
+}
+
+variable "logs_agent_iam_environment" {
+  type        = string
+  default     = "PrivateProduction"
+  description = "IAM authentication Environment: `Production` or `PrivateProduction` or `Staging` or `PrivateStaging`."
+}
+
+variable "logs_agent_additional_metadata" {
+  description = "The list of additional metadata fields to add to the routed logs."
+  type = list(object({
+    key   = optional(string)
+    value = optional(string)
+  }))
+  default = []
+}
+
+variable "logs_agent_enable_scc" {
+  description = "Whether to enable creation of Security Context Constraints in Openshift. When installing on an OpenShift cluster, this setting is mandatory to configure permissions for pods within your cluster."
+  type        = bool
+  default     = true
+}
+
+variable "cloud_logs_ingress_endpoint" {
+  description = "The host for IBM Cloud Logs ingestion. Ensure you use the ingress endpoint. See https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-endpoints_ingress."
+  type        = string
+  default     = null
+}
+
+variable "cloud_logs_ingress_port" {
+  type        = number
+  default     = 3443
+  description = "The target port for the IBM Cloud Logs ingestion endpoint. The port must be 443 if you connect by using a VPE gateway, or port 3443 when you connect by using CSEs."
 }
