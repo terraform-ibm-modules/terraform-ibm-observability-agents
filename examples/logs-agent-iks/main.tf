@@ -66,7 +66,7 @@ resource "ibm_container_vpc_cluster" "cluster" {
   flavor               = "bx2.4x16"
   worker_count         = "2"
   force_delete_storage = true
-  wait_till            = "Normal"
+  wait_till            = "IngressReady"
   zones {
     subnet_id = ibm_is_subnet.testacc_subnet.id
     name      = "${var.region}-1"
