@@ -30,7 +30,7 @@ variable "cluster_config_endpoint_type" {
 variable "logs_agent_name" {
   description = "The name of the Logs agent. The name is used in all Kubernetes and Helm resources in the cluster."
   type        = string
-  default     = "logger-agent"
+  default     = "logs-agent"
   nullable    = false
 }
 
