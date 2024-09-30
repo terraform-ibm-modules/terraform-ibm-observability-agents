@@ -159,6 +159,8 @@ module "observability_agents" {
   cluster_id                    = var.is_vpc_cluster ? ibm_container_vpc_cluster.cluster[0].id : ibm_container_cluster.cluster[0].id
   cluster_resource_group_id     = module.resource_group.resource_group_id
   log_analysis_instance_region  = module.observability_instances.region
+  logs_agent_enabled            = false
+  log_analysis_enabled          = true
   log_analysis_ingestion_key    = module.observability_instances.log_analysis_ingestion_key
   cloud_monitoring_access_key   = module.observability_instances.cloud_monitoring_access_key
   log_analysis_agent_tags       = var.resource_tags

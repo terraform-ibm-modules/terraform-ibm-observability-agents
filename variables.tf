@@ -274,7 +274,7 @@ variable "logs_agent_agent_tolerations" {
 
 variable "logs_agent_additional_log_source_paths" {
   type        = list(string)
-  description = "The list of additional log sources. By default, the Logs agent collects logs from a single source at `/var/log/containers/logger-agent-ds-*.log`."
+  description = "The list of additional log sources. By default, the Logs agent collects logs from a single source at `/var/log/containers/*.log`."
   default     = []
   nullable    = false
 }
@@ -288,14 +288,14 @@ variable "logs_agent_exclude_log_source_paths" {
 
 variable "logs_agent_selected_log_source_paths" {
   type        = list(string)
-  description = "The list of specific log sources paths. Logs will only be collected from the specified log source paths."
+  description = "The list of specific log sources paths. Logs will only be collected from the specified log source paths. If no paths are specified, it will send logs from `/var/log/containers`."
   default     = []
   nullable    = false
 }
 
 variable "logs_agent_log_source_namespaces" {
   type        = list(string)
-  description = "The list of namespaces from which logs should be forwarded by agent. When specified logs from only these namespaces will be sent by the agent."
+  description = "The list of namespaces from which logs should be forwarded by agent. If namespaces are not listed, logs from all namespaces will be sent."
   default     = []
   nullable    = false
 }
@@ -309,7 +309,7 @@ variable "logs_agent_iam_mode" {
 variable "logs_agent_iam_environment" {
   type        = string
   default     = "PrivateProduction"
-  description = "IAM authentication Environment: `Production` or `PrivateProduction` or `Staging` or `PrivateStaging`."
+  description = "IAM authentication Environment: `Production` or `PrivateProduction` or `Staging` or `PrivateStaging`. `Production` specifies the public endpoint & `PrivateProduction` specifies the private endpoint."
 }
 
 variable "logs_agent_additional_metadata" {
