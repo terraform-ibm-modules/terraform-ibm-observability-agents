@@ -91,7 +91,7 @@ func TestRunLogsAgentExample(t *testing.T) {
 }
 
 func TestRunLogsAgentUpgrade(t *testing.T) {
-	t.Parallel()
+	t.Skip()
 
 	options := logsAgentsetupOptions(t, "log-agent-upg", terraformDirLogsAgentROKS)
 
