@@ -44,9 +44,9 @@ module "logs_agent_module" {
   # Logs Agent variables
   logs_agent_trusted_profile  = "XXXXXXXX"
   logs_agent_namespace        = "ibm-observe"
-  logs_agent_name             = "log-router"
+  logs_agent_name             = "logs-agent"
   cloud_logs_ingress_endpoint = "<cloud-logs-instance-guid>.ingress.us-south.logs.cloud.ibm.com"
-  cloud_logs_ingress_port     = 3443
+  cloud_logs_ingress_port     = 443
 }
 ```
 
@@ -81,8 +81,8 @@ No modules.
 | <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | The ID of the cluster to deploy the agents. | `string` | n/a | yes |
 | <a name="input_cluster_resource_group_id"></a> [cluster\_resource\_group\_id](#input\_cluster\_resource\_group\_id) | The resource group ID of the cluster. | `string` | n/a | yes |
 | <a name="input_logs_agent_additional_log_source_paths"></a> [logs\_agent\_additional\_log\_source\_paths](#input\_logs\_agent\_additional\_log\_source\_paths) | The list of additional log sources. By default, the Logs agent collects logs from a single source at `/var/log/containers/*.log`. | `list(string)` | `[]` | no |
-| <a name="input_logs_agent_additional_metadata"></a> [logs\_agent\_additional\_metadata](#input\_logs\_agent\_additional\_metadata) | The list of additional metadata fields to add to the routed logs. | <pre>list(object({<br>    key   = optional(string)<br>    value = optional(string)<br>  }))</pre> | `[]` | no |
-| <a name="input_logs_agent_agent_tolerations"></a> [logs\_agent\_agent\_tolerations](#input\_logs\_agent\_agent\_tolerations) | List of tolerations to apply to Logs agent. | <pre>list(object({<br>    key               = optional(string)<br>    operator          = optional(string)<br>    value             = optional(string)<br>    effect            = optional(string)<br>    tolerationSeconds = optional(number)<br>  }))</pre> | <pre>[<br>  {<br>    "operator": "Exists"<br>  }<br>]</pre> | no |
+| <a name="input_logs_agent_additional_metadata"></a> [logs\_agent\_additional\_metadata](#input\_logs\_agent\_additional\_metadata) | The list of additional metadata fields to add to the routed logs. | <pre>list(object({<br/>    key   = optional(string)<br/>    value = optional(string)<br/>  }))</pre> | `[]` | no |
+| <a name="input_logs_agent_agent_tolerations"></a> [logs\_agent\_agent\_tolerations](#input\_logs\_agent\_agent\_tolerations) | List of tolerations to apply to Logs agent. | <pre>list(object({<br/>    key               = optional(string)<br/>    operator          = optional(string)<br/>    value             = optional(string)<br/>    effect            = optional(string)<br/>    tolerationSeconds = optional(number)<br/>  }))</pre> | <pre>[<br/>  {<br/>    "operator": "Exists"<br/>  }<br/>]</pre> | no |
 | <a name="input_logs_agent_enable_scc"></a> [logs\_agent\_enable\_scc](#input\_logs\_agent\_enable\_scc) | Whether to enable creation of Security Context Constraints in Openshift. When installing on an OpenShift cluster, this setting is mandatory to configure permissions for pods within your cluster. | `bool` | `true` | no |
 | <a name="input_logs_agent_exclude_log_source_paths"></a> [logs\_agent\_exclude\_log\_source\_paths](#input\_logs\_agent\_exclude\_log\_source\_paths) | The list of log sources to exclude. Specify the paths that the Logs agent ignores. | `list(string)` | `[]` | no |
 | <a name="input_logs_agent_iam_api_key"></a> [logs\_agent\_iam\_api\_key](#input\_logs\_agent\_iam\_api\_key) | The IBM Cloud API key for the Logs agent to authenticate and communicate with the IBM Cloud Logs. It is required if `logs_agent_iam_mode` is set to `IAMAPIKey`. | `string` | `null` | no |

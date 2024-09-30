@@ -21,6 +21,10 @@ locals {
   logs_agent_iam_api_key      = var.logs_agent_iam_api_key != null ? var.logs_agent_iam_api_key : ""
   logs_agent_trusted_profile  = var.logs_agent_trusted_profile != null ? var.logs_agent_trusted_profile : ""
   cloud_logs_ingress_endpoint = var.cloud_logs_ingress_endpoint != null ? var.cloud_logs_ingress_endpoint : ""
+  logs_agent_additional_metadata = length(var.logs_agent_additional_metadata) > 0 ? merge([
+    for metadata in var.logs_agent_additional_metadata : {
+      metadata.key = metadata.value
+  }]...) : {} # DO NOT REMOVE "...", it is used to convert list of objects into a single object
 }
 
 resource "helm_release" "logs_agent" {
@@ -101,9 +105,9 @@ resource "helm_release" "logs_agent" {
   # dummy value hack to force update https://github.com/hashicorp/terraform-provider-helm/issues/515#issuecomment-813088122
   values = [
     yamlencode({
-      tolerations         = var.logs_agent_agent_tolerations
-      additional_metadata = var.logs_agent_additional_metadata
-      dummy               = uuid()
+      tolerations        = var.logs_agent_agent_tolerations
+      additionalMetadata = local.logs_agent_additional_metadata
+      dummy              = uuid()
     })
   ]
 

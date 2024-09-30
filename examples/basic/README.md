@@ -1,5 +1,9 @@
 # Log Analysis agent
 
+## Deprecated: Log Analysis
+
+**Important:** IBM Log Analysis will be discontinued on 30 March 2025 and replaced by IBM Cloud Logs.
+
 An end-to-end example that uses the module's default variable values.
 
 The example sets up the logging agent for [Kubernetes metadata filtering](https://github.com/logdna/logdna-agent-v2/blob/3.8/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering).
