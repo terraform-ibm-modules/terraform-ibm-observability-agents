@@ -22,12 +22,6 @@ variable "resource_tags" {
   default     = []
 }
 
-variable "access_tags" {
-  type        = list(string)
-  description = "Optional list of access management tags to add to resources that are created"
-  default     = []
-}
-
 variable "region" {
   type        = string
   description = "The region where the resources are created."

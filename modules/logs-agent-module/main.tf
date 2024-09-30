@@ -23,7 +23,7 @@ locals {
   cloud_logs_ingress_endpoint = var.cloud_logs_ingress_endpoint != null ? var.cloud_logs_ingress_endpoint : ""
   logs_agent_additional_metadata = length(var.logs_agent_additional_metadata) > 0 ? merge([
     for metadata in var.logs_agent_additional_metadata : {
-      metadata.key = metadata.value
+      (metadata.key) = metadata.value
   }]...) : {} # DO NOT REMOVE "...", it is used to convert list of objects into a single object
 }
 
