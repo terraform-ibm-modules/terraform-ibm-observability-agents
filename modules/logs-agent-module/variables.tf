@@ -72,7 +72,7 @@ variable "logs_agent_iam_api_key" {
 }
 
 variable "logs_agent_agent_tolerations" {
-  description = "List of tolerations to apply to Logs agent."
+  description = "List of tolerations to apply to Logs agent. The default value means a pod will run on every node."
   type = list(object({
     key               = optional(string)
     operator          = optional(string)
