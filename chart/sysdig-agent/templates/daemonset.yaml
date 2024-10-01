@@ -16,6 +16,8 @@ spec:
       app: "{{ .Values.metadata.name }}"
   updateStrategy:
     type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
   template:
     metadata:
       labels:
@@ -86,6 +88,7 @@ spec:
       {{- end}}
       # The following line is necessary for RBAC
       serviceAccountName: "{{ .Values.metadata.name }}"
+      priorityClassName: "{{ .Values.metadata.name }}-ds-priority"
       terminationGracePeriodSeconds: 5
       containers:
       - name: "{{ .Values.metadata.name }}"
