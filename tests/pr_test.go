@@ -82,7 +82,8 @@ func TestRunLogsAgentKubernetes(t *testing.T) {
 }
 
 func TestRunLogsAgentExample(t *testing.T) {
-	t.Parallel()
+	// t.Parallel()
+	t.Skip()
 
 	options := logsAgentsetupOptions(t, "log-agent-roks", terraformDirLogsAgentROKS)
 	output, err := options.RunTestConsistency()

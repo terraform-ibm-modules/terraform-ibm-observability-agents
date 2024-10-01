@@ -115,12 +115,12 @@ module "observability_instances" {
 ##############################################################################
 
 module "observability_agents" {
-  source                    = "../.."
+  source                    = "../../modules/logs-agent-module"
   depends_on                = [time_sleep.wait_operators]
   cluster_id                = ibm_container_vpc_cluster.cluster.id
   cluster_resource_group_id = module.resource_group.resource_group_id
   # Logs Agent
-  logs_agent_enabled          = true
+  # logs_agent_enabled          = true
   logs_agent_iam_mode         = "IAMAPIKey"
   logs_agent_iam_api_key      = module.iam_service_id.service_id_apikey
   logs_agent_namespace        = local.logs_agent_namespace
@@ -128,8 +128,8 @@ module "observability_agents" {
   cloud_logs_ingress_endpoint = module.observability_instances.cloud_logs_ingress_private_endpoint
   cloud_logs_ingress_port     = 3443
   logs_agent_enable_scc       = false
-  # Monitoring agent
-  cloud_monitoring_enabled         = true
-  cloud_monitoring_access_key      = module.observability_instances.cloud_monitoring_access_key
-  cloud_monitoring_instance_region = module.observability_instances.region
+  # # Monitoring agent
+  # cloud_monitoring_enabled         = true
+  # cloud_monitoring_access_key      = module.observability_instances.cloud_monitoring_access_key
+  # cloud_monitoring_instance_region = module.observability_instances.region
 }
