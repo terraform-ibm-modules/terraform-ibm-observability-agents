@@ -23,6 +23,12 @@ variable "cluster_config_endpoint_type" {
   }
 }
 
+variable "is_vpc_cluster" {
+  description = "Specify true if the target cluster for the agents is a VPC cluster, false if it is a classic cluster."
+  type        = bool
+  default     = true
+}
+
 ##############################################################################
 # Logs Agents variables
 ##############################################################################
@@ -71,7 +77,7 @@ variable "logs_agent_iam_api_key" {
   }
 }
 
-variable "logs_agent_agent_tolerations" {
+variable "logs_agent_tolerations" {
   description = "List of tolerations to apply to Logs agent. The default value means a pod will run on every node."
   type = list(object({
     key               = optional(string)

@@ -11,21 +11,8 @@ import (
 )
 
 const resourceGroup = "geretain-test-observability-agents"
-const terraformDirOther = "examples/basic"
 const terraformDirLogsAgentIKS = "examples/logs-agent-iks"
 const terraformDirLogsAgentROKS = "examples/logs-agent-roks"
-
-var ignoreUpdates = []string{
-	"module.observability_agents.helm_release.sysdig_agent[0]",
-	"module.observability_agents.helm_release.logdna_agent[0]",
-	"module.observability_agents.helm_release.logdna_agent_activity_tracker[0]",
-	"module.observability_agents.helm_release.log_analysis_agent[0]",
-	"module.observability_agents.helm_release.cloud_monitoring_agent[0]",
-	"ibm_is_subnet.testacc_subnet",
-	"module.observability_agents.helm_release.log_analysis_agent_activity_tracker[0]",
-}
-
-var extTerraformVars = map[string]interface{}{}
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
 
@@ -37,24 +24,7 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func setupOptions(t *testing.T, prefix string, terraformDir string, terraformVars map[string]interface{}) *testhelper.TestOptions {
-	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
-		Testing:       t,
-		TerraformDir:  terraformDir,
-		Prefix:        prefix,
-		ResourceGroup: resourceGroup,
-		IgnoreUpdates: testhelper.Exemptions{
-			List: ignoreUpdates,
-		},
-		CloudInfoService:              sharedInfoSvc,
-		ExcludeActivityTrackerRegions: true,
-		TerraformVars:                 terraformVars,
-	})
-
-	return options
-}
-
-func logsAgentsetupOptions(t *testing.T, prefix string, terraformDir string) *testhelper.TestOptions {
+func setupOptions(t *testing.T, prefix string, terraformDir string) *testhelper.TestOptions {
 
 	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
 		Testing:       t,
@@ -75,26 +45,25 @@ func logsAgentsetupOptions(t *testing.T, prefix string, terraformDir string) *te
 func TestRunLogsAgentKubernetes(t *testing.T) {
 	t.Parallel()
 
-	options := logsAgentsetupOptions(t, "log-agent-iks", terraformDirLogsAgentIKS)
+	options := setupOptions(t, "obs-agent-iks", terraformDirLogsAgentIKS)
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")
 	assert.NotNil(t, output, "Expected some output")
 }
 
-func TestRunLogsAgentExample(t *testing.T) {
-	// t.Parallel()
-	t.Skip()
+func TestRunLogsAgentOCP(t *testing.T) {
+	t.Parallel()
 
-	options := logsAgentsetupOptions(t, "log-agent-roks", terraformDirLogsAgentROKS)
+	options := setupOptions(t, "obs-agent-roks", terraformDirLogsAgentROKS)
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")
 	assert.NotNil(t, output, "Expected some output")
 }
 
 func TestRunLogsAgentUpgrade(t *testing.T) {
-	t.Skip()
+	t.Parallel()
 
-	options := logsAgentsetupOptions(t, "log-agent-upg", terraformDirLogsAgentROKS)
+	options := setupOptions(t, "log-agent-upg", terraformDirLogsAgentROKS)
 
 	output, err := options.RunTestUpgrade()
 	if !options.UpgradeTestSkipped {

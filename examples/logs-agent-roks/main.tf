@@ -114,7 +114,6 @@ module "ocp_base" {
   worker_pools                         = local.worker_pools
   access_tags                          = var.access_tags
   ocp_entitlement                      = var.ocp_entitlement
-  disable_outbound_traffic_protection  = true # set as True to enable outbound traffic; required for accessing Operator Hub in the OpenShift console.
   import_default_worker_pool_on_create = false
 }
 
@@ -123,20 +122,13 @@ data "ibm_container_cluster_config" "cluster_config" {
   resource_group_id = module.resource_group.resource_group_id
 }
 
-# Sleep to allow RBAC sync on cluster
-resource "time_sleep" "wait_operators" {
-  depends_on      = [data.ibm_container_cluster_config.cluster_config]
-  create_duration = "45s"
-}
-
 ##############################################################################
 # Observability Instance
 ##############################################################################
 
-
 module "observability_instances" {
   source  = "terraform-ibm-modules/observability-instances/ibm"
-  version = "2.18.1"
+  version = "2.19.1"
   providers = {
     logdna.at = logdna.at
     logdna.ld = logdna.ld
@@ -190,7 +182,7 @@ module "vpe" {
 
 module "observability_agents" {
   source                    = "../.."
-  depends_on                = [time_sleep.wait_operators, module.vpe]
+  depends_on                = [module.vpe]
   cluster_id                = module.ocp_base.cluster_id
   cluster_resource_group_id = module.resource_group.resource_group_id
   # Cloud Logs agent

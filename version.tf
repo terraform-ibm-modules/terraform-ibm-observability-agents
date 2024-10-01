@@ -1,5 +1,4 @@
 terraform {
-  # module uses nullable feature which is only available in versions >= 1.1.0
   required_version = ">= 1.9.0"
 
   # Each required provider's version should be a flexible range to future proof the module's usage with upcoming minor and patch versions.

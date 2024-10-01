@@ -35,47 +35,47 @@ variable "is_vpc_cluster" {
 
 variable "log_analysis_enabled" {
   type        = bool
-  description = "Deploy IBM Cloud Logging agent"
+  description = "DEPRECATED: Deploy IBM Cloud Log Analysis agent"
   default     = false
 }
 
 
 variable "log_analysis_agent_tags" {
   type        = list(string)
-  description = "List of tags to associate to all log records that the agent collects so that you can identify the agent's data quicker in the logging UI. NOTE: Use the 'log_analysis_add_cluster_name' variable to add the cluster name as a tag."
+  description = "DEPRECATED: List of tags to associate to all log records that the agent collects so that you can identify the agent's data quicker in the logging UI. NOTE: Use the 'log_analysis_add_cluster_name' variable to add the cluster name as a tag."
   default     = []
   nullable    = false
 }
 
 variable "log_analysis_add_cluster_name" {
   type        = bool
-  description = "If true, configure the log analysis agent to attach a tag containing the cluster name to all log messages."
+  description = "DEPRECATED: If true, configure the Log Analysis agent to attach a tag containing the cluster name to all log messages."
   default     = true
 }
 
 variable "log_analysis_ingestion_key" {
   type        = string
-  description = "Ingestion key for the IBM Cloud Logging agent to communicate with the instance"
+  description = "DEPRECATED: Ingestion key for the Log Analysis agent to communicate with the instance"
   sensitive   = true
   default     = null
 }
 
 variable "log_analysis_secret_name" {
   type        = string
-  description = "The name of the secret which will store the ingestion key."
+  description = "DEPRECATED: The name of the secret which will store the Log Analysis ingestion key."
   default     = "logdna-agent"
   nullable    = false
 }
 
 variable "log_analysis_instance_region" {
   type        = string
-  description = "The IBM Log Analysis instance region. Used to construct the ingestion endpoint."
+  description = "DEPRECATED: The IBM Log Analysis instance region. Used to construct the ingestion endpoint."
   default     = null
 }
 
 variable "log_analysis_endpoint_type" {
   type        = string
-  description = "Specify the IBM Log Analysis instance endpoint type (public or private) to use. Used to construct the ingestion endpoint."
+  description = "DEPRECATED: Specify the IBM Log Analysis instance endpoint type (public or private) to use. Used to construct the ingestion endpoint."
   default     = "private"
   validation {
     error_message = "The specified endpoint_type can be private or public only."
@@ -84,19 +84,19 @@ variable "log_analysis_endpoint_type" {
 }
 
 variable "log_analysis_agent_custom_line_inclusion" {
-  description = "Log Analysis agent custom configuration for line inclusion setting LOGDNA_K8S_METADATA_LINE_INCLUSION. See https://github.com/logdna/logdna-agent-v2/blob/master/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering for more info."
+  description = "DEPRECATED: Log Analysis agent custom configuration for line inclusion setting LOGDNA_K8S_METADATA_LINE_INCLUSION. See https://github.com/logdna/logdna-agent-v2/blob/master/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering for more info."
   type        = string
   default     = null
 }
 
 variable "log_analysis_agent_custom_line_exclusion" {
-  description = "Log Analysis agent custom configuration for line exclusion setting LOGDNA_K8S_METADATA_LINE_EXCLUSION. See https://github.com/logdna/logdna-agent-v2/blob/master/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering for more info."
+  description = "DEPRECATED: Log Analysis agent custom configuration for line exclusion setting LOGDNA_K8S_METADATA_LINE_EXCLUSION. See https://github.com/logdna/logdna-agent-v2/blob/master/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering for more info."
   type        = string
   default     = null
 }
 
 variable "log_analysis_agent_name" {
-  description = "Log Analysis agent name. Used for naming all kubernetes and helm resources on the cluster."
+  description = "DEPRECATED: Log Analysis agent name. Used for naming all kubernetes and helm resources on the cluster."
   type        = string
   default     = "logdna-agent"
   nullable    = false
@@ -104,13 +104,13 @@ variable "log_analysis_agent_name" {
 
 variable "log_analysis_agent_namespace" {
   type        = string
-  description = "Namespace where to deploy the Log Analysis agent. Default value is 'ibm-observe'"
+  description = "DEPRECATED: Namespace where to deploy the Log Analysis agent. Default value is 'ibm-observe'"
   default     = "ibm-observe"
   nullable    = false
 }
 
 variable "log_analysis_agent_tolerations" {
-  description = "List of tolerations to apply to Log Analysis agent."
+  description = "DEPRECATED: List of tolerations to apply to Log Analysis agent."
   type = list(object({
     key               = optional(string)
     operator          = optional(string)
@@ -258,7 +258,7 @@ variable "logs_agent_iam_api_key" {
   default     = null
 }
 
-variable "logs_agent_agent_tolerations" {
+variable "logs_agent_tolerations" {
   description = "List of tolerations to apply to Logs agent. The default value means a pod will run on every node."
   type = list(object({
     key               = optional(string)

@@ -1,9 +1,12 @@
-locals {
-  logs_agent_version                   = "1.3.0"
-  logs_agent_selected_log_source_paths = distinct(concat([for namespace in var.logs_agent_log_source_namespaces : "/var/log/containers/*_${namespace}_*.log"], var.logs_agent_selected_log_source_paths))
-}
-# Lookup cluster name from ID
+# Lookup cluster name from ID. The is_vpc_cluster variable defines whether to use the VPC data block or the Classic data block
 data "ibm_container_vpc_cluster" "cluster" {
+  count             = var.is_vpc_cluster ? 1 : 0
+  name              = var.cluster_id
+  resource_group_id = var.cluster_resource_group_id
+}
+
+data "ibm_container_cluster" "cluster" {
+  count             = var.is_vpc_cluster ? 0 : 1
   name              = var.cluster_id
   resource_group_id = var.cluster_resource_group_id
 }
@@ -12,19 +15,22 @@ data "ibm_container_vpc_cluster" "cluster" {
 data "ibm_container_cluster_config" "cluster_config" {
   cluster_name_id   = var.cluster_id
   resource_group_id = var.cluster_resource_group_id
-  config_dir        = "${path.module}/kubeconfig"                                                             # See https://github.ibm.com/GoldenEye/issues/issues/552
-  endpoint_type     = var.cluster_config_endpoint_type != "default" ? var.cluster_config_endpoint_type : null # null represents default
+  config_dir        = "${path.module}/kubeconfig"
+  endpoint_type     = var.cluster_config_endpoint_type != "default" ? var.cluster_config_endpoint_type : null # null value represents default
 }
 
 locals {
-  logs_agent_chart_location   = "oci://icr.io/ibm/observe/logs-agent-helm"
-  logs_agent_iam_api_key      = var.logs_agent_iam_api_key != null ? var.logs_agent_iam_api_key : ""
-  logs_agent_trusted_profile  = var.logs_agent_trusted_profile != null ? var.logs_agent_trusted_profile : ""
-  cloud_logs_ingress_endpoint = var.cloud_logs_ingress_endpoint != null ? var.cloud_logs_ingress_endpoint : ""
+  logs_agent_chart_location            = "oci://icr.io/ibm/observe/logs-agent-helm"
+  logs_agent_version                   = "1.3.0" # datasource: icr.io/ibm/observe/logs-agent-helm
+  logs_agent_selected_log_source_paths = distinct(concat([for namespace in var.logs_agent_log_source_namespaces : "/var/log/containers/*_${namespace}_*.log"], var.logs_agent_selected_log_source_paths))
+  logs_agent_iam_api_key               = var.logs_agent_iam_api_key != null ? var.logs_agent_iam_api_key : ""
+  logs_agent_trusted_profile           = var.logs_agent_trusted_profile != null ? var.logs_agent_trusted_profile : ""
+  cloud_logs_ingress_endpoint          = var.cloud_logs_ingress_endpoint != null ? var.cloud_logs_ingress_endpoint : ""
   logs_agent_additional_metadata = length(var.logs_agent_additional_metadata) > 0 ? merge([
     for metadata in var.logs_agent_additional_metadata : {
       (metadata.key) = metadata.value
-  }]...) : {} # DO NOT REMOVE "...", it is used to convert list of objects into a single object
+  }]...) : {}                                                                                                                                       # DO NOT REMOVE "...", it is used to convert list of objects into a single object
+  cluster_name = var.is_vpc_cluster ? data.ibm_container_vpc_cluster.cluster[0].resource_name : data.ibm_container_cluster.cluster[0].resource_name # Not publically documented in provider. See https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4485
 }
 
 resource "helm_release" "logs_agent" {
@@ -95,7 +101,7 @@ resource "helm_release" "logs_agent" {
   set {
     name  = "clusterName"
     type  = "string"
-    value = data.ibm_container_vpc_cluster.cluster.name
+    value = local.cluster_name
   }
   set {
     name  = "scc.create"
@@ -105,7 +111,7 @@ resource "helm_release" "logs_agent" {
   # dummy value hack to force update https://github.com/hashicorp/terraform-provider-helm/issues/515#issuecomment-813088122
   values = [
     yamlencode({
-      tolerations        = var.logs_agent_agent_tolerations
+      tolerations        = var.logs_agent_tolerations
       additionalMetadata = local.logs_agent_additional_metadata
       dummy              = uuid()
     })

@@ -18,10 +18,6 @@ terraform {
       version = ">= 2.16.1"
     }
     # The time provider is not actually required by the module itself, just this example, so OK to use ">=" here instead of locking into a version
-    time = {
-      source  = "hashicorp/time"
-      version = ">= 0.9.1"
-    }
     logdna = {
       source  = "logdna/logdna"
       version = ">= 1.14.2"
