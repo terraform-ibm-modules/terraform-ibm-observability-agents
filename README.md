@@ -23,8 +23,8 @@ This module deploys the following observability agents to an IBM Cloud Red Hat O
 * [Submodules](./modules)
     * [logs-agent](./modules/logs-agent)
 * [Examples](./examples)
-    * [Monitoring agent + Cloud Logs agent on Kubernetes using CSE ingress endpoint with an apikey](./examples/logs-agent-iks)
-    * [Monitoring agent + Cloud Logs agent on OCP using VPE ingress endpoint with a Trusted Profile](./examples/logs-agent-roks)
+    * [Monitoring agent + Cloud Logs agent on Kubernetes using CSE ingress endpoint with an apikey](./examples/obs-agent-iks)
+    * [Monitoring agent + Cloud Logs agent on OCP using VPE ingress endpoint with a Trusted Profile](./examples/obs-agent-ocp)
 * [Contributing](#contributing)
 <!-- END OVERVIEW HOOK -->
 

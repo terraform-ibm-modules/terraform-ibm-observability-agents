@@ -11,8 +11,8 @@ import (
 )
 
 const resourceGroup = "geretain-test-observability-agents"
-const terraformDirLogsAgentIKS = "examples/logs-agent-iks"
-const terraformDirLogsAgentROKS = "examples/logs-agent-roks"
+const terraformDirLogsAgentIKS = "examples/obs-agent-iks"
+const terraformDirLogsAgentROKS = "examples/obs-agent-ocp"
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
 
