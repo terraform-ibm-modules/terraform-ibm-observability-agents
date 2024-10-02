@@ -39,6 +39,11 @@ func setupOptions(t *testing.T, prefix string, terraformDir string) *testhelper.
 		CloudInfoService: sharedInfoSvc,
 	})
 
+	// add ocp entitlement to keep costs down for tests
+	if terraformDir == terraformDirLogsAgentROKS {
+		options.TerraformVars["ocp_entitlement"] = "cloud_pak"
+	}
+
 	return options
 }
 
