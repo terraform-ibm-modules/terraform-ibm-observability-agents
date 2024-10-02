@@ -191,10 +191,11 @@ module "observability_agents" {
   cloud_logs_ingress_endpoint = module.observability_instances.cloud_logs_ingress_private_endpoint
   cloud_logs_ingress_port     = 443
   # example of how to add additional metadata to the logs agents
-  logs_agent_additional_metadata = [{
-    key   = "cluster_id"
-    value = module.ocp_base.cluster_id
-  }]
+  # disable for now - see https://github.com/terraform-ibm-modules/terraform-ibm-observability-agents/issues/401
+  # logs_agent_additional_metadata = [{
+  #   key   = "cluster_id"
+  #   value = module.ocp_base.cluster_id
+  # }]
   # example of how to add additional log source path
   logs_agent_additional_log_source_paths = ["/logs/*.log"]
   # Monitoring agent
