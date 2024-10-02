@@ -33,7 +33,7 @@ func setupOptions(t *testing.T, prefix string, terraformDir string) *testhelper.
 		ResourceGroup: resourceGroup,
 		IgnoreUpdates: testhelper.Exemptions{ // Ignore for consistency check
 			List: []string{
-				"module.observability_agents.helm_release.logs_agent[0]",
+				"module.observability_agents.module.logs_agent[0].helm_release.logs_agent",
 			},
 		},
 		CloudInfoService: sharedInfoSvc,
