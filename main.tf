@@ -40,6 +40,7 @@ locals {
   cloud_monitoring_agent_tags       = var.cloud_monitoring_add_cluster_name ? concat(["ibm.containers-kubernetes.cluster.name:${local.cluster_name}"], var.cloud_monitoring_agent_tags) : var.cloud_monitoring_agent_tags
   cloud_monitoring_host             = var.cloud_monitoring_enabled ? var.cloud_monitoring_endpoint_type == "private" ? "ingest.private.${var.cloud_monitoring_instance_region}.monitoring.cloud.ibm.com" : "logs.${var.cloud_monitoring_instance_region}.monitoring.cloud.ibm.com" : null
 
+  # TODO: Move this into variable.tf since module requires 1.9 now
   # VARIABLE VALIDATION
   log_analysis_key_validate_condition = var.log_analysis_enabled == true && var.log_analysis_instance_region == null && var.log_analysis_ingestion_key == null
   log_analysis_key_validate_msg       = "Values for 'log_analysis_ingestion_key' and 'log_analysis_instance_region' variables must be passed when 'log_analysis_enabled = true'"
@@ -209,3 +210,30 @@ resource "helm_release" "cloud_monitoring_agent" {
   }
 }
 /** Cloud Monitoring Configuration End **/
+
+
+/** Logs Agent Configuration Start **/
+module "logs_agent" {
+  count                                  = var.logs_agent_enabled ? 1 : 0
+  source                                 = "./modules/logs-agent"
+  cluster_id                             = var.cluster_id
+  cluster_resource_group_id              = var.cluster_resource_group_id
+  cluster_config_endpoint_type           = var.cluster_config_endpoint_type
+  logs_agent_name                        = var.logs_agent_name
+  logs_agent_namespace                   = var.logs_agent_namespace
+  logs_agent_trusted_profile             = var.logs_agent_trusted_profile
+  logs_agent_iam_api_key                 = var.logs_agent_iam_api_key
+  logs_agent_tolerations                 = var.logs_agent_tolerations
+  logs_agent_additional_log_source_paths = var.logs_agent_additional_log_source_paths
+  logs_agent_exclude_log_source_paths    = var.logs_agent_exclude_log_source_paths
+  logs_agent_selected_log_source_paths   = var.logs_agent_selected_log_source_paths
+  logs_agent_log_source_namespaces       = var.logs_agent_log_source_namespaces
+  logs_agent_iam_mode                    = var.logs_agent_iam_mode
+  logs_agent_iam_environment             = var.logs_agent_iam_environment
+  logs_agent_additional_metadata         = var.logs_agent_additional_metadata
+  logs_agent_enable_scc                  = var.logs_agent_enable_scc
+  cloud_logs_ingress_endpoint            = var.cloud_logs_ingress_endpoint
+  cloud_logs_ingress_port                = var.cloud_logs_ingress_port
+  is_vpc_cluster                         = var.is_vpc_cluster
+}
+/** Logs Agent Configuration End **/

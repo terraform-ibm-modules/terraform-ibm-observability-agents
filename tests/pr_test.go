@@ -11,19 +11,8 @@ import (
 )
 
 const resourceGroup = "geretain-test-observability-agents"
-const terraformDirOther = "examples/basic"
-
-var ignoreUpdates = []string{
-	"module.observability_agents.helm_release.sysdig_agent[0]",
-	"module.observability_agents.helm_release.logdna_agent[0]",
-	"module.observability_agents.helm_release.logdna_agent_activity_tracker[0]",
-	"module.observability_agents.helm_release.log_analysis_agent[0]",
-	"module.observability_agents.helm_release.cloud_monitoring_agent[0]",
-	"ibm_is_subnet.testacc_subnet",
-	"module.observability_agents.helm_release.log_analysis_agent_activity_tracker[0]",
-}
-
-var extTerraformVars = map[string]interface{}{}
+const terraformDirLogsAgentIKS = "examples/obs-agent-iks"
+const terraformDirLogsAgentROKS = "examples/obs-agent-ocp"
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
 
@@ -35,63 +24,55 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func setupOptions(t *testing.T, prefix string, terraformDir string, terraformVars map[string]interface{}) *testhelper.TestOptions {
+func setupOptions(t *testing.T, prefix string, terraformDir string) *testhelper.TestOptions {
+
 	options := testhelper.TestOptionsDefaultWithVars(&testhelper.TestOptions{
 		Testing:       t,
 		TerraformDir:  terraformDir,
 		Prefix:        prefix,
 		ResourceGroup: resourceGroup,
-		IgnoreUpdates: testhelper.Exemptions{
-			List: ignoreUpdates,
+		IgnoreUpdates: testhelper.Exemptions{ // Ignore for consistency check
+			List: []string{
+				"module.observability_agents.module.logs_agent[0].helm_release.logs_agent",
+			},
 		},
-		CloudInfoService:              sharedInfoSvc,
-		ExcludeActivityTrackerRegions: true,
-		TerraformVars:                 terraformVars,
+		CloudInfoService: sharedInfoSvc,
 	})
+
+	// add ocp entitlement to keep costs down for tests
+	if terraformDir == terraformDirLogsAgentROKS {
+		options.TerraformVars["ocp_entitlement"] = "cloud_pak"
+	}
 
 	return options
 }
 
-func TestRunBasicAgents(t *testing.T) {
+func TestRunAgentVpcKubernetes(t *testing.T) {
 	t.Parallel()
 
-	options := setupOptions(t, "basic-obs-agents", terraformDirOther, extTerraformVars)
-
+	options := setupOptions(t, "obs-agent-iks", terraformDirLogsAgentIKS)
 	output, err := options.RunTestConsistency()
 	assert.Nil(t, err, "This should not have errored")
 	assert.NotNil(t, output, "Expected some output")
 }
 
-func TestRunUpgrade(t *testing.T) {
+func TestRunAgentVpcOcp(t *testing.T) {
 	t.Parallel()
 
-	options := setupOptions(t, "observ-agents-upg", terraformDirOther, extTerraformVars)
+	options := setupOptions(t, "obs-agent-roks", terraformDirLogsAgentROKS)
+	output, err := options.RunTestConsistency()
+	assert.Nil(t, err, "This should not have errored")
+	assert.NotNil(t, output, "Expected some output")
+}
+
+func TestRunAgentVpcOcpUpgrade(t *testing.T) {
+	t.Parallel()
+
+	options := setupOptions(t, "log-agent-upg", terraformDirLogsAgentROKS)
 
 	output, err := options.RunTestUpgrade()
 	if !options.UpgradeTestSkipped {
 		assert.Nil(t, err, "This should not have errored")
 		assert.NotNil(t, output, "Expected some output")
 	}
-}
-
-func TestRunBasicAgentsKubernetes(t *testing.T) {
-	t.Parallel()
-
-	options := setupOptions(t, "basic-obs-agents-k8s", terraformDirOther, extTerraformVars)
-	options.TerraformVars["is_openshift"] = false
-
-	output, err := options.RunTestConsistency()
-	assert.Nil(t, err, "This should not have errored")
-	assert.NotNil(t, output, "Expected some output")
-}
-
-func TestRunBasicAgentsClassic(t *testing.T) {
-	t.Parallel()
-
-	options := setupOptions(t, "basic-obs-agents-classic", terraformDirOther, extTerraformVars)
-	options.TerraformVars["is_vpc_cluster"] = false
-
-	output, err := options.RunTestConsistency()
-	assert.Nil(t, err, "This should not have errored")
-	assert.NotNil(t, output, "Expected some output")
 }
