@@ -3,7 +3,8 @@
 ##############################################################################
 
 module "resource_group" {
-  source = "git::https://github.com/terraform-ibm-modules/terraform-ibm-resource-group.git?ref=v1.1.6"
+  source  = "terraform-ibm-modules/resource-group/ibm"
+  version = "1.1.6"
   # if an existing resource group is not set (null) create a new one using prefix
   resource_group_name          = var.resource_group == null ? "${var.prefix}-resource-group" : null
   existing_resource_group_name = var.resource_group
@@ -137,10 +138,8 @@ module "observability_instances" {
   region                         = var.region
   cloud_logs_plan                = "standard"
   cloud_monitoring_plan          = "graduated-tier"
-  activity_tracker_provision     = false
   enable_platform_logs           = false
   enable_platform_metrics        = false
-  log_analysis_provision         = false
   cloud_logs_instance_name       = "${var.prefix}-cloud-logs"
   cloud_monitoring_instance_name = "${var.prefix}-cloud-monitoring"
 }
@@ -191,10 +190,12 @@ module "observability_agents" {
   logs_agent_name             = local.logs_agent_name
   cloud_logs_ingress_endpoint = module.observability_instances.cloud_logs_ingress_private_endpoint
   cloud_logs_ingress_port     = 443
+  # example of how to add additional metadata to the logs agents
   logs_agent_additional_metadata = [{
     key   = "cluster_id"
     value = module.ocp_base.cluster_id
   }]
+  # example of how to add additional log source path
   logs_agent_additional_log_source_paths = ["/logs/*.log"]
   # Monitoring agent
   cloud_monitoring_access_key = module.observability_instances.cloud_monitoring_access_key

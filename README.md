@@ -57,6 +57,12 @@ provider "helm" {
     token                  = data.ibm_container_cluster_config.cluster_config.token
     cluster_ca_certificate = data.ibm_container_cluster_config.cluster_config.ca_certificate
   }
+  # IBM Cloud credentials are required to authenticate to the helm repo
+  registry {
+    url = "oci://icr.io/ibm/observe/logs-agent-helm"
+    username = "iamapikey"
+    password = "XXXXXXXXXXXXXXXXX" # replace with an IBM cloud apikey
+  }
 }
 
 # ############################################################################
@@ -116,8 +122,8 @@ You need the following permissions to run this module.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.0 |
-| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.11.0, <3.0.0 |
-| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | >= 1.59.0, <2.0.0 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.15.0, <3.0.0 |
+| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | >= 1.69.2, <2.0.0 |
 
 ### Modules
 

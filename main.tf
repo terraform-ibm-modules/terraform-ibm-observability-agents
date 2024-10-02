@@ -234,5 +234,6 @@ module "logs_agent" {
   logs_agent_enable_scc                  = var.logs_agent_enable_scc
   cloud_logs_ingress_endpoint            = var.cloud_logs_ingress_endpoint
   cloud_logs_ingress_port                = var.cloud_logs_ingress_port
+  is_vpc_cluster                         = var.is_vpc_cluster
 }
 /** Logs Agent Configuration End **/

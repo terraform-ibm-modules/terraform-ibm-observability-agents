@@ -42,7 +42,7 @@ func setupOptions(t *testing.T, prefix string, terraformDir string) *testhelper.
 	return options
 }
 
-func TestRunLogsAgentKubernetes(t *testing.T) {
+func TestRunAgentVpcKubernetes(t *testing.T) {
 	t.Parallel()
 
 	options := setupOptions(t, "obs-agent-iks", terraformDirLogsAgentIKS)
@@ -51,7 +51,7 @@ func TestRunLogsAgentKubernetes(t *testing.T) {
 	assert.NotNil(t, output, "Expected some output")
 }
 
-func TestRunLogsAgentOCP(t *testing.T) {
+func TestRunAgentVpcOcp(t *testing.T) {
 	t.Parallel()
 
 	options := setupOptions(t, "obs-agent-roks", terraformDirLogsAgentROKS)
@@ -60,7 +60,7 @@ func TestRunLogsAgentOCP(t *testing.T) {
 	assert.NotNil(t, output, "Expected some output")
 }
 
-func TestRunLogsAgentUpgrade(t *testing.T) {
+func TestRunAgentVpcOcpUpgrade(t *testing.T) {
 	t.Parallel()
 
 	options := setupOptions(t, "log-agent-upg", terraformDirLogsAgentROKS)

@@ -1,9 +1,9 @@
 terraform {
-  # module uses nullable feature which is only available in versions >= 1.9.0
   required_version = ">= 1.9.0"
 
+  # Ensure that there is always 1 example locked into the lowest provider version of the range defined in the main
+  # module's version.tf (this example), and 1 example that will always use the latest provider version (obs-agent-ocp).
   required_providers {
-    # Pin to the lowest provider version of the range defined in the main module to ensure lowest version still works
     ibm = {
       source  = "ibm-cloud/ibm"
       version = "1.69.2"
@@ -22,6 +22,7 @@ terraform {
       source  = "hashicorp/time"
       version = ">= 0.9.1"
     }
+    # The logdna provider is not actually required by the module itself, just this example, so OK to use ">=" here instead of locking into a version
     logdna = {
       source  = "logdna/logdna"
       version = ">= 1.14.2"

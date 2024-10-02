@@ -29,6 +29,12 @@ provider "helm" {
     token                  = data.ibm_container_cluster_config.cluster_config.token
     cluster_ca_certificate = data.ibm_container_cluster_config.cluster_config.ca_certificate
   }
+  # IBM Cloud credentials are required to authenticate to the helm repo
+  registry {
+    url = "oci://icr.io/ibm/observe/logs-agent-helm"
+    username = "iamapikey"
+    password = "XXXXXXXXXXXXXXXXX" # replace with an IBM cloud apikey
+  }
 }
 
 # ############################################################################
