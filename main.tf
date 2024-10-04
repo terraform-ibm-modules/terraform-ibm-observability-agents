@@ -51,6 +51,13 @@ locals {
   cloud_monitoring_key_validate_msg       = "Values for 'cloud_monitoring_access_key' and 'log_analysis_instance_region' variables must be passed when 'cloud_monitoring_enabled = true'"
   # tflint-ignore: terraform_unused_declarations
   cloud_monitoring_key_validate_check = regex("^${local.cloud_monitoring_key_validate_msg}$", (!local.cloud_monitoring_key_validate_condition ? local.cloud_monitoring_key_validate_msg : ""))
+  # Logs Agent Validation
+  # tflint-ignore: terraform_unused_declarations
+  validate_iam_mode = var.logs_agent_enabled == true && (var.logs_agent_iam_mode == "IAMAPIKey" && (var.logs_agent_iam_api_key == null || var.logs_agent_iam_api_key == "")) ? tobool("When passing 'IAMAPIKey' value for 'logs_agent_iam_mode' you cannot set 'logs_agent_iam_api_key' as null or empty string.") : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_trusted_profile_mode = var.logs_agent_enabled == true && (var.logs_agent_iam_mode == "TrustedProfile" && (var.logs_agent_trusted_profile == null || var.logs_agent_trusted_profile == "")) ? tobool(" When passing 'TrustedProfile' value for 'logs_agent_iam_mode' you cannot set 'logs_agent_trusted_profile' as null or empty string.") : true
+  # tflint-ignore: terraform_unused_declarations
+  validate_icl_ingress_endpoint = var.logs_agent_enabled == true && (var.cloud_logs_ingress_endpoint == null || var.cloud_logs_ingress_endpoint == "") ? tobool("When 'logs_agent_enabled' is enabled, you cannot set 'cloud_logs_ingress_endpoint' as null or empty string.") : true
 }
 
 /** Log Analysis Configuration Start **/
