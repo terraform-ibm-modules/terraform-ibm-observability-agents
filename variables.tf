@@ -183,7 +183,7 @@ variable "cloud_monitoring_agent_tags" {
   nullable    = false
 
   validation {
-    condition = alltrue([for tags in var.cloud_monitoring_agent_tags : !can(regex("\\s", tags))])
+    condition     = alltrue([for tags in var.cloud_monitoring_agent_tags : !can(regex("\\s", tags))])
     error_message = "The cloud monitoring agent tags must not contain any spaces."
   }
 }
