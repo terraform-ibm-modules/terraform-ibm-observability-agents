@@ -181,6 +181,11 @@ variable "cloud_monitoring_agent_tags" {
   description = "List of tags to associate to all matrics that the agent collects. NOTE: Use the 'cloud_monitoring_add_cluster_name' variable to add the cluster name as a tag."
   default     = []
   nullable    = false
+
+  validation {
+    condition = alltrue([for tags in var.cloud_monitoring_agent_tags : !can(regex("\\s", tags))])
+    error_message = "The cloud monitoring agent tags must not contain any spaces."
+  }
 }
 
 variable "cloud_monitoring_add_cluster_name" {
