@@ -129,7 +129,7 @@ data "ibm_container_cluster_config" "cluster_config" {
 
 module "observability_instances" {
   source  = "terraform-ibm-modules/observability-instances/ibm"
-  version = "2.19.1"
+  version = "3.0.1"
   providers = {
     logdna.at = logdna.at
     logdna.ld = logdna.ld
