@@ -21,7 +21,7 @@ data "ibm_container_cluster_config" "cluster_config" {
 
 locals {
   logs_agent_chart_location            = "oci://icr.io/ibm/observe/logs-agent-helm"
-  logs_agent_version                   = "1.3.0" # datasource: icr.io/ibm/observe/logs-agent-helm
+  logs_agent_version                   = "1.3.1" # datasource: icr.io/ibm/observe/logs-agent-helm
   logs_agent_selected_log_source_paths = distinct(concat([for namespace in var.logs_agent_log_source_namespaces : "/var/log/containers/*_${namespace}_*.log"], var.logs_agent_selected_log_source_paths))
   logs_agent_iam_api_key               = var.logs_agent_iam_api_key != null ? var.logs_agent_iam_api_key : ""
   logs_agent_trusted_profile           = var.logs_agent_trusted_profile != null ? var.logs_agent_trusted_profile : ""
