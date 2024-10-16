@@ -25,15 +25,7 @@ data "ibm_container_cluster_config" "cluster_config" {
 
 locals {
   # LOCALS
-  cluster_name                  = var.is_vpc_cluster ? data.ibm_container_vpc_cluster.cluster[0].resource_name : data.ibm_container_cluster.cluster[0].resource_name # Not publically documented in provider. See https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4485
-  log_analysis_chart_location   = "${path.module}/chart/logdna-agent"
-  log_analysis_image_tag_digest = "3.10.1-20240827.12afa351b661bc07@sha256:3a7ebc7fb58de67db2af15f35ba827c96a92c06e933abb4c67431854a24bd156" # datasource: icr.io/ext/logdna-agent versioning=regex:^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)-(?<build>\d+)
-  log_analysis_agent_registry   = "icr.io/ext/logdna-agent"
-  log_analysis_agent_tags       = var.log_analysis_add_cluster_name ? concat([local.cluster_name], var.log_analysis_agent_tags) : var.log_analysis_agent_tags
-  log_analysis_host             = var.log_analysis_enabled ? var.log_analysis_endpoint_type == "private" ? "logs.private.${var.log_analysis_instance_region}.logging.cloud.ibm.com" : "logs.${var.log_analysis_instance_region}.logging.cloud.ibm.com" : null
-  # The directory in which the logdna agent will store its state database.
-  # Note that the agent must have write access to the directory (handlded by the initContainer) and be a persistent volume.
-  log_analysis_agent_db_path        = "/var/lib/logdna"
+  cluster_name                      = var.is_vpc_cluster ? data.ibm_container_vpc_cluster.cluster[0].resource_name : data.ibm_container_cluster.cluster[0].resource_name # Not publically documented in provider. See https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4485
   cloud_monitoring_chart_location   = "${path.module}/chart/sysdig-agent"
   cloud_monitoring_image_tag_digest = "13.4.1@sha256:469f3eee8d00ce563041770e875555dbabf02daa57cc489d9e66010707cdc621" # datasource: icr.io/ext/sysdig/agent
   cloud_monitoring_agent_registry   = "icr.io/ext/sysdig/agent"
@@ -42,11 +34,6 @@ locals {
 
   # TODO: Move this into variable.tf since module requires 1.9 now
   # VARIABLE VALIDATION
-  log_analysis_key_validate_condition = var.log_analysis_enabled == true && var.log_analysis_instance_region == null && var.log_analysis_ingestion_key == null
-  log_analysis_key_validate_msg       = "Values for 'log_analysis_ingestion_key' and 'log_analysis_instance_region' variables must be passed when 'log_analysis_enabled = true'"
-  # tflint-ignore: terraform_unused_declarations
-  log_analysis_key_validate_check = regex("^${local.log_analysis_key_validate_msg}$", (!local.log_analysis_key_validate_condition ? local.log_analysis_key_validate_msg : ""))
-
   cloud_monitoring_key_validate_condition = var.cloud_monitoring_enabled == true && var.cloud_monitoring_instance_region == null && var.cloud_monitoring_access_key == null
   cloud_monitoring_key_validate_msg       = "Values for 'cloud_monitoring_access_key' and 'log_analysis_instance_region' variables must be passed when 'cloud_monitoring_enabled = true'"
   # tflint-ignore: terraform_unused_declarations
@@ -59,93 +46,6 @@ locals {
   # tflint-ignore: terraform_unused_declarations
   validate_icl_ingress_endpoint = var.logs_agent_enabled == true && (var.cloud_logs_ingress_endpoint == null || var.cloud_logs_ingress_endpoint == "") ? tobool("When 'logs_agent_enabled' is enabled, you cannot set 'cloud_logs_ingress_endpoint' as null or empty string.") : true
 }
-
-/** Log Analysis Configuration Start **/
-resource "helm_release" "log_analysis_agent" {
-  count            = var.log_analysis_enabled ? 1 : 0
-  name             = var.log_analysis_agent_name
-  chart            = local.log_analysis_chart_location
-  namespace        = var.log_analysis_agent_namespace
-  create_namespace = true
-  timeout          = 1200
-  wait             = true
-  recreate_pods    = true
-  force_update     = true
-
-  set {
-    name  = "metadata.name"
-    type  = "string"
-    value = var.log_analysis_agent_name
-  }
-  set {
-    name  = "image.version"
-    type  = "string"
-    value = local.log_analysis_image_tag_digest
-  }
-  set {
-    name  = "image.registry"
-    type  = "string"
-    value = local.log_analysis_agent_registry
-  }
-  set {
-    name  = "env.host"
-    type  = "string"
-    value = local.log_analysis_host
-  }
-  set {
-    name  = "secret.name"
-    type  = "string"
-    value = var.log_analysis_secret_name
-  }
-  set_sensitive {
-    name  = "secret.key"
-    type  = "string"
-    value = var.log_analysis_ingestion_key
-  }
-  set {
-    name  = "agent.tags"
-    type  = "string"
-    value = join("\\,", local.log_analysis_agent_tags)
-  }
-  set {
-    name  = "agent.dbPath"
-    type  = "string"
-    value = local.log_analysis_agent_db_path
-  }
-
-  values = [
-    yamlencode({
-      tolerations = var.log_analysis_agent_tolerations
-    })
-  ]
-
-  dynamic "set" {
-    for_each = var.log_analysis_agent_custom_line_inclusion != null ? [var.log_analysis_agent_custom_line_inclusion] : []
-    content {
-      name  = "agentMetadataLineInclusion"
-      type  = "string"
-      value = set.value
-    }
-  }
-
-  dynamic "set" {
-    for_each = var.log_analysis_agent_custom_line_exclusion != null ? [var.log_analysis_agent_custom_line_exclusion] : []
-    content {
-      name  = "agentMetadataLineExclusion"
-      type  = "string"
-      value = set.value
-    }
-  }
-
-  provisioner "local-exec" {
-    command     = "${path.module}/scripts/confirm-rollout-status.sh ${var.log_analysis_agent_name} ${var.log_analysis_agent_namespace}"
-    interpreter = ["/bin/bash", "-c"]
-    environment = {
-      KUBECONFIG = data.ibm_container_cluster_config.cluster_config.config_file_path
-    }
-  }
-}
-/** Log Analysis Configuration End **/
 
 /** Cloud Monitoring Configuration Start **/
 resource "helm_release" "cloud_monitoring_agent" {
