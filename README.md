@@ -10,11 +10,6 @@ This module deploys the following observability agents to an IBM Cloud Red Hat O
 
 - [Logs agent](https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-agent-about)
 - [Monitoring agent](https://cloud.ibm.com/docs/monitoring?topic=monitoring-about-collect-metrics)
-- [DEPRECATED: Log Analysis agent](https://cloud.ibm.com/docs/log-analysis?topic=log-analysis-log_analysis_agent)
-
-> [!IMPORTANT]
-> The IBM Log Analysis service is deprecated. [IBM Cloud Logs](https://www.ibm.com/products/cloud-logs) is the replacement service and is now the default agent created with this module.
-
 
 <!-- Below content is automatically populated via pre-commit hook -->
 <!-- BEGIN OVERVIEW HOOK -->
@@ -84,28 +79,6 @@ module "observability_agents" {
 }
 ```
 
-### (DEPRECATED) Log Analysis agent configuration for Kubernetes metadata filtering
-
-You can configure the logging agent to filter log lines according to the Kubernetes resources metadata by setting the exclusion and inclusion parameters.
-
-For example, to set the agent to return all log lines coming from the `default` Kubernetes namespace and exclude anything with a label `app.kubernetes.io/name` with value `sample-app` or an annotation `annotation.user` with value `sample-user`, include these parameters:
-
-```text
-custom_log_analysis_at_agent_line_exclusion = "label.app.kubernetes.io/name:sample-app\\, annotation.user:sample-user"
-custom_log_analysis_at_agent_line_inclusion = "namespace:default"
-```
-
-The following is the corresponding DaemonSet configuration:
-
-```text
-- name: LOGDNA_K8S_METADATA_LINE_INCLUSION
-  value: "label.app.kubernetes.io/name:sample-app, annotation.user:sample-user"
-- name: LOGDNA_K8S_METADATA_LINE_EXCLUSION
-  value: "namespace:default"
-```
-
-For more information, see [Configuration for Kubernetes Metadata Filtering](https://github.com/logdna/logdna-agent-v2/blob/3.8/docs/KUBERNETES.md#configuration-for-kubernetes-metadata-filtering).
-
 ### Required IAM access policies
 You need the following permissions to run this module.
 
@@ -151,18 +124,18 @@ You need the following permissions to run this module.
 | <a name="input_cloud_monitoring_agent_name"></a> [cloud\_monitoring\_agent\_name](#input\_cloud\_monitoring\_agent\_name) | Cloud Monitoring agent name. Used for naming all kubernetes and helm resources on the cluster. | `string` | `"sysdig-agent"` | no |
 | <a name="input_cloud_monitoring_agent_namespace"></a> [cloud\_monitoring\_agent\_namespace](#input\_cloud\_monitoring\_agent\_namespace) | Namespace where to deploy the Cloud Monitoring agent. Default value is 'ibm-observe' | `string` | `"ibm-observe"` | no |
 | <a name="input_cloud_monitoring_agent_tags"></a> [cloud\_monitoring\_agent\_tags](#input\_cloud\_monitoring\_agent\_tags) | List of tags to associate to all matrics that the agent collects. NOTE: Use the 'cloud\_monitoring\_add\_cluster\_name' variable to add the cluster name as a tag. | `list(string)` | `[]` | no |
-| <a name="input_cloud_monitoring_agent_tolerations"></a> [cloud\_monitoring\_agent\_tolerations](#input\_cloud\_monitoring\_agent\_tolerations) | List of tolerations to apply to Cloud Monitoring agent. | <pre>list(object({<br>    key               = optional(string)<br>    operator          = optional(string)<br>    value             = optional(string)<br>    effect            = optional(string)<br>    tolerationSeconds = optional(number)<br>  }))</pre> | <pre>[<br>  {<br>    "operator": "Exists"<br>  },<br>  {<br>    "effect": "NoSchedule",<br>    "key": "node-role.kubernetes.io/master",<br>    "operator": "Exists"<br>  }<br>]</pre> | no |
+| <a name="input_cloud_monitoring_agent_tolerations"></a> [cloud\_monitoring\_agent\_tolerations](#input\_cloud\_monitoring\_agent\_tolerations) | List of tolerations to apply to Cloud Monitoring agent. | <pre>list(object({<br/>    key               = optional(string)<br/>    operator          = optional(string)<br/>    value             = optional(string)<br/>    effect            = optional(string)<br/>    tolerationSeconds = optional(number)<br/>  }))</pre> | <pre>[<br/>  {<br/>    "operator": "Exists"<br/>  },<br/>  {<br/>    "effect": "NoSchedule",<br/>    "key": "node-role.kubernetes.io/master",<br/>    "operator": "Exists"<br/>  }<br/>]</pre> | no |
 | <a name="input_cloud_monitoring_enabled"></a> [cloud\_monitoring\_enabled](#input\_cloud\_monitoring\_enabled) | Deploy IBM Cloud Monitoring agent | `bool` | `true` | no |
 | <a name="input_cloud_monitoring_endpoint_type"></a> [cloud\_monitoring\_endpoint\_type](#input\_cloud\_monitoring\_endpoint\_type) | Specify the IBM Cloud Monitoring instance endpoint type (public or private) to use. Used to construct the ingestion endpoint. | `string` | `"private"` | no |
 | <a name="input_cloud_monitoring_instance_region"></a> [cloud\_monitoring\_instance\_region](#input\_cloud\_monitoring\_instance\_region) | The IBM Cloud Monitoring instance region. Used to construct the ingestion endpoint. | `string` | `null` | no |
-| <a name="input_cloud_monitoring_metrics_filter"></a> [cloud\_monitoring\_metrics\_filter](#input\_cloud\_monitoring\_metrics\_filter) | To filter custom metrics, specify the Cloud Monitoring metrics to include or to exclude. See https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_inc_exc_metrics. | <pre>list(object({<br>    type = string<br>    name = string<br>  }))</pre> | `[]` | no |
+| <a name="input_cloud_monitoring_metrics_filter"></a> [cloud\_monitoring\_metrics\_filter](#input\_cloud\_monitoring\_metrics\_filter) | To filter custom metrics, specify the Cloud Monitoring metrics to include or to exclude. See https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_inc_exc_metrics. | <pre>list(object({<br/>    type = string<br/>    name = string<br/>  }))</pre> | `[]` | no |
 | <a name="input_cloud_monitoring_secret_name"></a> [cloud\_monitoring\_secret\_name](#input\_cloud\_monitoring\_secret\_name) | The name of the secret which will store the access key. | `string` | `"sysdig-agent"` | no |
 | <a name="input_cluster_config_endpoint_type"></a> [cluster\_config\_endpoint\_type](#input\_cluster\_config\_endpoint\_type) | Specify which type of endpoint to use for for cluster config access: 'default', 'private', 'vpe', 'link'. 'default' value will use the default endpoint of the cluster. | `string` | `"default"` | no |
 | <a name="input_cluster_id"></a> [cluster\_id](#input\_cluster\_id) | The ID of the cluster you wish to deploy the agents in | `string` | n/a | yes |
 | <a name="input_cluster_resource_group_id"></a> [cluster\_resource\_group\_id](#input\_cluster\_resource\_group\_id) | The Resource Group ID of the cluster | `string` | n/a | yes |
 | <a name="input_is_vpc_cluster"></a> [is\_vpc\_cluster](#input\_is\_vpc\_cluster) | Specify true if the target cluster for the observability agents is a VPC cluster, false if it is a classic cluster. | `bool` | `true` | no |
 | <a name="input_logs_agent_additional_log_source_paths"></a> [logs\_agent\_additional\_log\_source\_paths](#input\_logs\_agent\_additional\_log\_source\_paths) | The list of additional log sources. By default, the Logs agent collects logs from a single source at `/var/log/containers/*.log`. | `list(string)` | `[]` | no |
-| <a name="input_logs_agent_additional_metadata"></a> [logs\_agent\_additional\_metadata](#input\_logs\_agent\_additional\_metadata) | The list of additional metadata fields to add to the routed logs. | <pre>list(object({<br>    key   = optional(string)<br>    value = optional(string)<br>  }))</pre> | `[]` | no |
+| <a name="input_logs_agent_additional_metadata"></a> [logs\_agent\_additional\_metadata](#input\_logs\_agent\_additional\_metadata) | The list of additional metadata fields to add to the routed logs. | <pre>list(object({<br/>    key   = optional(string)<br/>    value = optional(string)<br/>  }))</pre> | `[]` | no |
 | <a name="input_logs_agent_enable_scc"></a> [logs\_agent\_enable\_scc](#input\_logs\_agent\_enable\_scc) | Whether to enable creation of Security Context Constraints in Openshift. When installing on an OpenShift cluster, this setting is mandatory to configure permissions for pods within your cluster. | `bool` | `true` | no |
 | <a name="input_logs_agent_enabled"></a> [logs\_agent\_enabled](#input\_logs\_agent\_enabled) | Whether to deploy the Logs agent. | `bool` | `true` | no |
 | <a name="input_logs_agent_exclude_log_source_paths"></a> [logs\_agent\_exclude\_log\_source\_paths](#input\_logs\_agent\_exclude\_log\_source\_paths) | The list of log sources to exclude. Specify the paths that the Logs agent ignores. | `list(string)` | `[]` | no |
@@ -173,7 +146,7 @@ You need the following permissions to run this module.
 | <a name="input_logs_agent_name"></a> [logs\_agent\_name](#input\_logs\_agent\_name) | The name of the Logs agent. The name is used in all Kubernetes and Helm resources in the cluster. | `string` | `"logs-agent"` | no |
 | <a name="input_logs_agent_namespace"></a> [logs\_agent\_namespace](#input\_logs\_agent\_namespace) | The namespace where the Logs agent is deployed. The default value is `ibm-observe`. | `string` | `"ibm-observe"` | no |
 | <a name="input_logs_agent_selected_log_source_paths"></a> [logs\_agent\_selected\_log\_source\_paths](#input\_logs\_agent\_selected\_log\_source\_paths) | The list of specific log sources paths. Logs will only be collected from the specified log source paths. If no paths are specified, it will send logs from `/var/log/containers`. | `list(string)` | `[]` | no |
-| <a name="input_logs_agent_tolerations"></a> [logs\_agent\_tolerations](#input\_logs\_agent\_tolerations) | List of tolerations to apply to Logs agent. The default value means a pod will run on every node. | <pre>list(object({<br>    key               = optional(string)<br>    operator          = optional(string)<br>    value             = optional(string)<br>    effect            = optional(string)<br>    tolerationSeconds = optional(number)<br>  }))</pre> | <pre>[<br>  {<br>    "operator": "Exists"<br>  }<br>]</pre> | no |
+| <a name="input_logs_agent_tolerations"></a> [logs\_agent\_tolerations](#input\_logs\_agent\_tolerations) | List of tolerations to apply to Logs agent. The default value means a pod will run on every node. | <pre>list(object({<br/>    key               = optional(string)<br/>    operator          = optional(string)<br/>    value             = optional(string)<br/>    effect            = optional(string)<br/>    tolerationSeconds = optional(number)<br/>  }))</pre> | <pre>[<br/>  {<br/>    "operator": "Exists"<br/>  }<br/>]</pre> | no |
 | <a name="input_logs_agent_trusted_profile"></a> [logs\_agent\_trusted\_profile](#input\_logs\_agent\_trusted\_profile) | The IBM Cloud trusted profile ID. Used only when `logs_agent_iam_mode` is set to `TrustedProfile`. The trusted profile must have an IBM Cloud Logs `Sender` role. | `string` | `null` | no |
 
 ### Outputs
