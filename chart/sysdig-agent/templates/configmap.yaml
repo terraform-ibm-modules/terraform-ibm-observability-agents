@@ -41,3 +41,15 @@ data:
       - {{ $v.type }}: {{ $v.name }}
       {{ end }}
     {{- end -}}
+
+    {{ if .Values.container_filter -}}
+    # Enable the feature
+    use_container_filter: true
+
+    # Include or exclude conditions
+    container_filter:
+      {{ range $c := .Values.container_filter -}}
+      - {{ $c.type }}:
+            {{ $c.parameter }}: {{ $c.name }}
+      {{ end }}
+    {{- end -}}

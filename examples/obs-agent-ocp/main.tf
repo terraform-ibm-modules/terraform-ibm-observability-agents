@@ -197,7 +197,8 @@ module "observability_agents" {
   # Monitoring agent
   cloud_monitoring_access_key = module.observability_instances.cloud_monitoring_access_key
   # example of how to include / exclude metrics - more info https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_log_metrics
-  cloud_monitoring_metrics_filter  = [{ type = "exclude", name = "metricA.*" }, { type = "include", name = "metricB.*" }]
-  cloud_monitoring_agent_tags      = var.resource_tags
-  cloud_monitoring_instance_region = module.observability_instances.region
+  cloud_monitoring_metrics_filter   = [{ type = "exclude", name = "metricA.*" }, { type = "include", name = "metricB.*" }]
+  cloud_monitoring_container_filter = [{ type = "exclude", parameter = "kubernetes.namespace.name", name = "kube-system" }]
+  cloud_monitoring_agent_tags       = var.resource_tags
+  cloud_monitoring_instance_region  = module.observability_instances.region
 }

@@ -82,6 +82,20 @@ variable "cloud_monitoring_metrics_filter" {
   }
 }
 
+variable "cloud_monitoring_container_filter" {
+  type = list(object({
+    type      = string
+    parameter = string
+    name      = string
+  }))
+  description = "To filter custom containers, specify the Cloud Monitoring containers to include or to exclude. See https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_filter_data."
+  default     = []
+  validation {
+    condition     = length(var.cloud_monitoring_container_filter) == 0 || can(regex("^(include|exclude)$", var.cloud_monitoring_container_filter[0].type))
+    error_message = "Invalid input for `cloud_monitoring_container_filter`. Valid options for 'type' are: `include` and `exclude`. If empty, no containers are included or excluded."
+  }
+}
+
 variable "cloud_monitoring_agent_tags" {
   type        = list(string)
   description = "List of tags to associate to all matrics that the agent collects. NOTE: Use the 'cloud_monitoring_add_cluster_name' variable to add the cluster name as a tag."
