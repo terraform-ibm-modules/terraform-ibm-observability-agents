@@ -106,6 +106,8 @@ resource "helm_release" "cloud_monitoring_agent" {
     metrics_filter = var.cloud_monitoring_metrics_filter
     }), yamlencode({
     tolerations = var.cloud_monitoring_agent_tolerations
+    }), yamlencode({
+    container_filter = var.cloud_monitoring_container_filter
   })]
 
   provisioner "local-exec" {

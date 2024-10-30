@@ -22,3 +22,13 @@ metrics_filter: []
 psp:
   # true here enables creation of Pod Security Policy to allow the agent run with the required permissions
   create: true
+
+container_filter: []
+# example:
+# container_filter:
+#   - include:
+#         container.image: appdomain/my-app-image
+#   - include:
+#         container.name: my-java-app
+#   - exclude:
+#         kubernetes.namespace.name: kube-system
