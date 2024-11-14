@@ -29,6 +29,28 @@ variable "is_vpc_cluster" {
   default     = true
 }
 
+variable "wait_till" {
+  description = "To avoid long wait times when you run your Terraform code, you can specify the stage when you want Terraform to mark the cluster resource creation as completed. Depending on what stage you choose, the cluster creation might not be fully completed and continues to run in the background. However, your Terraform code can continue to run without waiting for the cluster to be fully created. Supported args are `MasterNodeReady`, `OneWorkerNodeReady`, `IngressReady` and `Normal`"
+  type        = string
+  default     = "Normal"
+
+  validation {
+    error_message = "`wait_till` value must be one of `MasterNodeReady`, `OneWorkerNodeReady`, `IngressReady` or `Normal`."
+    condition = contains([
+      "MasterNodeReady",
+      "OneWorkerNodeReady",
+      "IngressReady",
+      "Normal"
+    ], var.wait_till)
+  }
+}
+
+variable "wait_till_timeout" {
+  description = "Timeout for wait_till in minutes."
+  type        = number
+  default     = 90
+}
+
 ##############################################################################
 # Cloud Monitoring variables
 ##############################################################################
