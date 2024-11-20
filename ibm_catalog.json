@@ -1,0 +1,353 @@
+{
+  "products": [
+    {
+      "label": "Testing - Cloud automation for Observability Agents",
+      "name": "testing-deploy-arch-ibm-observability-agents",
+      "product_kind": "solution",
+      "tags": [
+        "ibm_created",
+        "logging_monitoring"
+      ],
+      "short_description": "Configures IBM Cloud Observability resources",
+      "long_description": "Solutions that support configuring IBM Cloud Observability agents for logging, monitoring, and activity tracking.",
+      "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-agents/blob/main/README.md",
+      "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/images/observability-icon.svg",
+      "flavors": [
+        {
+          "label": "Agents",
+          "name": "agents",
+          "working_directory": "solutions/agents",
+          "licenses": [
+            {
+              "id": "LICENSE",
+              "name": "LICENSE",
+              "type": "text/plain",
+              "description": "LICENSE"
+            }
+          ],
+          "compliance": {},
+          "iam_permissions": [
+            {
+              "service_name": "containers-kubernetes",
+              "role_crns": [
+                "crn:v1:bluemix:public:iam::::serviceRole:Manager",
+                "crn:v1:bluemix:public:iam::::role:Viewer"
+              ]
+            }
+          ],
+          "architecture": {
+            "features": [
+              {
+                "title": "Works with any openshift or k8s cluster",
+                "description": "Works with the Red Hat OpenShift cluster."
+              },
+              {
+                "title": "Deploys the IBM Cloud Monitoring agent on an existing cluster.",
+                "description": "Deploys the IBM Cloud Monitoring agent on an existing Red Hat OpenShift cluster."
+              },
+              {
+                "title": "Deploys the IBM Logs agent on an existing cluster.",
+                "description": "Deploys the IBM Logs agent on an existing Red Hat OpenShift cluster."
+              }
+            ],
+            "diagrams": [
+              {
+                "diagram": {
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-agents/main/reference-architecture/deployable-architecture-observability-agents.svg",
+                  "caption": "Observability agents on a Red Hat OpenShift cluster",
+                  "type": "image/svg+xml"
+                },
+                "description": "Observability agents deployed on a Red Hat OpenShift cluster on a secure landing zone."
+              }
+            ]
+          },
+          "dependencies": [
+            {
+              "name": "testing-deploy-arch-ibm-observability",
+              "id": "daf2cf91-2384-4205-b7f4-621299a4896d",
+              "version": ">=1.0.7",
+              "flavors": [
+                "instances"
+              ],
+              "catalog_id": "f64499c8-eb50-4985-bf91-29f9e605a433",
+              "optional": true,
+              "input_mapping": [
+                {
+                  "dependency_input": "log_analysis_provision",
+                  "version_input": "log_analysis_enabled"
+                },
+                {
+                  "dependency_output": "log_analysis_ingestion_key",
+                  "version_input": "log_analysis_ingestion_key"
+                },
+                {
+                  "dependency_input": "cloud_monitoring_provision",
+                  "version_input": "cloud_monitoring_enabled"
+                },
+                {
+                  "dependency_output": "cloud_monitoring_access_key",
+                  "version_input": "cloud_monitoring_access_key"
+                },
+                {
+                  "dependency_input": "region",
+                  "version_input": "cloud_monitoring_instance_region"
+                }
+              ]
+            },
+            {
+              "name": "deploy-arch-ibm-slz-ocp",
+              "id": "95fccffc-ae3b-42df-b6d9-80be5914d852-global",
+              "version": ">=v6.2.1",
+              "flavors": [
+                "standard"
+              ],
+              "catalog_id": "1082e7d2-5e2f-0a11-a3bc-f88a8e1931fc",
+              "optional": false,
+              "input_mapping": []
+            }
+          ],
+          "dependency_version_2": true,
+          "configuration": [
+            {
+              "key": "cloud_monitoring_access_key",
+              "type": "password",
+              "required": true
+            },
+            {
+              "key": "cloud_monitoring_add_cluster_name",
+              "type": "boolean",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_agent_name",
+              "type": "string",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_agent_namespace",
+              "type": "string",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_agent_tags",
+              "type": "array",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_agent_tolerations",
+              "type": "array",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_enabled",
+              "type": "boolean",
+              "required": true
+            },
+            {
+              "key": "cloud_monitoring_endpoint_type",
+              "type": "string",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_instance_region",
+              "type": "string",
+              "display_name": "Region",
+              "required": true,
+              "custom_config": {
+                "type": "vpc_region",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "generationType": "2"
+                }
+              }
+            },
+            {
+              "key": "cloud_monitoring_metrics_filter",
+              "type": "array",
+              "required": false
+            },
+            {
+              "key": "cloud_monitoring_secret_name",
+              "type": "string",
+              "required": false
+            },
+            {
+              "key": "cluster_config_endpoint_type",
+              "type": "string",
+              "required": false
+            },
+            {
+              "key": "cluster_id",
+              "type": "string",
+              "required": true,
+              "custom_config": {
+                "type": "cluster_var",
+                "grouping": "deployment",
+                "original_grouping": "deployment"
+              }
+            },
+            {
+              "key": "cluster_resource_group_id",
+              "type": "string",
+              "required": true,
+              "custom_config": {
+                "type": "resource_group",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "identifier": "rg_id"
+                }
+              }
+            },
+            {
+              "key": "ibmcloud_api_key",
+              "type": "password",
+              "required": true
+            },
+            {
+              "key": "prefix",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The prefix for resources created by this solution.",
+              "required": false
+            },
+            {
+              "key": "cloud_logs_ingress_endpoint",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The host for IBM Cloud Logs ingestion. Ensure you use the ingress endpoint. See https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-endpoints_ingress. It is required if `logs_agent_enabled` is set to true.",
+              "required": false
+            },
+            {
+              "key": "cloud_logs_ingress_port",
+              "type": "number",
+              "default_value": 3443,
+              "description": "The target port for the IBM Cloud Logs ingestion endpoint. The port must be 443 if you connect by using a VPE gateway, or port 3443 when you connect by using CSEs.",
+              "required": false
+            },
+            {
+              "key": "is_vpc_cluster",
+              "type": "boolean",
+              "default_value": true,
+              "description": "Specify true if the target cluster for the DA is a VPC cluster, false if it is classic cluster.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_additional_log_source_paths",
+              "type": "array",
+              "default_value": "[]",
+              "description": "The list of additional log sources. By default, the Logs agent collects logs from a single source at `/var/log/containers/logger-agent-ds-*.log`.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_additional_metadata",
+              "type": "array",
+              "default_value": "[]",
+              "description": "The list of additional metadata fields to add to the routed logs.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_enable_scc",
+              "type": "boolean",
+              "default_value": true,
+              "description": "Whether to enable creation of Security Context Constraints in Openshift. When installing on an OpenShift cluster, this setting is mandatory to configure permissions for pods within your cluster.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_enabled",
+              "type": "boolean",
+              "default_value": true,
+              "description": "Whether to deploy the Logs agent.",
+              "required": true
+            },
+            {
+              "key": "logs_agent_exclude_log_source_paths",
+              "type": "array",
+              "default_value": "[]",
+              "description": "The list of log sources to exclude. Specify the paths that the Logs agent ignores.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_iam_api_key",
+              "type": "password",
+              "description": "The IBM Cloud API key for the Logs agent to authenticate and communicate with the IBM Cloud Logs. It is required if `logs_agent_iam_mode` is set to `IAMAPIKey`.",
+              "required": true
+            },
+            {
+              "key": "logs_agent_iam_environment",
+              "type": "string",
+              "default_value": "PrivateProduction",
+              "description": "IAM authentication Environment: `Production` or `PrivateProduction` or `Staging` or `PrivateStaging`.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_iam_mode",
+              "type": "string",
+              "default_value": "TrustedProfile",
+              "description": "IAM authentication mode: `TrustedProfile` or `IAMAPIKey`.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_log_source_namespaces",
+              "type": "array",
+              "default_value": "[]",
+              "description": "The list of namespaces from which logs should be forwarded by agent. When specified logs from only these namespaces will be sent by the agent.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_name",
+              "type": "string",
+              "default_value": "logs-agent",
+              "description": "The name of the Logs agent. The name is used in all Kubernetes and Helm resources in the cluster.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_namespace",
+              "type": "string",
+              "default_value": "ibm-observe",
+              "description": "The namespace where the Logs agent is deployed. The default value is `ibm-observe`.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_selected_log_source_paths",
+              "type": "array",
+              "default_value": "[]",
+              "description": "The list of specific log sources paths. Logs will only be collected from the specified log source paths.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_tolerations",
+              "type": "array",
+              "default_value": "[{\n    operator = \"Exists\"\n  }]",
+              "description": "List of tolerations to apply to Logs agent.",
+              "required": false
+            },
+            {
+              "key": "logs_agent_trusted_profile",
+              "type": "string",
+              "default_value": "__NULL__",
+              "description": "The IBM Cloud trusted profile ID. Used only when `logs_agent_iam_mode` is set to `TrustedProfile`. The trusted profile must have an IBM Cloud Logs `Sender` role.",
+              "required": false
+            },
+            {
+              "key": "wait_till",
+              "type": "string",
+              "default_value": "Normal",
+              "description": "To avoid long wait times when you run your Terraform code, you can specify the stage when you want Terraform to mark the cluster resource creation as completed. Depending on what stage you choose, the cluster creation might not be fully completed and continues to run in the background. However, your Terraform code can continue to run without waiting for the cluster to be fully created. Supported args are `MasterNodeReady`, `OneWorkerNodeReady`, `IngressReady` and `Normal`",
+              "required": false
+            },
+            {
+              "key": "wait_till_timeout",
+              "type": "number",
+              "default_value": 90,
+              "description": "Timeout for wait_till in minutes.",
+              "required": false
+            }
+          ],
+          "install_type": "extension"
+        }
+      ]
+    }
+  ]
+}
