@@ -14,9 +14,9 @@
       "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/images/observability-icon.svg",
       "flavors": [
         {
-          "label": "Agents",
-          "name": "agents",
-          "working_directory": "solutions/agents",
+          "label": "Single Cluster",
+          "name": "single cluster",
+          "working_directory": "solutions/single_cluster",
           "licenses": [
             {
               "id": "LICENSE",
