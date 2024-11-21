@@ -15,7 +15,7 @@
       "flavors": [
         {
           "label": "Single Cluster",
-          "name": "single cluster",
+          "name": "single_cluster",
           "working_directory": "solutions/single_cluster",
           "licenses": [
             {
