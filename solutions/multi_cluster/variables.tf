@@ -13,15 +13,21 @@ variable "prefix" {
 ##############################################################################
 # Cluster variables
 ##############################################################################
-
-variable "cluster_id" {
-  type        = string
-  description = "The ID of the cluster to deploy the agents in."
-}
-
-variable "cluster_resource_group_id" {
-  type        = string
-  description = "The resource group ID of the cluster."
+variable "cluster_data" {
+  description = "Details of the clusters to install the agents on."
+  # extra inputs are listed so we can use the output from SLZ, thes are marked as optional
+  type = map(object({
+    cluster_console_url          = optional(string)
+    cluster_name                 = string
+    crn                          = optional(string)
+    id                           = string
+    ingress_hostname             = optional(string)
+    private_service_endpoint_url = optional(string)
+    public_service_endpoint_url  = optional(string)
+    region                       = string
+    resource_group_id            = optional(string)
+    vpc_id                       = optional(string)
+  }))
 }
 
 variable "cluster_config_endpoint_type" {
@@ -40,7 +46,6 @@ variable "is_vpc_cluster" {
   description = "Specify true if the target cluster for the DA is a VPC cluster, false if it is classic cluster."
   default     = true
 }
-
 # TODO: Not passed yet ignor in tflint for now
 # tflint-ignore: terraform_unused_declarations
 variable "wait_till" {
@@ -58,7 +63,6 @@ variable "wait_till" {
     ], var.wait_till)
   }
 }
-
 # TODO: Not passed yet ignor in tflint for now
 # tflint-ignore: terraform_unused_declarations
 variable "wait_till_timeout" {
@@ -147,22 +151,24 @@ variable "cloud_monitoring_agent_namespace" {
 }
 
 variable "cloud_monitoring_agent_tolerations" {
-  description = "The list of tolerations to apply to the IBM Cloud Monitoring agent. The default operator value `Exists` matches any taint on any node except the master node. [Learn more](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)"
-  type = list(object({
+  description = "The list of tolerations to apply to the IBM Cloud Monitoring agent for each cluster. The default operator value `Exists` matches any taint on any node except the master node. [Learn more](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)"
+  type = map(list(object({
     key               = optional(string)
     operator          = optional(string)
     value             = optional(string)
     effect            = optional(string)
     tolerationSeconds = optional(number)
-  }))
-  default = [{
-    operator = "Exists"
-    },
-    {
-      operator : "Exists"
-      effect : "NoSchedule"
-      key : "node-role.kubernetes.io/master"
-  }]
+  })))
+  default = {
+    default = [{
+      operator = "Exists"
+      },
+      {
+        operator : "Exists"
+        effect : "NoSchedule"
+        key : "node-role.kubernetes.io/master"
+    }]
+  }
 }
 
 ##############################################################################
@@ -203,17 +209,19 @@ variable "logs_agent_iam_api_key" {
 }
 
 variable "logs_agent_tolerations" {
-  description = "List of tolerations to apply to Logs agent."
-  type = list(object({
+  description = "List of tolerations to apply to Logs agent for each cluster. The default operator value `Exists` matches any taint on any node except the master node. [Learn more](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)"
+  type = map(list(object({
     key               = optional(string)
     operator          = optional(string)
     value             = optional(string)
     effect            = optional(string)
     tolerationSeconds = optional(number)
-  }))
-  default = [{
-    operator = "Exists"
-  }]
+  })))
+  default = {
+    default = [{
+      operator = "Exists"
+    }]
+  }
 }
 
 variable "logs_agent_additional_log_source_paths" {

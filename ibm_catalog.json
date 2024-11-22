@@ -179,7 +179,6 @@
             },
             {
               "key": "cluster_id",
-              "type": "string",
               "required": true,
               "custom_config": {
                 "type": "cluster_var",

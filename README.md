@@ -16,6 +16,7 @@ This module deploys the following observability agents to an IBM Cloud Red Hat O
 ## Overview
 * [terraform-ibm-observability-agents](#terraform-ibm-observability-agents)
 * [Submodules](./modules)
+    * [helm_deployment](./modules/helm_deployment)
     * [logs-agent](./modules/logs-agent)
 * [Examples](./examples)
     * [Monitoring agent + Cloud Logs agent on Kubernetes using CSE ingress endpoint with an apikey](./examples/obs-agent-iks)
@@ -109,7 +110,6 @@ You need the following permissions to run this module.
 | Name | Type |
 |------|------|
 | [helm_release.cloud_monitoring_agent](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
-| [ibm_container_cluster.cluster](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/container_cluster) | data source |
 | [ibm_container_cluster_config.cluster_config](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/container_cluster_config) | data source |
 | [ibm_container_vpc_cluster.cluster](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/container_vpc_cluster) | data source |
 
