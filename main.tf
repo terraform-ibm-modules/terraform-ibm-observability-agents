@@ -148,5 +148,7 @@ module "logs_agent" {
   cloud_logs_ingress_endpoint            = var.cloud_logs_ingress_endpoint
   cloud_logs_ingress_port                = var.cloud_logs_ingress_port
   is_vpc_cluster                         = var.is_vpc_cluster
+  wait_till                              = var.wait_till
+  wait_till_timeout                      = var.wait_till_timeout
 }
 /** Logs Agent Configuration End **/
