@@ -3,17 +3,28 @@
 ##############################################################################
 
 data "ibm_container_cluster_config" "cluster_config" {
-  cluster_name_id   = var.is_vpc_cluster ? data.ibm_container_vpc_cluster.cluster[0].name : data.ibm_container_cluster.cluster[0].name
-  resource_group_id = var.cluster_resource_group_id
+  cluster_name_id   = local.is_vpc_cluster ? data.ibm_container_vpc_cluster.cluster[0].name : data.ibm_container_cluster.cluster[0].name
+  resource_group_id = local.cluster_resource_group_id
   config_dir        = "${path.module}/kubeconfig"
-  endpoint_type     = var.cluster_config_endpoint_type != "default" ? var.cluster_config_endpoint_type : null
+  endpoint_type     = local.cluster_config_endpoint_type != "default" ? local.cluster_config_endpoint_type : null
+}
+
+locals {
+  use_cluster_data = length(var.cluster_data) > 0
+
+  first_cluster_key = local.use_cluster_data ? keys(var.cluster_data)[0] : null
+
+  cluster_id                   = local.use_cluster_data ? var.cluster_data[local.first_cluster_key].id : var.cluster_id
+  cluster_resource_group_id    = local.use_cluster_data ? var.cluster_data[local.first_cluster_key].resource_group_id : var.cluster_resource_group_id
+  cluster_config_endpoint_type = var.cluster_config_endpoint_type
+  is_vpc_cluster               = var.is_vpc_cluster
 }
 
 module "observability_agents" {
   source                       = "../.."
-  cluster_id                   = var.cluster_id
-  cluster_resource_group_id    = var.cluster_resource_group_id
-  cluster_config_endpoint_type = var.cluster_config_endpoint_type
+  cluster_id                   = local.cluster_id
+  cluster_resource_group_id    = local.cluster_resource_group_id
+  cluster_config_endpoint_type = local.cluster_config_endpoint_type
   # Cloud Monitoring (Sysdig) Agent
   cloud_monitoring_enabled           = var.cloud_monitoring_enabled
   cloud_monitoring_agent_name        = var.prefix != null ? "${var.prefix}-${var.cloud_monitoring_agent_name}" : var.cloud_monitoring_agent_name

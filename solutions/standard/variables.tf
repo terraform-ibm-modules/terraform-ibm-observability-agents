@@ -41,6 +41,23 @@ variable "is_vpc_cluster" {
   default     = true
 }
 
+variable "cluster_data" {
+  description = "Details of the clusters to install the agents on."
+  # extra inputs are listed so we can use the output from SLZ, these are marked as optional
+  type = map(object({
+    cluster_console_url          = optional(string)
+    cluster_name                 = string
+    crn                          = optional(string)
+    id                           = string
+    ingress_hostname             = optional(string)
+    private_service_endpoint_url = optional(string)
+    public_service_endpoint_url  = optional(string)
+    region                       = string
+    resource_group_id            = optional(string)
+    vpc_id                       = optional(string)
+  }))
+}
+
 variable "wait_till" {
   description = "To avoid long wait times when you run your Terraform code, you can specify the stage when you want Terraform to mark the cluster resource creation as completed. Depending on what stage you choose, the cluster creation might not be fully completed and continues to run in the background. However, your Terraform code can continue to run without waiting for the cluster to be fully created. Supported args are `MasterNodeReady`, `OneWorkerNodeReady`, `IngressReady` and `Normal`"
   type        = string
