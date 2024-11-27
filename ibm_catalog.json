@@ -277,8 +277,8 @@
                   ]
                 },
                 {
-                  "name": "testing-container-platform-stack",
-                  "id": "81c7391d-6f8b-41b0-9021-c7945c8d2c7b",
+                  "name": "Testing_Retrieval_Augmented_Generation_Pattern_dev",
+                  "id": "8e851423-4cfc-40e7-a008-fb449d953cb9",
                   "version": ">=1.2.0",
                   "flavors": [
                     "standard"
