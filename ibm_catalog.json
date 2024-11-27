@@ -1,15 +1,15 @@
 {
   "products": [
     {
-      "label": "Testing - Cloud automation for Observability Agents",
+      "label": "[Add-ons Beta] Cloud automation for Observability Agents",
       "name": "testing-deploy-arch-ibm-observability-agents",
       "product_kind": "solution",
       "tags": [
         "ibm_created",
         "logging_monitoring"
       ],
-      "short_description": "Configures IBM Cloud Observability resources",
-      "long_description": "Solutions that support configuring IBM Cloud Observability agents for logging, monitoring, and activity tracking.",
+      "short_description": "Deploys IBM Cloud Observability agents to a cluster",
+      "long_description": "Solutions that support deploying IBM Cloud Observability agents for logging, monitoring, and activity tracking.",
       "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-agents/blob/main/README.md",
       "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-da/main/images/observability-icon.svg",
       "flavors": [
@@ -70,7 +70,7 @@
                 "instances"
               ],
               "catalog_id": "f64499c8-eb50-4985-bf91-29f9e605a433",
-              "optional": true,
+              "optional": false,
               "input_mapping": [
                 {
                   "dependency_input": "log_analysis_provision",
