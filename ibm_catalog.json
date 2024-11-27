@@ -70,7 +70,7 @@
                 "standard"
               ],
               "catalog_id": "f64499c8-eb50-4985-bf91-29f9e605a433",
-              "optional": false,
+              "optional": true,
               "input_mapping": [
                 {
                   "dependency_input": "log_analysis_provision",
