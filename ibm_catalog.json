@@ -255,20 +255,43 @@
           "swappable_dependencies": [
             {
               "name": "cluster",
-              "default_dependency": "Testing_Retrieval_Augmented_Generation_Pattern_dev",
+              "default_dependency": "testing-container-platform-stack",
               "description": "A cluster is required to deploy the agent too",
               "optional": false,
               "dependencies": [
                 {
-                  "name": "Testing_Retrieval_Augmented_Generation_Pattern_dev",
-                  "id": "8e851423-4cfc-40e7-a008-fb449d953cb9",
-                  "version": ">=1.1.9",
+                  "name": "deploy-arch-ibm-slz-ocp",
+                  "id": "95fccffc-ae3b-42df-b6d9-80be5914d852-global",
+                  "version": ">=v6.2.1",
+                  "flavors": [
+                    "standard"
+                  ],
+                  "catalog_id": "1082e7d2-5e2f-0a11-a3bc-f88a8e1931fc",
+                  "optional": false,
+                  "on_by_default": false,
+                  "input_mapping": [
+                    {
+                      "dependency_output": "cluster_data",
+                      "version_input": "cluster_data"
+                    }
+                  ]
+                },
+                {
+                  "name": "testing-container-platform-stack",
+                  "id": "81c7391d-6f8b-41b0-9021-c7945c8d2c7b",
+                  "version": ">=1.2.0",
                   "flavors": [
                     "standard"
                   ],
                   "catalog_id": "f64499c8-eb50-4985-bf91-29f9e605a433",
                   "optional": false,
-                  "input_mapping": []
+                  "on_by_default": false,
+                  "input_mapping": [
+                    {
+                      "dependency_output": "cluster_data",
+                      "version_input": "cluster_data"
+                    }
+                  ]
                 }
               ]
             }
