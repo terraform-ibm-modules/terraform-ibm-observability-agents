@@ -255,7 +255,7 @@
           "swappable_dependencies": [
             {
               "name": "cluster",
-              "default_dependency": "testing-container-platform-stack",
+              "default_dependency": "Testing_Retrieval_Augmented_Generation_Pattern_dev",
               "description": "A cluster is required to deploy the agent too",
               "optional": false,
               "dependencies": [
@@ -290,6 +290,14 @@
                     {
                       "dependency_output": "cluster_data",
                       "version_input": "cluster_data"
+                    },
+                    {
+                      "value": "__NULL__",
+                      "version_input": "cluster_id"
+                    },
+                    {
+                      "value": "__NULL__",
+                      "version_input": "cluster_resource_group_id"
                     }
                   ]
                 }
