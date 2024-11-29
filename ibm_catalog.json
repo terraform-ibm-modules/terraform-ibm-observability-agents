@@ -53,7 +53,7 @@
             "diagrams": [
               {
                 "diagram": {
-                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-agents/main/reference-architecture/deployable-architecture-observability-agents.svg",
+                  "url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-agents/refs/heads/addons/reference-architecture/deployable-architecture-observability-agents.svg",
                   "caption": "Observability agents on a Red Hat OpenShift cluster",
                   "type": "image/svg+xml"
                 },
@@ -65,7 +65,7 @@
             {
               "name": "testing-deploy-arch-ibm-observability",
               "id": "daf2cf91-2384-4205-b7f4-621299a4896d",
-              "version": ">=1.2.1",
+              "version": ">=1.2.2",
               "flavors": [
                 "standard"
               ],
@@ -279,7 +279,7 @@
                 {
                   "name": "Testing_Retrieval_Augmented_Generation_Pattern_dev",
                   "id": "8e851423-4cfc-40e7-a008-fb449d953cb9",
-                  "version": ">=1.2.2",
+                  "version": ">=1.2.4",
                   "flavors": [
                     "standard"
                   ],
