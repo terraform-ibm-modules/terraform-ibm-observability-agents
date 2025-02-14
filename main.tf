@@ -7,17 +7,21 @@ data "ibm_container_vpc_cluster" "cluster" {
   count             = var.is_vpc_cluster ? 1 : 0
   name              = var.cluster_id
   resource_group_id = var.cluster_resource_group_id
+  wait_till         = var.wait_till
+  wait_till_timeout = var.wait_till_timeout
 }
 
 data "ibm_container_cluster" "cluster" {
   count             = var.is_vpc_cluster ? 0 : 1
   name              = var.cluster_id
   resource_group_id = var.cluster_resource_group_id
+  wait_till         = var.wait_till
+  wait_till_timeout = var.wait_till_timeout
 }
 
 # Download cluster config which is required to connect to cluster
 data "ibm_container_cluster_config" "cluster_config" {
-  cluster_name_id   = var.cluster_id
+  cluster_name_id   = var.is_vpc_cluster ? data.ibm_container_vpc_cluster.cluster[0].name : data.ibm_container_cluster.cluster[0].name
   resource_group_id = var.cluster_resource_group_id
   config_dir        = "${path.module}/kubeconfig"
   endpoint_type     = var.cluster_config_endpoint_type != "default" ? var.cluster_config_endpoint_type : null # null value represents default
@@ -27,7 +31,7 @@ locals {
   # LOCALS
   cluster_name                      = var.is_vpc_cluster ? data.ibm_container_vpc_cluster.cluster[0].resource_name : data.ibm_container_cluster.cluster[0].resource_name # Not publically documented in provider. See https://github.com/IBM-Cloud/terraform-provider-ibm/issues/4485
   cloud_monitoring_chart_location   = "${path.module}/chart/sysdig-agent"
-  cloud_monitoring_image_tag_digest = "13.4.1@sha256:469f3eee8d00ce563041770e875555dbabf02daa57cc489d9e66010707cdc621" # datasource: icr.io/ext/sysdig/agent
+  cloud_monitoring_image_tag_digest = "13.7.2@sha256:660bba401573996b722587c5ebfe4ca41550312143913d45c87153530df18bd7" # datasource: icr.io/ext/sysdig/agent
   cloud_monitoring_agent_registry   = "icr.io/ext/sysdig/agent"
   cloud_monitoring_agent_tags       = var.cloud_monitoring_add_cluster_name ? concat(["ibm.containers-kubernetes.cluster.name:${local.cluster_name}"], var.cloud_monitoring_agent_tags) : var.cloud_monitoring_agent_tags
   cloud_monitoring_host             = var.cloud_monitoring_enabled ? var.cloud_monitoring_endpoint_type == "private" ? "ingest.private.${var.cloud_monitoring_instance_region}.monitoring.cloud.ibm.com" : "logs.${var.cloud_monitoring_instance_region}.monitoring.cloud.ibm.com" : null
@@ -144,5 +148,7 @@ module "logs_agent" {
   cloud_logs_ingress_endpoint            = var.cloud_logs_ingress_endpoint
   cloud_logs_ingress_port                = var.cloud_logs_ingress_port
   is_vpc_cluster                         = var.is_vpc_cluster
+  wait_till                              = var.wait_till
+  wait_till_timeout                      = var.wait_till_timeout
 }
 /** Logs Agent Configuration End **/
