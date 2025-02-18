@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+offerings:
+  - name: deploy-arch-ibm-scc-wp-agent
+    kind: solution
+    catalog_id: _
+    offering_id: _
+    variations:
+      - name: standard
+        mark_ready: true
+        install_type: fullstack
+        pre_validation: "tests/scripts/pre-validation-deploy-slz-roks-and-scc-wp-instances.sh"
+        post_validation: "tests/scripts/post-validation-destroy-slz-roks-and-scc-wp-instances.sh"
