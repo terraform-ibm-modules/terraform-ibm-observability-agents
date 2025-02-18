@@ -1,7 +1,7 @@
 ---
 apiVersion: v1
 offerings:
-  - name: deploy-arch-ibm-observability
+  - name: deploy-arch-ibm-observability-agents
     kind: solution
     catalog_id: _
     offering_id: _
