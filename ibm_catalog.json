@@ -1,7 +1,7 @@
 {
   "products": [
     {
-      "label": "[Add-ons Beta] Cloud automation for Observability Agents",
+      "label": "Cloud automation for Observability agents",
       "name": "testing-deploy-arch-ibm-observability-agents",
       "product_kind": "solution",
       "tags": [
