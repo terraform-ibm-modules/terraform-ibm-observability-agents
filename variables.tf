@@ -110,7 +110,7 @@ variable "cloud_monitoring_container_filter" {
     parameter = string
     name      = string
   }))
-  description = "To filter custom containers, specify the Cloud Monitoring containers to include or to exclude. See https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_filter_data."
+  description = "To filter custom containers, specify which containers to include or exclude from metrics collection for the cloud monitoring agent. See https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_filter_data."
   default     = []
   validation {
     condition     = length(var.cloud_monitoring_container_filter) == 0 || can(regex("^(include|exclude)$", var.cloud_monitoring_container_filter[0].type))
