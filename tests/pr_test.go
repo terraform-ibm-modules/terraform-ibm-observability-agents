@@ -7,6 +7,8 @@ import (
 	"strings"
 	"testing"
 
+	"math/rand/v2"
+
 	"github.com/gruntwork-io/terratest/modules/files"
 	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/gruntwork-io/terratest/modules/random"
@@ -16,12 +18,11 @@ import (
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/cloudinfo"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testhelper"
 	"github.com/terraform-ibm-modules/ibmcloud-terratest-wrapper/testschematic"
-	"golang.org/x/exp/rand"
 )
 
 const resourceGroup = "geretain-test-observability-agents"
-const standardSolutionDir = "solutions/standard"
-const standardSolutionKubeconfigDir = "solutions/standard/kubeconfig"
+const baselineSolutionDir = "solutions/baseline"
+const baselineSolutionKubeconfigDir = "solutions/baseline/kubeconfig"
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
 
@@ -66,10 +67,10 @@ func setupOptions(t *testing.T, prefix string, terraformDir string) *testhelper.
 	return options
 }
 
-func TestStandardSolutionInSchematics(t *testing.T) {
+func TestBaselineSolutionInSchematics(t *testing.T) {
 	t.Parallel()
 
-	var region = validRegions[rand.Intn(len(validRegions))]
+	var region = validRegions[rand.IntN(len(validRegions))]
 
 	// ------------------------------------------------------------------------------------------------------
 	// Deploy SLZ ROKS Cluster and Observability instances since it is needed to deploy Observability Agents
@@ -108,11 +109,11 @@ func TestStandardSolutionInSchematics(t *testing.T) {
 			Testing: t,
 			Prefix:  "obs-agents",
 			TarIncludePatterns: []string{
-				standardSolutionDir + "/*.*",
-				standardSolutionKubeconfigDir + "/*.*",
+				baselineSolutionDir + "/*.*",
+				baselineSolutionKubeconfigDir + "/*.*",
 			},
 			ResourceGroup:          resourceGroup,
-			TemplateFolder:         standardSolutionDir,
+			TemplateFolder:         baselineSolutionDir,
 			Tags:                   []string{"test-schematic"},
 			DeleteWorkspaceOnFail:  false,
 			WaitJobCompleteMinutes: 60,
@@ -147,10 +148,10 @@ func TestStandardSolutionInSchematics(t *testing.T) {
 	}
 }
 
-func TestStandardUpgradeSolutionInSchematics(t *testing.T) {
+func TestBaselineUpgradeSolutionInSchematics(t *testing.T) {
 	t.Parallel()
 
-	var region = validRegions[rand.Intn(len(validRegions))]
+	var region = validRegions[rand.IntN(len(validRegions))]
 
 	// ------------------------------------------------------------------------------------------------------
 	// Deploy SLZ ROKS Cluster and Observability instances since it is needed to deploy Observability Agents
@@ -189,11 +190,11 @@ func TestStandardUpgradeSolutionInSchematics(t *testing.T) {
 			Testing: t,
 			Prefix:  "obs-agents",
 			TarIncludePatterns: []string{
-				standardSolutionDir + "/*.*",
-				standardSolutionKubeconfigDir + "/*.*",
+				baselineSolutionDir + "/*.*",
+				baselineSolutionKubeconfigDir + "/*.*",
 			},
 			ResourceGroup:          resourceGroup,
-			TemplateFolder:         standardSolutionDir,
+			TemplateFolder:         baselineSolutionDir,
 			Tags:                   []string{"test-schematic"},
 			DeleteWorkspaceOnFail:  false,
 			WaitJobCompleteMinutes: 60,

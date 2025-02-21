@@ -6,8 +6,8 @@ offerings:
     catalog_id: _
     offering_id: _
     variations:
-      - name: standard
+      - name: baseline
         mark_ready: true
-        install_type: extension
+        install_type: fullstack
         pre_validation: "tests/scripts/pre-validation-deploy-slz-roks-and-obs-instances.sh"
         post_validation: "tests/scripts/post-validation-destroy-slz-roks-and-obs-instances.sh"

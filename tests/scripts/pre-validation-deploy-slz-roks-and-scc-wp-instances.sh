@@ -7,7 +7,7 @@
 
 set -e
 
-DA_DIR="solutions/standard"
+DA_DIR="solutions/baseline"
 TERRAFORM_SOURCE_DIR="tests/resources"
 JSON_FILE="${DA_DIR}/catalogValidationValues.json"
 REGION="us-south"
