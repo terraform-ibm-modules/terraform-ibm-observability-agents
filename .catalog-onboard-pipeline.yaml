@@ -3,8 +3,8 @@ apiVersion: v1
 offerings:
   - name: deploy-arch-ibm-observability-agents
     kind: solution
-    catalog_id: _
-    offering_id: _
+    catalog_id: 7df1e4ca-d54c-4fd0-82ce-3d13247308cd
+    offering_id: d4ed02f5-0aa5-4e03-a9cb-7913ab2da27f
     variations:
       - name: baseline
         mark_ready: true

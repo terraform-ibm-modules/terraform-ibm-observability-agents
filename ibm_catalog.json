@@ -6,8 +6,20 @@
       "product_kind": "solution",
       "tags": [
         "ibm_created",
-        "logging_monitoring"
+        "logging_monitoring",
+        "terraform",
+        "target_terraform",
+        "solution"
       ],
+      "keywords": [
+        "observability",
+        "agents",
+        "IaC",
+        "infrastructure as code",
+        "terraform",
+        "solution"
+      ],
+      "provider_name": "IBM",
       "short_description": "Deploys IBM Cloud Observability agents to a cluster",
       "long_description": "Solutions that support deploying IBM Cloud Observability agents for logging, monitoring.",
       "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-agents/blob/main/solutions/baseline/README.md",
@@ -49,19 +61,29 @@
                   "caption": "Observability agents on a Red Hat OpenShift cluster",
                   "type": "image/svg+xml"
                 },
-                "description": "Observability agents deployed on a Red Hat OpenShift cluster on a secure landing zone."
+                "description": "Observability agents deployed on a Red Hat OpenShift cluster."
               }
             ]
           },
           "dependencies": [
             {
-              "name": "testing-deploy-arch-ibm-observability",
-              "id": "daf2cf91-2384-4205-b7f4-621299a4896d",
-              "version": ">=1.2.2",
               "flavors": [
+                "quickstart",
                 "standard"
               ],
-              "catalog_id": "f64499c8-eb50-4985-bf91-29f9e605a433",
+              "id": "95fccffc-ae3b-42df-b6d9-80be5914d852-global",
+              "name": "deploy-arch-ibm-slz-ocp",
+              "version": ">=v3.0.0",
+              "optional": true
+            },
+            {
+              "flavors": [
+                "instances"
+              ],
+              "catalog_id": "7a4d68b4-cf8b-40cd-a3d1-f49aff526eb3",
+              "id": "a3137d28-79e0-479d-8a24-758ebd5a0eab-global",
+              "name": "deploy-arch-ibm-observability",
+              "version": ">=v1.3.1",
               "optional": true
             }
           ],
@@ -75,63 +97,6 @@
               "key": "prefix",
               "required": true,
               "description": "The prefix to add to all resources that this solution creates. To not use any prefix value, you can enter the string `__NULL__`."
-            },
-            {
-              "key": "cloud_monitoring_access_key",
-              "required": false
-            },
-            {
-              "key": "cloud_monitoring_add_cluster_name",
-              "required": false
-            },
-            {
-              "key": "cloud_monitoring_agent_name",
-              "required": false
-            },
-            {
-              "key": "cloud_monitoring_agent_namespace",
-              "required": false
-            },
-            {
-              "key": "cloud_monitoring_agent_tags",
-              "required": false
-            },
-            {
-              "key": "cloud_monitoring_agent_tolerations",
-              "required": false
-            },
-            {
-              "key": "cloud_monitoring_enabled",
-              "required": false
-            },
-            {
-              "key": "cloud_monitoring_endpoint_type",
-              "required": false
-            },
-            {
-              "key": "cloud_monitoring_instance_region",
-              "display_name": "Region",
-              "required": false,
-              "custom_config": {
-                "type": "vpc_region",
-                "grouping": "deployment",
-                "original_grouping": "deployment",
-                "config_constraints": {
-                  "generationType": "2"
-                }
-              }
-            },
-            {
-              "key": "cloud_monitoring_metrics_filter",
-              "required": false
-            },
-            {
-              "key": "cloud_monitoring_secret_name",
-              "required": false
-            },
-            {
-              "key": "cluster_config_endpoint_type",
-              "required": false
             },
             {
               "key": "cluster_id",
@@ -161,84 +126,109 @@
               }
             },
             {
-              "key": "cluster_data",
-              "required": false
+              "key": "cloud_monitoring_access_key"
             },
             {
-              "key": "cloud_logs_ingress_endpoint",
-              "required": false
+              "key": "cloud_monitoring_add_cluster_name"
             },
             {
-              "key": "cloud_logs_ingress_port",
-              "required": false
+              "key": "cloud_monitoring_agent_name"
             },
             {
-              "key": "is_vpc_cluster",
-              "required": false
+              "key": "cloud_monitoring_agent_namespace"
             },
             {
-              "key": "logs_agent_additional_log_source_paths",
-              "required": false
+              "key": "cloud_monitoring_agent_tags"
             },
             {
-              "key": "logs_agent_additional_metadata",
-              "required": false
+              "key": "cloud_monitoring_agent_tolerations"
             },
             {
-              "key": "logs_agent_enable_scc",
-              "required": false
+              "key": "cloud_monitoring_enabled"
             },
             {
-              "key": "logs_agent_enabled",
-              "required": false
+              "key": "cloud_monitoring_endpoint_type"
             },
             {
-              "key": "logs_agent_exclude_log_source_paths",
-              "required": false
+              "key": "cloud_monitoring_instance_region",
+              "display_name": "Region",
+              "custom_config": {
+                "type": "vpc_region",
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "generationType": "2"
+                }
+              }
             },
             {
-              "key": "logs_agent_iam_api_key",
-              "required": false
+              "key": "cloud_monitoring_metrics_filter"
             },
             {
-              "key": "logs_agent_iam_environment",
-              "required": false
+              "key": "cloud_monitoring_secret_name"
             },
             {
-              "key": "logs_agent_iam_mode",
-              "required": false
+              "key": "cluster_config_endpoint_type"
             },
             {
-              "key": "logs_agent_log_source_namespaces",
-              "required": false
+              "key": "cluster_data"
             },
             {
-              "key": "logs_agent_name",
-              "required": false
+              "key": "cloud_logs_ingress_endpoint"
             },
             {
-              "key": "logs_agent_namespace",
-              "required": false
+              "key": "cloud_logs_ingress_port"
             },
             {
-              "key": "logs_agent_selected_log_source_paths",
-              "required": false
+              "key": "is_vpc_cluster"
             },
             {
-              "key": "logs_agent_tolerations",
-              "required": false
+              "key": "logs_agent_additional_log_source_paths"
             },
             {
-              "key": "logs_agent_trusted_profile",
-              "required": false
+              "key": "logs_agent_additional_metadata"
             },
             {
-              "key": "wait_till",
-              "required": false
+              "key": "logs_agent_enable_scc"
             },
             {
-              "key": "wait_till_timeout",
-              "required": false
+              "key": "logs_agent_enabled"
+            },
+            {
+              "key": "logs_agent_exclude_log_source_paths"
+            },
+            {
+              "key": "logs_agent_iam_api_key"
+            },
+            {
+              "key": "logs_agent_iam_environment"
+            },
+            {
+              "key": "logs_agent_iam_mode"
+            },
+            {
+              "key": "logs_agent_log_source_namespaces"
+            },
+            {
+              "key": "logs_agent_name"
+            },
+            {
+              "key": "logs_agent_namespace"
+            },
+            {
+              "key": "logs_agent_selected_log_source_paths"
+            },
+            {
+              "key": "logs_agent_tolerations"
+            },
+            {
+              "key": "logs_agent_trusted_profile"
+            },
+            {
+              "key": "wait_till"
+            },
+            {
+              "key": "wait_till_timeout"
             }
           ],
           "install_type": "fullstack"
