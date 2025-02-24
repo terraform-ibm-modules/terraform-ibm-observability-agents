@@ -126,6 +126,13 @@
               }
             },
             {
+              "key": "is_vpc_cluster",
+              "required": true
+            },
+            {
+              "key": "cloud_monitoring_enabled"
+            },
+            {
               "key": "cloud_monitoring_access_key"
             },
             {
@@ -142,9 +149,6 @@
             },
             {
               "key": "cloud_monitoring_agent_tolerations"
-            },
-            {
-              "key": "cloud_monitoring_enabled"
             },
             {
               "key": "cloud_monitoring_endpoint_type"
@@ -180,7 +184,7 @@
               "key": "cloud_logs_ingress_port"
             },
             {
-              "key": "is_vpc_cluster"
+              "key": "logs_agent_enabled"
             },
             {
               "key": "logs_agent_additional_log_source_paths"
@@ -192,9 +196,6 @@
               "key": "logs_agent_enable_scc"
             },
             {
-              "key": "logs_agent_enabled"
-            },
-            {
               "key": "logs_agent_exclude_log_source_paths"
             },
             {
@@ -204,7 +205,17 @@
               "key": "logs_agent_iam_environment"
             },
             {
-              "key": "logs_agent_iam_mode"
+              "key": "logs_agent_iam_mode",
+              "options": [
+                {
+                  "displayname": "Trusted Profile",
+                  "value": "TrustedProfile"
+                },
+                {
+                  "displayname": "IAM API Key",
+                  "value": "IAMAPIKey"
+                }
+              ]
             },
             {
               "key": "logs_agent_log_source_namespaces"

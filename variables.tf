@@ -251,6 +251,13 @@ variable "logs_agent_iam_mode" {
   type        = string
   default     = "TrustedProfile"
   description = "IAM authentication mode: `TrustedProfile` or `IAMAPIKey`."
+  validation {
+    error_message = "`logs_agent_iam_mode` value must be `TrustedProfile`, or `IAMAPIKey`."
+    condition = contains([
+      "TrustedProfile",
+      "IAMAPIKey",
+    ], var.logs_agent_iam_mode)
+  }
 }
 
 variable "logs_agent_iam_environment" {
