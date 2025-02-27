@@ -135,11 +135,6 @@
               "default_value": true
             },
             {
-              "key": "cloud_monitoring_enabled",
-              "required": true,
-              "default_value": true
-            },
-            {
               "key": "cloud_monitoring_instance_region",
               "display_name": "Region",
               "custom_config": {
@@ -165,6 +160,13 @@
               "required": true
             },
             {
+              "key": "logs_agent_trusted_profile_id",
+              "required": true
+            },
+            {
+              "key": "cloud_monitoring_enabled"
+            },
+            {
               "key": "cloud_monitoring_add_cluster_name"
             },
             {
@@ -187,7 +189,17 @@
               "key": "cloud_monitoring_agent_tolerations"
             },
             {
-              "key": "cloud_monitoring_endpoint_type"
+              "key": "cloud_monitoring_endpoint_type",
+              "options": [
+                {
+                  "displayname": "Public",
+                  "value": "Public"
+                },
+                {
+                  "displayname": "Private",
+                  "value": "Private"
+                }
+              ]
             },
             {
               "key": "cloud_monitoring_metrics_filter"
@@ -214,7 +226,25 @@
               "key": "logs_agent_iam_api_key"
             },
             {
-              "key": "logs_agent_iam_environment"
+              "key": "logs_agent_iam_environment",
+              "options": [
+                {
+                  "displayname": "Production",
+                  "value": "Production"
+                },
+                {
+                  "displayname": "Private Production",
+                  "value": "PrivateProduction"
+                },
+                {
+                  "displayname": "Staging",
+                  "value": "Staging"
+                },
+                {
+                  "displayname": "Private Staging",
+                  "value": "PrivateStaging"
+                }
+              ]
             },
             {
               "key": "logs_agent_iam_mode",
@@ -243,9 +273,6 @@
             },
             {
               "key": "logs_agent_tolerations"
-            },
-            {
-              "key": "logs_agent_trusted_profile_id"
             },
             {
               "key": "wait_till",

@@ -156,8 +156,8 @@ variable "cloud_monitoring_agent_tolerations" {
     },
     {
       operator = "Exists"
-      effect = "NoSchedule"
-      key = "node-role.kubernetes.io/master"
+      effect   = "NoSchedule"
+      key      = "node-role.kubernetes.io/master"
   }]
 }
 
@@ -187,7 +187,7 @@ variable "logs_agent_namespace" {
 
 variable "logs_agent_trusted_profile_id" {
   type        = string
-  description = "The IBM Cloud trusted profile ID. Used only when `logs_agent_iam_mode` is set to `TrustedProfile`. The trusted profile must have an IBM Cloud Logs `Sender` role."
+  description = "The IBM Cloud trusted profile ID. Used only when `logs_agent_iam_mode` is set to `TrustedProfile`. The trusted profile must have an IBM Cloud Logs `Sender` role. Must provide a value for `logs_agent_iam_api_key` if `logs_agent_trusted_profile_id` is null."
   default     = null
   validation {
     error_message = "`logs_agent_trusted_profile_id` value cannot be `null` if `logs_agent_iam_mode` is set to `TrustedProfile` and `logs_agent_enabled` is true."
