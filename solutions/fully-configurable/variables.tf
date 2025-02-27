@@ -153,12 +153,12 @@ variable "cloud_monitoring_agent_tolerations" {
   }))
   default = [
     {
-      operator : "Exists"
+      operator = "Exists"
     },
     {
-      operator : "Exists"
-      effect   : "NoSchedule"
-      key      : "node-role.kubernetes.io/master"
+      operator = "Exists"
+      effect   = "NoSchedule"
+      key      = "node-role.kubernetes.io/master"
     }
   ]
 }
