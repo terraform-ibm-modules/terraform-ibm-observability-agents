@@ -151,14 +151,16 @@ variable "cloud_monitoring_agent_tolerations" {
     effect            = optional(string)
     tolerationSeconds = optional(number)
   }))
-  default = [{
-    operator = "Exists"
+  default = [
+    {
+      operator = "Exists"
     },
     {
       operator = "Exists"
       effect   = "NoSchedule"
       key      = "node-role.kubernetes.io/master"
-  }]
+    }
+  ]
 }
 
 ##############################################################################
