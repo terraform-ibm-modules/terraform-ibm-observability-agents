@@ -41,23 +41,6 @@ variable "is_vpc_cluster" {
   default     = true
 }
 
-variable "cluster_data" {
-  description = "Details of the clusters to install the agents on."
-  # extra inputs are listed so we can use the output from SLZ, these are marked as optional
-  type = map(object({
-    cluster_console_url          = optional(string)
-    cluster_name                 = string
-    crn                          = optional(string)
-    id                           = string
-    ingress_hostname             = optional(string)
-    private_service_endpoint_url = optional(string)
-    public_service_endpoint_url  = optional(string)
-    region                       = string
-    resource_group_id            = optional(string)
-    vpc_id                       = optional(string)
-  }))
-}
-
 variable "wait_till" {
   description = "Specify the stage when Terraform should mark the cluster resource creation as completed. Supported values: `MasterNodeReady`, `OneWorkerNodeReady`, `IngressReady`, `Normal`."
   type        = string
@@ -172,9 +155,9 @@ variable "cloud_monitoring_agent_tolerations" {
     operator = "Exists"
     },
     {
-      operator : "Exists"
-      effect : "NoSchedule"
-      key : "node-role.kubernetes.io/master"
+      operator = "Exists"
+      effect = "NoSchedule"
+      key = "node-role.kubernetes.io/master"
   }]
 }
 
@@ -202,10 +185,14 @@ variable "logs_agent_namespace" {
   nullable    = false
 }
 
-variable "logs_agent_trusted_profile" {
+variable "logs_agent_trusted_profile_id" {
   type        = string
   description = "The IBM Cloud trusted profile ID. Used only when `logs_agent_iam_mode` is set to `TrustedProfile`. The trusted profile must have an IBM Cloud Logs `Sender` role."
   default     = null
+  validation {
+    error_message = "`logs_agent_trusted_profile_id` value cannot be `null` if `logs_agent_iam_mode` is set to `TrustedProfile` and `logs_agent_enabled` is true."
+    condition     = var.logs_agent_trusted_profile_id != null || var.logs_agent_iam_mode != "TrustedProfile" || !var.logs_agent_enabled
+  }
 }
 
 variable "logs_agent_iam_api_key" {
@@ -213,6 +200,10 @@ variable "logs_agent_iam_api_key" {
   description = "The IBM Cloud API key for the Logs agent to authenticate and communicate with the IBM Cloud Logs. It is required if `logs_agent_iam_mode` is set to `IAMAPIKey`."
   sensitive   = true
   default     = null
+  validation {
+    error_message = "`logs_agent_iam_api_key` value cannot be `null` if `logs_agent_iam_mode` is set to `IAMAPIKey` and `logs_agent_enabled` is true."
+    condition     = var.logs_agent_iam_api_key != null || var.logs_agent_iam_mode != "IAMAPIKey" || !var.logs_agent_enabled
+  }
 }
 
 variable "logs_agent_tolerations" {
@@ -278,7 +269,7 @@ variable "logs_agent_additional_metadata" {
   default = []
 }
 
-variable "logs_agent_enable_scc" {
+variable "is_ocp_cluster" {
   description = "Whether to enable creation of Security Context Constraints in Openshift. When installing on an OpenShift cluster, this setting is mandatory to configure permissions for pods within your cluster."
   type        = bool
   default     = true
@@ -288,6 +279,10 @@ variable "cloud_logs_ingress_endpoint" {
   description = "The host for IBM Cloud Logs ingestion. Ensure you use the ingress endpoint. See https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-endpoints_ingress. It is required if `logs_agent_enabled` is set to true."
   type        = string
   default     = null
+  validation {
+    error_message = "`cloud_logs_ingress_endpoint` value cannot be `null` if `logs_agent_enabled` is set to true."
+    condition     = var.cloud_logs_ingress_endpoint != null || !var.logs_agent_enabled
+  }
 }
 
 variable "cloud_logs_ingress_port" {

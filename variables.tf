@@ -162,9 +162,9 @@ variable "cloud_monitoring_agent_tolerations" {
     operator = "Exists"
     },
     {
-      operator : "Exists"
-      effect : "NoSchedule"
-      key : "node-role.kubernetes.io/master"
+      operator = "Exists"
+      effect   = "NoSchedule"
+      key      = "node-role.kubernetes.io/master"
   }]
 }
 
@@ -196,6 +196,10 @@ variable "logs_agent_trusted_profile" {
   type        = string
   description = "The IBM Cloud trusted profile ID. Used only when `logs_agent_iam_mode` is set to `TrustedProfile`. The trusted profile must have an IBM Cloud Logs `Sender` role."
   default     = null
+  validation {
+    error_message = "`logs_agent_trusted_profile` value cannot be `TrustedProfile` if `logs_agent_enabled` is true."
+    condition     = !(var.logs_agent_trusted_profile == "TrustedProfile" && var.logs_agent_enabled)
+  }
 }
 
 variable "logs_agent_iam_api_key" {
@@ -203,6 +207,10 @@ variable "logs_agent_iam_api_key" {
   description = "The IBM Cloud API key for the Logs agent to authenticate and communicate with the IBM Cloud Logs. It is required if `logs_agent_iam_mode` is set to `IAMAPIKey`."
   sensitive   = true
   default     = null
+  validation {
+    error_message = "`logs_agent_iam_api_key` value cannot be `null` if `logs_agent_iam_mode` is `IAMAPIKey` and `logs_agent_enabled` is set to true."
+    condition     = var.logs_agent_iam_api_key != null && var.logs_agent_iam_mode == "IAMAPIKey" && var.logs_agent_enabled
+  }
 }
 
 variable "logs_agent_tolerations" {
@@ -256,7 +264,11 @@ variable "logs_agent_iam_mode" {
     condition = contains([
       "TrustedProfile",
       "IAMAPIKey",
-    ], var.logs_agent_iam_mode)
+    ], var.logs_agent_iam_mode) || var.logs_agent_iam_mode == "IAMAPIKey" && var.logs_agent_enabled
+  }
+  validation {
+    error_message = "`logs_agent_iam_mode` value cannot be `IAMAPIKey` if `logs_agent_enabled` is set to true."
+    condition     = !(var.logs_agent_iam_mode == "IAMAPIKey" && var.logs_agent_enabled)
   }
 }
 
@@ -285,6 +297,10 @@ variable "cloud_logs_ingress_endpoint" {
   description = "The host for IBM Cloud Logs ingestion. Ensure you use the ingress endpoint. See https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-endpoints_ingress."
   type        = string
   default     = null
+  validation {
+    error_message = "`cloud_logs_ingress_endpoint` value cannot be `null` if `logs_agent_enabled` is set to true."
+    condition     = var.cloud_logs_ingress_endpoint != null && var.logs_agent_enabled || !var.logs_agent_enabled
+  }
 }
 
 variable "cloud_logs_ingress_port" {

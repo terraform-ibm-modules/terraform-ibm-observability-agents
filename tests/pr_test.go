@@ -21,8 +21,8 @@ import (
 )
 
 const resourceGroup = "geretain-test-observability-agents"
-const baselineSolutionDir = "solutions/baseline"
-const baselineSolutionKubeconfigDir = "solutions/baseline/kubeconfig"
+const fullyConfigurableSolutionDir = "solutions/fully-configurable"
+const fullyConfigurableSolutionKubeconfigDir = "solutions/fully-configurable/kubeconfig"
 
 var sharedInfoSvc *cloudinfo.CloudInfoService
 
@@ -67,7 +67,7 @@ func setupOptions(t *testing.T, prefix string, terraformDir string) *testhelper.
 	return options
 }
 
-func TestBaselineSolutionInSchematics(t *testing.T) {
+func TestFullyConfigurableSolution(t *testing.T) {
 	t.Parallel()
 
 	var region = validRegions[rand.IntN(len(validRegions))]
@@ -109,11 +109,11 @@ func TestBaselineSolutionInSchematics(t *testing.T) {
 			Testing: t,
 			Prefix:  "obs-agents",
 			TarIncludePatterns: []string{
-				baselineSolutionDir + "/*.*",
-				baselineSolutionKubeconfigDir + "/*.*",
+				fullyConfigurableSolutionDir + "/*.*",
+				fullyConfigurableSolutionKubeconfigDir + "/*.*",
 			},
 			ResourceGroup:          resourceGroup,
-			TemplateFolder:         baselineSolutionDir,
+			TemplateFolder:         fullyConfigurableSolutionDir,
 			Tags:                   []string{"test-schematic"},
 			DeleteWorkspaceOnFail:  false,
 			WaitJobCompleteMinutes: 60,
@@ -148,7 +148,7 @@ func TestBaselineSolutionInSchematics(t *testing.T) {
 	}
 }
 
-func TestBaselineUpgradeSolutionInSchematics(t *testing.T) {
+func TestFullyConfigurableUpgradeSolution(t *testing.T) {
 	t.Parallel()
 
 	var region = validRegions[rand.IntN(len(validRegions))]
@@ -190,11 +190,11 @@ func TestBaselineUpgradeSolutionInSchematics(t *testing.T) {
 			Testing: t,
 			Prefix:  "obs-agents",
 			TarIncludePatterns: []string{
-				baselineSolutionDir + "/*.*",
-				baselineSolutionKubeconfigDir + "/*.*",
+				fullyConfigurableSolutionDir + "/*.*",
+				fullyConfigurableSolutionKubeconfigDir + "/*.*",
 			},
 			ResourceGroup:          resourceGroup,
-			TemplateFolder:         baselineSolutionDir,
+			TemplateFolder:         fullyConfigurableSolutionDir,
 			Tags:                   []string{"test-schematic"},
 			DeleteWorkspaceOnFail:  false,
 			WaitJobCompleteMinutes: 60,

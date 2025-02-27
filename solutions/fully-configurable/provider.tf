@@ -23,7 +23,7 @@ provider "helm" {
 # Retrieve information about an existing VPC cluster
 data "ibm_container_vpc_cluster" "cluster" {
   count             = local.is_vpc_cluster ? 1 : 0
-  name              = local.cluster_id
+  name              = var.cluster_id
   wait_till         = var.wait_till
   wait_till_timeout = var.wait_till_timeout
 }
@@ -31,7 +31,7 @@ data "ibm_container_vpc_cluster" "cluster" {
 # Retrieve information about an existing Classic cluster
 data "ibm_container_cluster" "cluster" {
   count             = local.is_vpc_cluster ? 0 : 1
-  name              = local.cluster_id
+  name              = var.cluster_id
   wait_till         = var.wait_till
   wait_till_timeout = var.wait_till_timeout
 }

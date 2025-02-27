@@ -4,26 +4,20 @@
 
 data "ibm_container_cluster_config" "cluster_config" {
   cluster_name_id   = local.is_vpc_cluster ? data.ibm_container_vpc_cluster.cluster[0].name : data.ibm_container_cluster.cluster[0].name
-  resource_group_id = local.cluster_resource_group_id
+  resource_group_id = var.cluster_resource_group_id
   config_dir        = "${path.module}/kubeconfig"
   endpoint_type     = local.cluster_config_endpoint_type != "default" ? local.cluster_config_endpoint_type : null
 }
 
 locals {
-  use_cluster_data = length(var.cluster_data) > 0
-
-  first_cluster_key = local.use_cluster_data ? keys(var.cluster_data)[0] : null
-
-  cluster_id                   = local.use_cluster_data ? var.cluster_data[local.first_cluster_key].id : var.cluster_id
-  cluster_resource_group_id    = local.use_cluster_data ? var.cluster_data[local.first_cluster_key].resource_group_id : var.cluster_resource_group_id
   cluster_config_endpoint_type = var.cluster_config_endpoint_type
   is_vpc_cluster               = var.is_vpc_cluster
 }
 
 module "observability_agents" {
   source                       = "../.."
-  cluster_id                   = local.cluster_id
-  cluster_resource_group_id    = local.cluster_resource_group_id
+  cluster_id                   = var.cluster_id
+  cluster_resource_group_id    = var.cluster_resource_group_id
   cluster_config_endpoint_type = local.cluster_config_endpoint_type
   # Cloud Monitoring (Sysdig) Agent
   cloud_monitoring_enabled           = var.cloud_monitoring_enabled
@@ -41,7 +35,7 @@ module "observability_agents" {
   logs_agent_enabled                     = var.logs_agent_enabled
   logs_agent_name                        = var.logs_agent_name
   logs_agent_namespace                   = var.logs_agent_namespace
-  logs_agent_trusted_profile             = var.logs_agent_trusted_profile
+  logs_agent_trusted_profile             = var.logs_agent_trusted_profile_id
   logs_agent_iam_api_key                 = var.logs_agent_iam_api_key
   logs_agent_tolerations                 = var.logs_agent_tolerations
   logs_agent_additional_log_source_paths = var.logs_agent_additional_log_source_paths
@@ -51,7 +45,7 @@ module "observability_agents" {
   logs_agent_iam_mode                    = var.logs_agent_iam_mode
   logs_agent_iam_environment             = var.logs_agent_iam_environment
   logs_agent_additional_metadata         = var.logs_agent_additional_metadata
-  logs_agent_enable_scc                  = var.logs_agent_enable_scc
+  logs_agent_enable_scc                  = var.is_ocp_cluster
   cloud_logs_ingress_endpoint            = var.cloud_logs_ingress_endpoint
   cloud_logs_ingress_port                = var.cloud_logs_ingress_port
   is_vpc_cluster                         = var.is_vpc_cluster

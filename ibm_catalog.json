@@ -22,13 +22,13 @@
       "provider_name": "IBM",
       "short_description": "Deploys IBM Cloud Observability agents to a cluster",
       "long_description": "Solutions that support deploying IBM Cloud Observability agents for logging, monitoring.",
-      "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-agents/blob/main/solutions/baseline/README.md",
+      "offering_docs_url": "https://github.com/terraform-ibm-modules/terraform-ibm-observability-agents/blob/main/solutions/fully-configurable/README.md",
       "offering_icon_url": "https://raw.githubusercontent.com/terraform-ibm-modules/terraform-ibm-observability-agents/main/images/observability-icon.svg",
       "flavors": [
         {
-          "label": "Baseline",
-          "name": "baseline",
-          "working_directory": "solutions/baseline",
+          "label": "Fully Configurable",
+          "name": "fully-configurable",
+          "working_directory": "solutions/fully-configurable",
           "compliance": {},
           "iam_permissions": [
             {
@@ -43,15 +43,15 @@
             "features": [
               {
                 "title": "Works with any Openshift or k8s cluster",
-                "description": "Works with Red Hat OpenShift, and Kubernetes clusters."
+                "description": "Yes"
               },
               {
                 "title": "Deploys the IBM Cloud Monitoring agent on an existing cluster.",
-                "description": "Deploys the IBM Cloud Monitoring agent on an existing Red Hat OpenShift cluster."
+                "description": "Yes"
               },
               {
                 "title": "Deploys the IBM Logs agent on an existing cluster.",
-                "description": "Deploys the IBM Logs agent on an existing Red Hat OpenShift cluster."
+                "description": "Yes"
               }
             ],
             "diagrams": [
@@ -130,28 +130,14 @@
               "required": true
             },
             {
-              "key": "cloud_monitoring_enabled"
+              "key": "is_ocp_cluster",
+              "required": true,
+              "default_value": true
             },
             {
-              "key": "cloud_monitoring_access_key"
-            },
-            {
-              "key": "cloud_monitoring_add_cluster_name"
-            },
-            {
-              "key": "cloud_monitoring_agent_name"
-            },
-            {
-              "key": "cloud_monitoring_agent_namespace"
-            },
-            {
-              "key": "cloud_monitoring_agent_tags"
-            },
-            {
-              "key": "cloud_monitoring_agent_tolerations"
-            },
-            {
-              "key": "cloud_monitoring_endpoint_type"
+              "key": "cloud_monitoring_enabled",
+              "required": true,
+              "default_value": true
             },
             {
               "key": "cloud_monitoring_instance_region",
@@ -163,7 +149,45 @@
                 "config_constraints": {
                   "generationType": "2"
                 }
+              },
+              "required": true
+            },
+            {
+              "key": "cloud_monitoring_access_key",
+              "required": true
+            },
+            {
+              "key": "cloud_logs_ingress_endpoint",
+              "required": true
+            },
+            {
+              "key": "cloud_logs_ingress_port",
+              "required": true
+            },
+            {
+              "key": "cloud_monitoring_add_cluster_name"
+            },
+            {
+              "key": "cloud_monitoring_agent_name"
+            },
+            {
+              "key": "cloud_monitoring_agent_namespace"
+            },
+            {
+              "key": "cloud_monitoring_agent_tags",
+              "custom_config": {
+                "grouping": "deployment",
+                "original_grouping": "deployment",
+                "config_constraints": {
+                  "type": "string"
+                }
               }
+            },
+            {
+              "key": "cloud_monitoring_agent_tolerations"
+            },
+            {
+              "key": "cloud_monitoring_endpoint_type"
             },
             {
               "key": "cloud_monitoring_metrics_filter"
@@ -175,15 +199,6 @@
               "key": "cluster_config_endpoint_type"
             },
             {
-              "key": "cluster_data"
-            },
-            {
-              "key": "cloud_logs_ingress_endpoint"
-            },
-            {
-              "key": "cloud_logs_ingress_port"
-            },
-            {
               "key": "logs_agent_enabled"
             },
             {
@@ -191,9 +206,6 @@
             },
             {
               "key": "logs_agent_additional_metadata"
-            },
-            {
-              "key": "logs_agent_enable_scc"
             },
             {
               "key": "logs_agent_exclude_log_source_paths"
@@ -233,10 +245,28 @@
               "key": "logs_agent_tolerations"
             },
             {
-              "key": "logs_agent_trusted_profile"
+              "key": "logs_agent_trusted_profile_id"
             },
             {
-              "key": "wait_till"
+              "key": "wait_till",
+              "options": [
+                {
+                  "displayname": "Master Node Ready",
+                  "value": "MasterNodeReady"
+                },
+                {
+                  "displayname": "OneWorkerNodeReady",
+                  "value": "One Worker Node Ready"
+                },
+                {
+                  "displayname": "IngressReady",
+                  "value": "Ingress Ready"
+                },
+                {
+                  "displayname": "Normal",
+                  "value": "Normal"
+                }
+              ]
             },
             {
               "key": "wait_till_timeout"
