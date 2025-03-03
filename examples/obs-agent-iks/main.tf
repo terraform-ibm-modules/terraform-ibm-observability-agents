@@ -134,7 +134,6 @@ module "observability_instances" {
   region                         = var.region
   cloud_logs_plan                = "standard"
   cloud_monitoring_plan          = "graduated-tier"
-  enable_platform_logs           = false
   enable_platform_metrics        = false
   cloud_logs_instance_name       = "${var.prefix}-cloud-logs"
   cloud_monitoring_instance_name = "${var.prefix}-cloud-monitoring"
