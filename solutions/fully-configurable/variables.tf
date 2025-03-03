@@ -191,10 +191,6 @@ variable "logs_agent_trusted_profile_id" {
   type        = string
   description = "The IBM Cloud trusted profile ID. Used only when `logs_agent_iam_mode` is set to `TrustedProfile`. The trusted profile must have an IBM Cloud Logs `Sender` role. Must provide a value for `logs_agent_iam_api_key` if `logs_agent_trusted_profile_id` is null."
   default     = null
-  validation {
-    error_message = "`logs_agent_trusted_profile_id` value cannot be `null` if `logs_agent_iam_mode` is set to `TrustedProfile` and `logs_agent_enabled` is true."
-    condition     = !(var.logs_agent_iam_mode == "TrustedProfile" && var.logs_agent_trusted_profile_id == null && var.logs_agent_enabled)
-  }
 }
 
 variable "logs_agent_iam_api_key" {
@@ -202,10 +198,6 @@ variable "logs_agent_iam_api_key" {
   description = "The IBM Cloud API key for the Logs agent to authenticate and communicate with the IBM Cloud Logs. It is required if `logs_agent_iam_mode` is set to `IAMAPIKey`."
   sensitive   = true
   default     = null
-  validation {
-    error_message = "`logs_agent_iam_api_key` value cannot be `null` if `logs_agent_iam_mode` is set to `IAMAPIKey` and `logs_agent_enabled` is true."
-    condition     = !(var.logs_agent_iam_mode == "IAMAPIKey" && var.logs_agent_iam_api_key == null && var.logs_agent_enabled)
-  }
 }
 
 variable "logs_agent_tolerations" {
@@ -281,10 +273,6 @@ variable "cloud_logs_ingress_endpoint" {
   description = "The host for IBM Cloud Logs ingestion. Ensure you use the ingress endpoint. See https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-endpoints_ingress. It is required if `logs_agent_enabled` is set to true."
   type        = string
   default     = null
-  validation {
-    error_message = "`cloud_logs_ingress_endpoint` value cannot be `null` if `logs_agent_enabled` is set to true."
-    condition     = !(var.logs_agent_enabled && var.cloud_logs_ingress_endpoint == null)
-  }
 }
 
 variable "cloud_logs_ingress_port" {

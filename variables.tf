@@ -198,7 +198,7 @@ variable "logs_agent_trusted_profile" {
   default     = null
   validation {
     error_message = "`logs_agent_trusted_profile` value cannot be `TrustedProfile` if `logs_agent_enabled` is true."
-    condition     = !(var.logs_agent_trusted_profile == "TrustedProfile" && var.logs_agent_enabled)
+    condition     = !(var.logs_agent_iam_mode == "TrustedProfile" && var.logs_agent_trusted_profile == null && var.logs_agent_enabled)
   }
 }
 
@@ -209,7 +209,7 @@ variable "logs_agent_iam_api_key" {
   default     = null
   validation {
     error_message = "`logs_agent_iam_api_key` value cannot be `null` if `logs_agent_iam_mode` is `IAMAPIKey` and `logs_agent_enabled` is set to true."
-    condition     = var.logs_agent_iam_api_key != null && var.logs_agent_iam_mode == "IAMAPIKey" && var.logs_agent_enabled
+    condition     = !(var.logs_agent_iam_mode == "IAMAPIKey" && var.logs_agent_iam_api_key == null && var.logs_agent_enabled)
   }
 }
 
@@ -299,7 +299,7 @@ variable "cloud_logs_ingress_endpoint" {
   default     = null
   validation {
     error_message = "`cloud_logs_ingress_endpoint` value cannot be `null` if `logs_agent_enabled` is set to true."
-    condition     = var.cloud_logs_ingress_endpoint != null && var.logs_agent_enabled || !var.logs_agent_enabled
+    condition     = !(var.logs_agent_enabled && var.cloud_logs_ingress_endpoint == null)
   }
 }
 
