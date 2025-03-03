@@ -29,10 +29,6 @@ variable "cluster_config_endpoint_type" {
   type        = string
   default     = "private"
   nullable    = false # use default if null is passed in
-  validation {
-    error_message = "The specified endpoint type is not valid. Specify one of the following types of endpoints: `default`, `private`, `vpe`, or `link`."
-    condition     = contains(["default", "private", "vpe", "link"], var.cluster_config_endpoint_type)
-  }
 }
 
 variable "is_vpc_cluster" {
@@ -45,16 +41,6 @@ variable "wait_till" {
   description = "Specify the stage when Terraform should mark the cluster resource creation as completed. Supported values: `MasterNodeReady`, `OneWorkerNodeReady`, `IngressReady`, `Normal`."
   type        = string
   default     = "Normal"
-
-  validation {
-    error_message = "`wait_till` value must be one of `MasterNodeReady`, `OneWorkerNodeReady`, `IngressReady` or `Normal`."
-    condition = contains([
-      "MasterNodeReady",
-      "OneWorkerNodeReady",
-      "IngressReady",
-      "Normal"
-    ], var.wait_till)
-  }
 }
 
 variable "wait_till_timeout" {
@@ -97,10 +83,6 @@ variable "cloud_monitoring_endpoint_type" {
   type        = string
   description = "Specify the IBM Cloud Monitoring instance endpoint type (`public` or `private`) to use to construct the ingestion endpoint."
   default     = "private"
-  validation {
-    error_message = "The specified `endpoint_type` can be `private` or `public` only."
-    condition     = contains(["private", "public"], var.cloud_monitoring_endpoint_type)
-  }
 }
 
 variable "cloud_monitoring_metrics_filter" {
@@ -110,10 +92,6 @@ variable "cloud_monitoring_metrics_filter" {
   }))
   description = "To filter on custom metrics, specify the IBM Cloud Monitoring metrics to include or exclude. [Learn more](https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_inc_exc_metrics)"
   default     = [] # [{ type = "exclude", name = "metricA.*" }, { type = "include", name = "metricB.*" }]
-  validation {
-    condition     = alltrue([for filter in var.cloud_monitoring_metrics_filter : can(regex("^(include|exclude)$", filter.type))])
-    error_message = "The specified `type` for the `cloud_monitoring_metrics_filter` is not valid. Specify either `include` or `exclude`. If the value for `type` is not specified, no metrics are included or excluded."
-  }
 }
 
 variable "cloud_monitoring_agent_tags" {
