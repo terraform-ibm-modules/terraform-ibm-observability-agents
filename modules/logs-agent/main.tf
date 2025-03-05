@@ -116,6 +116,7 @@ resource "helm_release" "logs_agent" {
   values = [
     yamlencode({
       tolerations        = var.logs_agent_tolerations
+      resources          = var.logs_agent_resources
       additionalMetadata = local.logs_agent_additional_metadata
       dummy              = uuid()
     })
