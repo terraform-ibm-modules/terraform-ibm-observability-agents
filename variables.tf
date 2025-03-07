@@ -268,6 +268,34 @@ variable "logs_agent_additional_metadata" {
   default = []
 }
 
+variable "logs_agent_resources" {
+  description = "The resources configuration for cpu/memory/storage"
+  type = object({
+    limits = object({
+      cpu               = string
+      memory            = string
+      ephemeral_storage = string
+    })
+    requests = object({
+      cpu               = string
+      memory            = string
+      ephemeral_storage = string
+    })
+  })
+  default = {
+    limits = {
+      cpu               = "500m"
+      ephemeral_storage = "10Gi"
+      memory            = "3Gi"
+    }
+    requests = {
+      cpu               = "100m"
+      ephemeral_storage = "2Gi"
+      memory            = "1Gi"
+    }
+  }
+}
+
 variable "logs_agent_enable_scc" {
   description = "Whether to enable creation of Security Context Constraints in Openshift. When installing on an OpenShift cluster, this setting is mandatory to configure permissions for pods within your cluster."
   type        = bool
