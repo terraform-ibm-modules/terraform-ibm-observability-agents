@@ -269,7 +269,7 @@ variable "logs_agent_additional_metadata" {
 }
 
 variable "logs_agent_resources" {
-  description = "The resources configuration for cpu/memory/storage"
+  description = "The resources configuration for cpu/memory/storage. [Learn More](https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-agent-helm-template-clusters#agent-helm-template-clusters-chart-options-resources)"
   type = object({
     limits = object({
       cpu               = string
