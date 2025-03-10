@@ -99,8 +99,8 @@ variable "cloud_monitoring_metrics_filter" {
   description = "To filter custom metrics, specify the Cloud Monitoring metrics to include or to exclude. See https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_inc_exc_metrics."
   default     = []
   validation {
-    condition     = length(var.cloud_monitoring_metrics_filter) == 0 || can(regex("^(include|exclude)$", var.cloud_monitoring_metrics_filter[0].type))
-    error_message = "Invalid input for `cloud_monitoring_metrics_filter`. Valid options for 'type' are: `include` and `exclude`. If empty, no metrics are included or excluded."
+    condition     = alltrue([for filter in var.cloud_monitoring_metrics_filter : can(regex("^(include|exclude)$", filter.type)) && filter.name != ""])
+    error_message = "The specified `type` for the `cloud_monitoring_metrics_filter` is not valid. Specify either `include` or `exclude`. The `name` field cannot be empty."
   }
 }
 
@@ -162,9 +162,9 @@ variable "cloud_monitoring_agent_tolerations" {
     operator = "Exists"
     },
     {
-      operator : "Exists"
-      effect : "NoSchedule"
-      key : "node-role.kubernetes.io/master"
+      operator = "Exists"
+      effect   = "NoSchedule"
+      key      = "node-role.kubernetes.io/master"
   }]
 }
 
@@ -196,6 +196,10 @@ variable "logs_agent_trusted_profile" {
   type        = string
   description = "The IBM Cloud trusted profile ID. Used only when `logs_agent_iam_mode` is set to `TrustedProfile`. The trusted profile must have an IBM Cloud Logs `Sender` role."
   default     = null
+  validation {
+    error_message = "`logs_agent_trusted_profile` cannot be null if `logs_agent_iam_mode` value is `TrustedProfile` and `logs_agent_enabled` is set to true."
+    condition     = !(var.logs_agent_trusted_profile == null && var.logs_agent_iam_mode == "TrustedProfile" && var.logs_agent_enabled)
+  }
 }
 
 variable "logs_agent_iam_api_key" {
@@ -203,6 +207,10 @@ variable "logs_agent_iam_api_key" {
   description = "The IBM Cloud API key for the Logs agent to authenticate and communicate with the IBM Cloud Logs. It is required if `logs_agent_iam_mode` is set to `IAMAPIKey`."
   sensitive   = true
   default     = null
+  validation {
+    error_message = "`logs_agent_iam_api_key` value cannot be `null` if `logs_agent_iam_mode` is `IAMAPIKey` and `logs_agent_enabled` is set to true."
+    condition     = !(var.logs_agent_iam_mode == "IAMAPIKey" && var.logs_agent_iam_api_key == null && var.logs_agent_enabled)
+  }
 }
 
 variable "logs_agent_tolerations" {
@@ -251,6 +259,17 @@ variable "logs_agent_iam_mode" {
   type        = string
   default     = "TrustedProfile"
   description = "IAM authentication mode: `TrustedProfile` or `IAMAPIKey`."
+  validation {
+    error_message = "`logs_agent_iam_mode` value must be `TrustedProfile`, or `IAMAPIKey`."
+    condition = contains([
+      "TrustedProfile",
+      "IAMAPIKey",
+    ], var.logs_agent_iam_mode) || var.logs_agent_iam_mode == "IAMAPIKey" && var.logs_agent_enabled
+  }
+  validation {
+    error_message = "`logs_agent_iam_mode` value cannot be `IAMAPIKey` if `logs_agent_enabled` is set to true."
+    condition     = !(var.logs_agent_iam_mode == "IAMAPIKey" && var.logs_agent_enabled)
+  }
 }
 
 variable "logs_agent_iam_environment" {
@@ -278,6 +297,10 @@ variable "cloud_logs_ingress_endpoint" {
   description = "The host for IBM Cloud Logs ingestion. Ensure you use the ingress endpoint. See https://cloud.ibm.com/docs/cloud-logs?topic=cloud-logs-endpoints_ingress."
   type        = string
   default     = null
+  validation {
+    error_message = "`cloud_logs_ingress_endpoint` value cannot be `null` if `logs_agent_enabled` is set to true."
+    condition     = !(var.logs_agent_enabled && var.cloud_logs_ingress_endpoint == null)
+  }
 }
 
 variable "cloud_logs_ingress_port" {
