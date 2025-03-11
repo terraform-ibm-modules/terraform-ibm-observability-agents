@@ -103,20 +103,19 @@ locals {
 }
 
 module "ocp_base" {
-  source                               = "terraform-ibm-modules/base-ocp-vpc/ibm"
-  version                              = "3.39.0"
-  resource_group_id                    = module.resource_group.resource_group_id
-  region                               = var.region
-  tags                                 = var.resource_tags
-  cluster_name                         = var.prefix
-  force_delete_storage                 = true
-  vpc_id                               = ibm_is_vpc.vpc.id
-  vpc_subnets                          = local.cluster_vpc_subnets
-  ocp_version                          = var.ocp_version
-  worker_pools                         = local.worker_pools
-  access_tags                          = var.access_tags
-  ocp_entitlement                      = var.ocp_entitlement
-  import_default_worker_pool_on_create = false
+  source               = "terraform-ibm-modules/base-ocp-vpc/ibm"
+  version              = "3.41.3"
+  resource_group_id    = module.resource_group.resource_group_id
+  region               = var.region
+  tags                 = var.resource_tags
+  cluster_name         = var.prefix
+  force_delete_storage = true
+  vpc_id               = ibm_is_vpc.vpc.id
+  vpc_subnets          = local.cluster_vpc_subnets
+  ocp_version          = var.ocp_version
+  worker_pools         = local.worker_pools
+  access_tags          = var.access_tags
+  ocp_entitlement      = var.ocp_entitlement
 }
 
 data "ibm_container_cluster_config" "cluster_config" {
@@ -130,12 +129,11 @@ data "ibm_container_cluster_config" "cluster_config" {
 
 module "observability_instances" {
   source                         = "terraform-ibm-modules/observability-instances/ibm"
-  version                        = "3.4.1"
+  version                        = "3.4.3"
   resource_group_id              = module.resource_group.resource_group_id
   region                         = var.region
   cloud_logs_plan                = "standard"
   cloud_monitoring_plan          = "graduated-tier"
-  enable_platform_logs           = false
   enable_platform_metrics        = false
   cloud_logs_instance_name       = "${var.prefix}-cloud-logs"
   cloud_monitoring_instance_name = "${var.prefix}-cloud-monitoring"
