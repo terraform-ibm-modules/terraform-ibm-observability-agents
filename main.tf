@@ -145,6 +145,7 @@ module "logs_agent" {
   logs_agent_iam_environment             = var.logs_agent_iam_environment
   logs_agent_additional_metadata         = var.logs_agent_additional_metadata
   logs_agent_enable_scc                  = var.logs_agent_enable_scc
+  logs_agent_resources                   = var.logs_agent_resources
   cloud_logs_ingress_endpoint            = var.cloud_logs_ingress_endpoint
   cloud_logs_ingress_port                = var.cloud_logs_ingress_port
   is_vpc_cluster                         = var.is_vpc_cluster
