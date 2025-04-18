@@ -22,7 +22,7 @@ locals {
 
 module "trusted_profile" {
   source                      = "terraform-ibm-modules/trusted-profile/ibm"
-  version                     = "2.1.0"
+  version                     = "2.1.1"
   trusted_profile_name        = "${var.prefix}-profile"
   trusted_profile_description = "Logs agent Trusted Profile"
   # As a `Sender`, you can send logs to your IBM Cloud Logs service instance - but not query or tail logs. This role is meant to be used by agents and routers sending logs.
