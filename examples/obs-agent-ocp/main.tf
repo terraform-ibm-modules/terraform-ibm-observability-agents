@@ -104,7 +104,7 @@ locals {
 
 module "ocp_base" {
   source               = "terraform-ibm-modules/base-ocp-vpc/ibm"
-  version              = "3.49.0"
+  version              = "3.49.1"
   resource_group_id    = module.resource_group.resource_group_id
   region               = var.region
   tags                 = var.resource_tags
@@ -147,7 +147,7 @@ data "ibm_is_security_groups" "vpc_security_groups" {
 # The below code creates a VPE for Cloud logs in the provisioned VPC which allows the agents to access the private Cloud Logs Ingress endpoint.
 module "vpe" {
   source   = "terraform-ibm-modules/vpe-gateway/ibm"
-  version  = "4.5.0"
+  version  = "4.6.6"
   region   = var.region
   prefix   = var.prefix
   vpc_id   = ibm_is_vpc.vpc.id
