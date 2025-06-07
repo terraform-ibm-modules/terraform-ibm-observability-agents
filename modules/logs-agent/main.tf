@@ -112,10 +112,16 @@ resource "helm_release" "logs_agent" {
     value = var.logs_agent_enable_scc
   }
 
+  # set {
+  #   name  = "resources"
+  #   value = jsonencode(var.logs_agent_resources)
+  # }
+
   # dummy value hack to force update https://github.com/hashicorp/terraform-provider-helm/issues/515#issuecomment-813088122
   values = [
     yamlencode({
       tolerations        = var.logs_agent_tolerations
+      resources          = var.logs_agent_resources
       additionalMetadata = local.logs_agent_additional_metadata
       dummy              = uuid()
     })
