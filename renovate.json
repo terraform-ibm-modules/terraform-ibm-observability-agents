@@ -18,23 +18,5 @@
       "datasourceTemplate": "docker",
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
-  ],
-  "packageRules": [
-    {
-      "matchManagers": ["regex"],
-      "matchUpdateTypes": ["patch"],
-      "semanticCommitType": "fix"
-    },
-    {
-      "matchManagers": ["regex"],
-      "matchUpdateTypes": ["minor"],
-      "semanticCommitType": "feat"
-    },
-    {
-      "description": "Do not allow major version updates - these should be done manually to ensure no breaking changes",
-      "matchManagers": ["regex"],
-      "matchUpdateTypes": ["major"],
-      "enabled": false
-    }
   ]
 }
