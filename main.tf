@@ -51,46 +51,49 @@ resource "helm_release" "cloud_monitoring_agent" {
   force_update     = true
   reset_values     = true
 
-  set {
-    name  = "metadata.name"
-    type  = "string"
-    value = var.cloud_monitoring_agent_name
-  }
-  set {
-    name  = "image.version"
-    type  = "string"
-    value = local.cloud_monitoring_image_tag_digest
-  }
-  set {
-    name  = "image.registry"
-    type  = "string"
-    value = local.cloud_monitoring_agent_registry
-  }
-  set {
-    name  = "config.clustername"
-    type  = "string"
-    value = local.cluster_name
-  }
-  set {
-    name  = "config.host"
-    type  = "string"
-    value = local.cloud_monitoring_host
-  }
-  set {
-    name  = "secret.name"
-    type  = "string"
-    value = var.cloud_monitoring_secret_name
-  }
-  set_sensitive {
+  set = [
+    {
+      name  = "metadata.name"
+      type  = "string"
+      value = var.cloud_monitoring_agent_name
+    },
+    {
+      name  = "image.version"
+      type  = "string"
+      value = local.cloud_monitoring_image_tag_digest
+    },
+    {
+      name  = "image.registry"
+      type  = "string"
+      value = local.cloud_monitoring_agent_registry
+    },
+    {
+      name  = "config.clustername"
+      type  = "string"
+      value = local.cluster_name
+    },
+    {
+      name  = "config.host"
+      type  = "string"
+      value = local.cloud_monitoring_host
+    },
+    {
+      name  = "secret.name"
+      type  = "string"
+      value = var.cloud_monitoring_secret_name
+    },
+    {
+      name  = "config.tags"
+      type  = "string"
+      value = join("\\,", local.cloud_monitoring_agent_tags)
+    }
+  ]
+
+  set_sensitive = [{
     name  = "secret.key"
     type  = "string"
     value = var.cloud_monitoring_access_key
-  }
-  set {
-    name  = "config.tags"
-    type  = "string"
-    value = join("\\,", local.cloud_monitoring_agent_tags)
-  }
+  }]
 
   values = [yamlencode({
     metrics_filter = var.cloud_monitoring_metrics_filter
