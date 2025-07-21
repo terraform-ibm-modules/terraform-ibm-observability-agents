@@ -53,3 +53,8 @@ data:
             {{ $c.parameter }}: {{ $c.name }}
       {{ end }}
     {{- end -}}
+
+  {{- if .Values.prometheus_scrape_configs }}
+  prometheus.yaml: |
+{{ .Values.prometheus_scrape_configs | indent 4 }}
+  {{- end }}

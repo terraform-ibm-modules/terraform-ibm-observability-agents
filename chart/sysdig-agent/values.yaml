@@ -32,3 +32,25 @@ container_filter: []
 #         container.name: my-java-app
 #   - exclude:
 #         kubernetes.namespace.name: kube-system
+
+# Prometheus scrape_configs override
+prometheus_scrape_configs: ""
+# example Prometheus scrape_configs YAML
+# scrape_configs:
+# - job_name: 'k8s-pods'
+#   tls_config:
+#     insecure_skip_verify: true
+#   kubernetes_sd_configs:
+#   - role: pod
+#   relabel_configs:
+#   - action: keep
+#     source_labels: [__meta_kubernetes_pod_host_ip]
+#     regex: __HOSTIPS__
+#   - action: keep
+#     source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+#     regex: true
+#   metric_relabel_configs:
+#   - source_labels: [__name__]
+#     regex: (ClickHouseMetrics_DistributedFilesToInsert)
+#     action: keep
+

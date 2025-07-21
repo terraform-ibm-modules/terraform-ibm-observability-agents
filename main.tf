@@ -98,7 +98,10 @@ resource "helm_release" "cloud_monitoring_agent" {
     tolerations = var.cloud_monitoring_agent_tolerations
     }), yamlencode({
     container_filter = var.cloud_monitoring_container_filter
+    }), yamlencode({
+    prometheus_scrape_configs = var.cloud_monitoring_prometheus_scrape_configs
   })]
+
 
   provisioner "local-exec" {
     command     = "${path.module}/scripts/confirm-rollout-status.sh ${var.cloud_monitoring_agent_name} ${var.cloud_monitoring_agent_namespace}"

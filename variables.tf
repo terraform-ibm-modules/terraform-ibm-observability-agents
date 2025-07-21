@@ -112,6 +112,13 @@ variable "cloud_monitoring_metrics_filter" {
   }
 }
 
+variable "cloud_monitoring_prometheus_scrape_configs" {
+  description = "Optional multi-line YAML string defining Prometheus scrape_configs to be injected into the Sysdig agent's configuration ConfigMap under prometheus.yaml. This allows customization of Prometheus scraping behavior, including relabeling, TLS settings, and target selection. Provide the full scrape_configs YAML block as a string."
+  type        = string
+  default     = ""
+}
+
+
 variable "cloud_monitoring_container_filter" {
   type = list(object({
     type      = string
