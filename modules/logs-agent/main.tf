@@ -48,69 +48,72 @@ resource "helm_release" "logs_agent" {
   recreate_pods    = true
   force_update     = true
 
-  set {
-    name  = "metadata.name"
-    type  = "string"
-    value = var.logs_agent_name
-  }
-  set {
-    name  = "image.version"
-    type  = "string"
-    value = local.logs_agent_version
-  }
-  set {
-    name  = "env.ingestionHost"
-    type  = "string"
-    value = local.cloud_logs_ingress_endpoint
-  }
-  set {
-    name  = "env.ingestionPort"
-    value = var.cloud_logs_ingress_port
-  }
-  set_sensitive {
+  set = [
+    {
+      name  = "metadata.name"
+      type  = "string"
+      value = var.logs_agent_name
+    },
+    {
+      name  = "image.version"
+      type  = "string"
+      value = local.logs_agent_version
+    },
+    {
+      name  = "env.ingestionHost"
+      type  = "string"
+      value = local.cloud_logs_ingress_endpoint
+    },
+    {
+      name  = "env.ingestionPort"
+      value = var.cloud_logs_ingress_port
+    },
+    {
+      name  = "env.trustedProfileID"
+      type  = "string"
+      value = local.logs_agent_trusted_profile
+    },
+    {
+      name  = "env.iamMode"
+      type  = "string"
+      value = var.logs_agent_iam_mode
+    },
+    {
+      name  = "env.iamEnvironment"
+      type  = "string"
+      value = var.logs_agent_iam_environment
+    },
+    {
+      name  = "additionalLogSourcePaths"
+      type  = "string"
+      value = join("\\,", var.logs_agent_additional_log_source_paths)
+    },
+    {
+      name  = "excludeLogSourcePaths"
+      type  = "string"
+      value = join("\\,", var.logs_agent_exclude_log_source_paths)
+    },
+    {
+      name  = "selectedLogSourcePaths"
+      type  = "string"
+      value = join("\\,", local.logs_agent_selected_log_source_paths)
+    },
+    {
+      name  = "clusterName"
+      type  = "string"
+      value = local.cluster_name
+    },
+    {
+      name  = "scc.create"
+      value = var.logs_agent_enable_scc
+    }
+  ]
+
+  set_sensitive = [{
     name  = "secret.iamAPIKey"
     type  = "string"
     value = local.logs_agent_iam_api_key
-  }
-  set {
-    name  = "env.trustedProfileID"
-    type  = "string"
-    value = local.logs_agent_trusted_profile
-  }
-  set {
-    name  = "env.iamMode"
-    type  = "string"
-    value = var.logs_agent_iam_mode
-  }
-  set {
-    name  = "env.iamEnvironment"
-    type  = "string"
-    value = var.logs_agent_iam_environment
-  }
-  set {
-    name  = "additionalLogSourcePaths"
-    type  = "string"
-    value = join("\\,", var.logs_agent_additional_log_source_paths)
-  }
-  set {
-    name  = "excludeLogSourcePaths"
-    type  = "string"
-    value = join("\\,", var.logs_agent_exclude_log_source_paths)
-  }
-  set {
-    name  = "selectedLogSourcePaths"
-    type  = "string"
-    value = join("\\,", local.logs_agent_selected_log_source_paths)
-  }
-  set {
-    name  = "clusterName"
-    type  = "string"
-    value = local.cluster_name
-  }
-  set {
-    name  = "scc.create"
-    value = var.logs_agent_enable_scc
-  }
+  }]
 
   # dummy value hack to force update https://github.com/hashicorp/terraform-provider-helm/issues/515#issuecomment-813088122
   values = [
