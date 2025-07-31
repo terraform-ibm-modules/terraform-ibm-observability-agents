@@ -10,7 +10,7 @@ terraform {
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "2.15.0"
+      version = "3.0.2"
     }
     # The kubernetes provider is not actually required by the module itself, just this example, so OK to use ">=" here instead of locking into a version
     kubernetes = {
