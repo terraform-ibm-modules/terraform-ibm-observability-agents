@@ -60,8 +60,8 @@ module "logs_agent_module" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.0 |
-| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 3.0.0, <4.0.0 |
-| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | >= 1.59.0, <2.0.0 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | 3.0.2 |
+| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | 1.81.1 |
 
 ### Modules
 
@@ -71,10 +71,10 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [helm_release.logs_agent](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
-| [ibm_container_cluster.cluster](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/container_cluster) | data source |
-| [ibm_container_cluster_config.cluster_config](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/container_cluster_config) | data source |
-| [ibm_container_vpc_cluster.cluster](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/container_vpc_cluster) | data source |
+| [helm_release.logs_agent](https://registry.terraform.io/providers/hashicorp/helm/3.0.2/docs/resources/release) | resource |
+| [ibm_container_cluster.cluster](https://registry.terraform.io/providers/ibm-cloud/ibm/1.81.1/docs/data-sources/container_cluster) | data source |
+| [ibm_container_cluster_config.cluster_config](https://registry.terraform.io/providers/ibm-cloud/ibm/1.81.1/docs/data-sources/container_cluster_config) | data source |
+| [ibm_container_vpc_cluster.cluster](https://registry.terraform.io/providers/ibm-cloud/ibm/1.81.1/docs/data-sources/container_vpc_cluster) | data source |
 
 ### Inputs
 
