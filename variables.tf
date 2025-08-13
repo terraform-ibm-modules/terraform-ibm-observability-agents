@@ -101,14 +101,21 @@ variable "cloud_monitoring_endpoint_type" {
 
 variable "cloud_monitoring_metrics_filter" {
   type = list(object({
-    type = string
-    name = string
+    include = optional(string)
+    exclude = optional(string)
   }))
-  description = "To filter custom metrics, specify the Cloud Monitoring metrics to include or to exclude. See https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_inc_exc_metrics."
+  description = "To filter custom metrics you can specify which metrics to include and exclude. For more info, see https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_inc_exc_metrics"
   default     = []
   validation {
-    condition     = length(var.cloud_monitoring_metrics_filter) == 0 || can(regex("^(include|exclude)$", var.cloud_monitoring_metrics_filter[0].type))
-    error_message = "Invalid input for `cloud_monitoring_metrics_filter`. Valid options for 'type' are: `include` and `exclude`. If empty, no metrics are included or excluded."
+    condition = alltrue([
+      for item in var.cloud_monitoring_metrics_filter : (
+        (
+          (!(try(item.include, null) != null && try(item.exclude, null) != null)) &&
+          ((try(item.include, null) != null && try(item.include, "") != "") || (try(item.exclude, null) != null && try(item.exclude, "") != ""))
+        )
+      )
+    ])
+    error_message = "Each cloud_monitoring_metrics_filter item must specify exactly one of 'include' or 'exclude' with a non-empty value. Empty lists [] are allowed."
   }
 }
 
