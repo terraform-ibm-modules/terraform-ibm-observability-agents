@@ -98,12 +98,8 @@ resource "helm_release" "cloud_monitoring_agent" {
   values = [<<EOT
 metrics_filter:
 %{for filter in var.cloud_monitoring_metrics_filter~}
-%{if filter.include != null~}
-  - include: ${filter.include}
-%{endif~}
-%{if filter.exclude != null~}
-  - exclude: ${filter.exclude}
-%{endif~}
+  - type: ${filter.type}
+    name: ${filter.name}
 %{endfor~}
 tolerations:
 %{for toleration in var.cloud_monitoring_agent_tolerations~}
