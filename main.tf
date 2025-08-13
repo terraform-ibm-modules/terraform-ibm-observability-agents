@@ -95,18 +95,34 @@ resource "helm_release" "cloud_monitoring_agent" {
     value = var.cloud_monitoring_access_key
   }]
 
-  values = [yamlencode({
-    metrics_filter = var.cloud_monitoring_metrics_filter
-    }), yamlencode({
-    tolerations = var.cloud_monitoring_agent_tolerations
-    }), yamlencode({
-    container_filter = var.cloud_monitoring_container_filter
-    }), yamlencode({
-    ebpf = {
-      enabled = var.enable_universal_ebpf
-      kind    = "universal_ebpf"
-    }
-  })]
+  values = [<<EOT
+metrics_filter:
+%{for filter in var.cloud_monitoring_metrics_filter~}
+%{if filter.include != null~}
+  - include: ${filter.include}
+%{endif~}
+%{if filter.exclude != null~}
+  - exclude: ${filter.exclude}
+%{endif~}
+%{endfor~}
+tolerations:
+%{for toleration in var.cloud_monitoring_agent_tolerations~}
+  -%{if toleration.key != null} key: "${toleration.key}"%{endif}
+%{if toleration.operator != null}    operator: "${toleration.operator}"%{endif}
+%{if toleration.value != null}    value: "${toleration.value}"%{endif}
+%{if toleration.effect != null}    effect: "${toleration.effect}"%{endif}
+%{if toleration.tolerationSeconds != null}    tolerationSeconds: ${toleration.tolerationSeconds}%{endif}
+%{endfor~}
+container_filter:
+%{for filter in var.cloud_monitoring_container_filter~}
+  - ${filter.type}:
+      ${filter.parameter}: ${filter.name}
+%{endfor~}
+ebpf:
+  enabled: ${var.enable_universal_ebpf}
+  kind: "universal_ebpf"
+EOT
+  ]
 
   provisioner "local-exec" {
     command     = "${path.module}/scripts/confirm-rollout-status.sh ${var.cloud_monitoring_agent_name} ${var.cloud_monitoring_agent_namespace}"
