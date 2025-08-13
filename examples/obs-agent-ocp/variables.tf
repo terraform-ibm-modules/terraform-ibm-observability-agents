@@ -37,7 +37,7 @@ variable "region" {
 variable "ocp_version" {
   type        = string
   description = "Version of the OCP cluster to provision"
-  default     = null
+  default     = "4.17"
 }
 
 variable "ocp_entitlement" {
