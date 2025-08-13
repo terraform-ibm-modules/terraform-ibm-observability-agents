@@ -86,6 +86,14 @@ resource "helm_release" "cloud_monitoring_agent" {
       name  = "config.tags"
       type  = "string"
       value = join("\\,", local.cloud_monitoring_agent_tags)
+    },
+    {
+      name  = "ebpf.enabled"
+      value = var.enable_universal_ebpf
+    },
+    {
+      name  = "ebpf.kind"
+      value = "universal_ebpf"
     }
   ]
 

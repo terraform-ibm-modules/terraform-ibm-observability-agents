@@ -176,6 +176,12 @@ variable "cloud_monitoring_agent_tolerations" {
   }]
 }
 
+variable "enable_universal_ebpf" {
+  type        = bool
+  description = "Deploy monitoring agent with universal extended Berkeley Packet Filter (eBPF) enabled. It requires kernel version 5.8+. [Learn more](https://github.com/terraform-ibm-modules/terraform-ibm-monitoring-agent/blob/main/solutions/fully-configurable/DA-docs.md#when-to-enable-enable_universal_ebpf)"
+  default     = true
+}
+
 ##############################################################################
 # Logs Agents variables
 ##############################################################################
