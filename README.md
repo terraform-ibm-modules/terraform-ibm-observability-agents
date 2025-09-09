@@ -15,7 +15,7 @@ Migration:
      to   = module.logs_agent[0].helm_release.logs_agent
    }
    ```
-- However since the helm chart being used in the new [terraform-ibm-monitoring-agent](https://github.com/terraform-ibm-modules/terraform-ibm-monitoring-agent) module is completly different to the helm chart used in this module, there is no way to do an update-in-place. Upgrading to this version will destroy the old helm release and create a new one so please plan accordingly before upgrading.
+- However since the helm chart being used in the new [terraform-ibm-monitoring-agent](https://github.com/terraform-ibm-modules/terraform-ibm-monitoring-agent) module is completely different to the helm chart used in this module, there is no way to do an update-in-place. Upgrading to this version will destroy the old helm release and create a new one so please plan accordingly before upgrading.
 ---
 
 [![Graduated (Supported)](https://img.shields.io/badge/Status-Graduated%20(Supported)-brightgreen)](https://terraform-ibm-modules.github.io/documentation/#/badge-status)
