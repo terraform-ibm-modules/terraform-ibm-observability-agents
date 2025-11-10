@@ -36,8 +36,8 @@ This module deploys the following observability agents to an IBM Cloud Red Hat O
 * [Submodules](./modules)
     * [logs-agent](./modules/logs-agent)
 * [Examples](./examples)
-    * [Monitoring agent + Cloud Logs agent on Kubernetes using CSE ingress endpoint with an apikey](./examples/obs-agent-iks)
-    * [Monitoring agent + Cloud Logs agent on OCP using VPE ingress endpoint with a Trusted Profile](./examples/obs-agent-ocp)
+    * <div style="display: inline-block;"><a href="./examples/obs-agent-iks">Monitoring agent + Cloud Logs agent on Kubernetes using CSE ingress endpoint with an apikey</a></div> <div style="display: inline-block; vertical-align: middle;"><a href="https://cloud.ibm.com/schematics/workspaces/create?workspace_name=oa-obs-agent-iks-example&repository=github.com/terraform-ibm-modules/terraform-ibm-observability-agents/tree/main/examples/obs-agent-iks" target="_blank"><img src="https://cloud.ibm.com/media/docs/images/icons/Deploy_to_cloud.svg" alt="Deploy to IBM Cloud button"></a></div>
+    * <div style="display: inline-block;"><a href="./examples/obs-agent-ocp">Monitoring agent + Cloud Logs agent on OCP using VPE ingress endpoint with a Trusted Profile</a></div> <div style="display: inline-block; vertical-align: middle;"><a href="https://cloud.ibm.com/schematics/workspaces/create?workspace_name=oa-obs-agent-ocp-example&repository=github.com/terraform-ibm-modules/terraform-ibm-observability-agents/tree/main/examples/obs-agent-ocp" target="_blank"><img src="https://cloud.ibm.com/media/docs/images/icons/Deploy_to_cloud.svg" alt="Deploy to IBM Cloud button"></a></div>
 * [Contributing](#contributing)
 <!-- END OVERVIEW HOOK -->
 
