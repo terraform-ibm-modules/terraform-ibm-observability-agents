@@ -194,6 +194,18 @@ module "observability_agents" {
   }]
   # example of how to add additional log source path
   logs_agent_additional_log_source_paths = ["/logs/*.log"]
+  logs_agent_resources = {
+    limits = {
+      cpu               = "500m"
+      ephemeral_storage = "10Gi"
+      memory            = "3Gi"
+    }
+    requests = {
+      cpu               = "100m"
+      ephemeral_storage = "2Gi"
+      memory            = "1Gi"
+    }
+  }
   # Monitoring agent
   cloud_monitoring_access_key = module.observability_instances.cloud_monitoring_access_key
   # example of how to include / exclude metrics - more info https://cloud.ibm.com/docs/monitoring?topic=monitoring-change_kube_agent#change_kube_agent_log_metrics
