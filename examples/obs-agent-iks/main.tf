@@ -4,7 +4,7 @@
 
 module "resource_group" {
   source  = "terraform-ibm-modules/resource-group/ibm"
-  version = "1.4.6"
+  version = "1.4.7"
   # if an existing resource group is not set (null) create a new one using prefix
   resource_group_name          = var.resource_group == null ? "${var.prefix}-resource-group" : null
   existing_resource_group_name = var.resource_group
@@ -17,7 +17,7 @@ module "resource_group" {
 # As a `Sender`, you can send logs to your IBM Cloud Logs service instance - but not query or tail logs. This role is meant to be used by agents and routers sending logs.
 module "iam_service_id" {
   source                          = "terraform-ibm-modules/iam-service-id/ibm"
-  version                         = "1.2.7"
+  version                         = "1.2.8"
   iam_service_id_name             = "${var.prefix}-service-id"
   iam_service_id_description      = "Logs Agent service id"
   iam_service_id_apikey_provision = true
