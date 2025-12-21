@@ -22,7 +22,7 @@ locals {
 
 module "trusted_profile" {
   source                      = "terraform-ibm-modules/trusted-profile/ibm"
-  version                     = "3.2.10"
+  version                     = "3.2.12"
   trusted_profile_name        = "${var.prefix}-profile"
   trusted_profile_description = "Logs agent Trusted Profile"
   # As a `Sender`, you can send logs to your IBM Cloud Logs service instance - but not query or tail logs. This role is meant to be used by agents and routers sending logs.
@@ -149,7 +149,7 @@ data "ibm_is_security_groups" "vpc_security_groups" {
 # The below code creates a VPE for Cloud logs in the provisioned VPC which allows the agents to access the private Cloud Logs Ingress endpoint.
 module "vpe" {
   source   = "terraform-ibm-modules/vpe-gateway/ibm"
-  version  = "4.8.8"
+  version  = "4.8.10"
   region   = var.region
   prefix   = var.prefix
   vpc_id   = ibm_is_vpc.vpc.id
