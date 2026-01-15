@@ -9,7 +9,7 @@ locals {
 resource "terraform_data" "deprecation_notice" {
   input = timestamp() # always run to print deprecation notice
   provisioner "local-exec" {
-    command = local.msg
+    command = "echo \"${local.msg}\""
   }
 }
 
