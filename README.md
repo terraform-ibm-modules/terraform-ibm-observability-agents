@@ -4,7 +4,7 @@
 This module has been deprecated and will be archived on the 15th April 2026. See the below steps on how to [migrate](#migration) to the replacement modules. [Learn more](https://terraform-ibm-modules.github.io/documentation/#/deprecation.md) about the official terraform-ibm-modules deprecation policy.
 
 ### Migration:
-Please migrate to us in favour of the following 2 modules:
+Please migrate to the following 2 modules:
 - [terraform-ibm-monitoring-agent](https://github.com/terraform-ibm-modules/terraform-ibm-monitoring-agent)
 - [terraform-ibm-logs-agent](https://github.com/terraform-ibm-modules/terraform-ibm-logs-agent)
 
