@@ -1,22 +1,24 @@
 # Terraform IBM Observability agents module
 
----
+## :warning: Deprecation notice:
+This module has been deprecated and will be archived on the 15th April 2026. See the below steps on how to [migrate](#migration) to the replacement modules. [Learn more](https://terraform-ibm-modules.github.io/documentation/#/deprecation.md) about the official terraform-ibm-modules deprecation policy.
 
-:warning: **Deprecated**: This module has been deprecated in favour of the following 2 modules:
+### Migration:
+Please migrate to us in favour of the following 2 modules:
 - [terraform-ibm-monitoring-agent](https://github.com/terraform-ibm-modules/terraform-ibm-monitoring-agent)
 - [terraform-ibm-logs-agent](https://github.com/terraform-ibm-modules/terraform-ibm-logs-agent)
 
+It is possible to migrate the logs agent using a terraform moved block like so which would mean the upgrade would be an update-in-place instead of a destroy / re-create:
 
-Migration:
-- It is possible to migrate the logs agent using a terraform moved block like so which would mean the upgrade would be an update-in-place instead of a destroy / re-create:
-   ```
-   moved {
-     from = module.observability_agents[0].module.logs_agent[0].helm_release.logs_agent
-     to   = module.logs_agent[0].helm_release.logs_agent
-   }
-   ```
-- However since the helm chart being used in the new [terraform-ibm-monitoring-agent](https://github.com/terraform-ibm-modules/terraform-ibm-monitoring-agent) module is completely different to the helm chart used in this module, there is no way to do an update-in-place. Upgrading to this version will destroy the old helm release and create a new one so please plan accordingly before upgrading.
----
+```terraform
+moved {
+  from = module.observability_agents[0].module.logs_agent[0].helm_release.logs_agent
+  to   = module.logs_agent[0].helm_release.logs_agent
+}
+```
+
+However since the helm chart being used in the new [terraform-ibm-monitoring-agent](https://github.com/terraform-ibm-modules/terraform-ibm-monitoring-agent) module is completely different to the helm chart used in this module, there is no way to do an update-in-place. Upgrading to this version will destroy the old helm release and create a new one so please plan accordingly before upgrading.
+
 
 [![Graduated (Supported)](https://img.shields.io/badge/Status-Graduated%20(Supported)-brightgreen)](https://terraform-ibm-modules.github.io/documentation/#/badge-status)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
@@ -127,6 +129,7 @@ You need the following permissions to run this module.
 | Name | Type |
 |------|------|
 | [helm_release.cloud_monitoring_agent](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [terraform_data.deprecation_notice](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 | [ibm_container_cluster.cluster](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/container_cluster) | data source |
 | [ibm_container_cluster_config.cluster_config](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/container_cluster_config) | data source |
 | [ibm_container_vpc_cluster.cluster](https://registry.terraform.io/providers/ibm-cloud/ibm/latest/docs/data-sources/container_vpc_cluster) | data source |
@@ -172,7 +175,9 @@ You need the following permissions to run this module.
 
 ### Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_deprecation_notice"></a> [deprecation\_notice](#output\_deprecation\_notice) | DEPRECATION WARNING |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 
