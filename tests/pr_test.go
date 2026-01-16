@@ -39,6 +39,12 @@ func setupOptions(t *testing.T, prefix string, terraformDir string) *testhelper.
 			List: []string{
 				"module.observability_agents.module.logs_agent[0].helm_release.logs_agent",
 				"module.observability_agents.helm_release.cloud_monitoring_agent[0]",
+				"module.observability_agents.terraform_data.deprecation_notice",
+			},
+		},
+		IgnoreDestroys: testhelper.Exemptions{ // Ignore for consistency check
+			List: []string{
+				"module.observability_agents.terraform_data.deprecation_notice",
 			},
 		},
 		CloudInfoService: sharedInfoSvc,
