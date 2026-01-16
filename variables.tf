@@ -128,7 +128,7 @@ variable "cloud_monitoring_container_filter" {
 
 variable "cloud_monitoring_agent_tags" {
   type        = list(string)
-  description = "List of tags to associate to all matrics that the agent collects. NOTE: Use the 'cloud_monitoring_add_cluster_name' variable to add the cluster name as a tag."
+  description = "List of tags to associate to all metrics that the agent collects. NOTE: Use the 'cloud_monitoring_add_cluster_name' variable to add the cluster name as a tag."
   default     = []
   nullable    = false
 
