@@ -2,10 +2,9 @@
 # Outputs
 ##############################################################################
 
-#output "myoutput" {
-#  description = "Description of my output"
-#  value       = "value"
-#  depends_on  = [<some resource>]
-#}
+output "deprecation_notice" {
+  description = "DEPRECATION WARNING"
+  value       = local.msg
+}
 
 ##############################################################################

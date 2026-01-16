@@ -2,6 +2,17 @@
 # terraform-ibm-observability-agents
 ##############################################################################
 
+# Add deprecation notice
+locals {
+  msg = "[WARNING]: This module has been deprecated. Please see https://github.com/terraform-ibm-modules/terraform-ibm-observability-agents/blob/main/README.md"
+}
+resource "terraform_data" "deprecation_notice" {
+  input = timestamp() # always run to print deprecation notice
+  provisioner "local-exec" {
+    command = "echo \"${local.msg}\""
+  }
+}
+
 # Lookup cluster name from ID. The is_vpc_cluster variable defines whether to use the VPC data block or the Classic data block
 data "ibm_container_vpc_cluster" "cluster" {
   count             = var.is_vpc_cluster ? 1 : 0
