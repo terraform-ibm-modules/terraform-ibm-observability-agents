@@ -149,7 +149,7 @@ data "ibm_is_security_groups" "vpc_security_groups" {
 # The below code creates a VPE for Cloud logs in the provisioned VPC which allows the agents to access the private Cloud Logs Ingress endpoint.
 module "vpe" {
   source   = "terraform-ibm-modules/vpe-gateway/ibm"
-  version  = "5.0.2"
+  version  = "5.0.3"
   region   = var.region
   prefix   = var.prefix
   vpc_id   = ibm_is_vpc.vpc.id
