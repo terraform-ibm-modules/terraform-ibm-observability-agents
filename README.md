@@ -1,7 +1,14 @@
 # Terraform IBM Observability agents module
 
+## Archived: This repo is no longer maintained and is archived. All of the functionality is available in the following modules:
+
+### - terraform-ibm-monitoring-agent - monitoring agent provisioning
+### - terraform-ibm-logs-agent - logs agent provisioning
+
+<!--
 ## :warning: Deprecation notice:
 This module has been deprecated and will be archived on the 15th April 2026. See the below steps on how to [migrate](#migration) to the replacement modules. [Learn more](https://terraform-ibm-modules.github.io/documentation/#/deprecation.md) about the official terraform-ibm-modules deprecation policy.
+-->
 
 ### Migration:
 Please migrate to the following 2 modules:
